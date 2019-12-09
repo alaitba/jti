@@ -5,11 +5,7 @@
                 <li class="m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light"
                     m-dropdown-toggle="click">
                     <a href="#" class="m-nav__link m-dropdown__toggle">
-												<span class="m-topbar__userpic">
-													<img src="/core/adminLTE/assets/app/media/img/users/user4.jpg"
-                                                         class="m--img-rounded m--marginless" alt=""/>
-												</span>
-                        <span class="m-topbar__username m--hide">{{ Auth::guard('admins')->user()->name }}</span>
+                        {{ Auth::guard('admins')->user()->name }}
                     </a>
                     <div class="m-dropdown__wrapper">
                         <span class="m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust"></span>

@@ -20,7 +20,7 @@ return [
                 'admin'
             ]
         ],
-
+/*
         'modules' => [
             'title' => 'Модули',
             'items' => [
@@ -42,5 +42,6 @@ return [
                 'manager'
             ]
         ],
+*/
     ],
 ];
