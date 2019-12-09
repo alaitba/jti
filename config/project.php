@@ -1,0 +1,15 @@
+<?php
+
+return [
+    'default_locale' => 'ru',
+    'locales' => ['ru', 'en'],
+    'admin_prefix' => 'admin',
+
+    'views' => [
+        'defaults' => [
+            'admin_navigation' => 'common.navigation',
+            'admin_header_nav' => 'common.header_nav'
+        ]
+    ]
+
+];

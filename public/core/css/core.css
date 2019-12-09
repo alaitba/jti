@@ -1,0 +1,160 @@
+.busy {
+    position: relative;
+}
+
+.busy:before, .busy:after {
+    content: '';
+    display: block;
+    position: absolute;
+}
+
+.busy:before {
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .7);
+    z-index: 999;
+}
+
+.busy:after {
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -16px 0 0 -16px;
+    z-index: 4;
+    border: 5px solid #ffffff;
+    border-top-color: #fe5621;
+    border-radius: 100%;
+    -webkit-animation: loading2 linear .7s infinite;
+    animation: loading2 linear .7s infinite;
+}
+
+@-webkit-keyframes loading2 {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes loading2 {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.busy {
+    position: relative;
+}
+
+.busy:before, .busy:after {
+    content: '';
+    display: block;
+    position: absolute;
+}
+
+.busy:before {
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .7);
+    z-index: 999;
+}
+
+.busy:after {
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -16px 0 0 -16px;
+    z-index: 4;
+    border: 5px solid #ffffff;
+    border-top-color: #fe5621;
+    border-radius: 100%;
+    -webkit-animation: loading2 linear .7s infinite;
+    animation: loading2 linear .7s infinite;
+}
+
+@-webkit-keyframes loading2 {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes loading2 {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.has-error {
+    color: red;
+}
+
+fieldset {
+    border: 1px solid #e9ecef !important;
+    border-radius: 5px;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+    box-shadow:  0px 0px 0px 0px #000;
+}
+
+legend {
+    font-size: 12px;
+    text-align: left !important;
+    width: auto;
+    padding: 0 10px;
+    border-bottom: none;
+
+    color: #3F4047;
+}
+
+.custom-modal {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #C9CACD;
+    border-radius: 5px;
+    background-color: #ffffff;
+    position: fixed;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: none
+}
+
+.z-index-99900 {
+    z-index: 99900;
+}
+
+.z-index-99901{
+    z-index: 99901;
+}
+
+.width-900 {
+    width: 900px;
+}
+
+.width-400 {
+    width: 400px;
+}
+
+.min-height-500 {
+    min-height: 500px;
+}
+
+.min-height-150 {
+    min-height: 150px;
+}
+
+.max-height-400 {
+    max-height: 400px;
+}
+
+.modal{
+    overflow-y: auto;
+}
+
