@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminsRequest;
@@ -48,7 +49,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|View
+     * @return Factory|View
      */
     public function index()
     {
@@ -85,16 +86,7 @@ class AdminController extends Controller
     {
         $items = $this->adminCase->getList();
 
-        $tableContent = new TableContent($items);
-
-        $tableContent->textColumn('id', Align::CENTER);
-        $tableContent->textColumn('name');
-        $tableContent->textColumn('email');
-        $tableContent->textColumn('active', Align::CENTER)->iconableBoolean(LineAwesomeIcon::POWER_OFF, 'green', 'red');
-        $tableContent->textColumn('super_user', Align::CENTER)->iconableBoolean(LineAwesomeIcon::MAGIC, 'green', 'red');
-        $tableContent->textColumn('develop', Align::CENTER)->iconableBoolean(LineAwesomeIcon::CODE, 'green', 'red');
-        $tableContent->linkColumn('id', 'admin.admins.edit', ['id' => 'id'], Align::CENTER)->modalable(Modal::LARGE)->iconable(LineAwesomeIcon::EDIT);
-        $tableContent->linkColumn('id', 'admin.admins.delete', ['id' => 'id'], Align::CENTER)->iconable(LineAwesomeIcon::TRASH_O)->confirmable('Удаление', 'Вы уверены, что хотите удалить');
+        $tableContent = $this->fillTableContent($items);
 
         $response = new ResponseBuilder();
         $response->updateTableContent('#adminsTable', $tableContent, $request->all());
@@ -125,6 +117,11 @@ class AdminController extends Controller
         ]);
     }
 
+    /**
+     * @param AdminsRequest $request
+     * @return JsonResponse
+     * @throws Throwable
+     */
     public function store(AdminsRequest $request)
     {
         $data = [
@@ -144,15 +141,7 @@ class AdminController extends Controller
             $admin->syncRoles($roles);
         }
 
-        $tableContent = new TableContent($admin);
-        $tableContent->textColumn('id', Align::CENTER);
-        $tableContent->textColumn('name');
-        $tableContent->textColumn('email');
-        $tableContent->textColumn('active', Align::CENTER)->iconableBoolean(LineAwesomeIcon::POWER_OFF, 'green', 'red');
-        $tableContent->textColumn('super_user', Align::CENTER)->iconableBoolean(LineAwesomeIcon::MAGIC, 'green', 'red');
-        $tableContent->textColumn('develop', Align::CENTER)->iconableBoolean(LineAwesomeIcon::CODE, 'green', 'red');
-        $tableContent->linkColumn('id', 'admin.admins.edit', ['id' => 'id'], Align::CENTER)->modalable(Modal::LARGE)->iconable(LineAwesomeIcon::EDIT);
-        $tableContent->linkColumn('id', 'admin.admins.delete', ['id' => 'id'], Align::CENTER)->iconable(LineAwesomeIcon::TRASH_O)->confirmable('Удаление', 'Вы уверены, что хотите удалить');
+        $tableContent = $this->fillTableContent($admin);
 
         $response = new ResponseBuilder();
         $response->prependTableRow($tableContent, '#adminsTable');
@@ -198,6 +187,12 @@ class AdminController extends Controller
         ]);
     }
 
+    /**
+     * @param AdminsRequest $request
+     * @param $adminId
+     * @return JsonResponse
+     * @throws Throwable
+     */
     public function update(AdminsRequest $request, $adminId)
     {
         $data = [
@@ -218,15 +213,7 @@ class AdminController extends Controller
             $item->syncRoles([]);
         }
 
-        $tableContent = new TableContent($item);
-        $tableContent->textColumn('id', Align::CENTER);
-        $tableContent->textColumn('name');
-        $tableContent->textColumn('email');
-        $tableContent->textColumn('active', Align::CENTER)->iconableBoolean(LineAwesomeIcon::POWER_OFF, 'green', 'red');
-        $tableContent->textColumn('super_user', Align::CENTER)->iconableBoolean(LineAwesomeIcon::MAGIC, 'green', 'red');
-        $tableContent->textColumn('develop', Align::CENTER)->iconableBoolean(LineAwesomeIcon::CODE, 'green', 'red');
-        $tableContent->linkColumn('id', 'admin.admins.edit', ['id' => 'id'], Align::CENTER)->modalable(Modal::LARGE)->iconable(LineAwesomeIcon::EDIT);
-        $tableContent->linkColumn('id', 'admin.admins.delete', ['id' => 'id'], Align::CENTER)->iconable(LineAwesomeIcon::TRASH_O)->confirmable('Удаление', 'Вы уверены, что хотите удалить');
+        $tableContent = $this->fillTableContent($item);
 
         $response = new ResponseBuilder();
         $response->updateTableRow($tableContent, '#adminsTable', $adminId);
@@ -258,5 +245,26 @@ class AdminController extends Controller
                 ]
             ]
         ]);
+    }
+
+    /**
+     * @param $items
+     * @return TableContent
+     * @throws \Exception
+     */
+    private function fillTableContent($items)
+    {
+        $tableContent = new TableContent($items);
+
+        $tableContent->textColumn('id', Align::CENTER);
+        $tableContent->textColumn('name');
+        $tableContent->textColumn('email');
+        $tableContent->textColumn('active', Align::CENTER)->iconableBoolean(LineAwesomeIcon::POWER_OFF, 'green', 'red');
+        $tableContent->textColumn('super_user', Align::CENTER)->iconableBoolean(LineAwesomeIcon::MAGIC, 'green', 'red');
+        $tableContent->textColumn('develop', Align::CENTER)->iconableBoolean(LineAwesomeIcon::CODE, 'green', 'red');
+        $tableContent->linkColumn('id', 'admin.admins.edit', ['id' => 'id'], Align::CENTER)->modalable(Modal::LARGE)->iconable(LineAwesomeIcon::EDIT);
+        $tableContent->linkColumn('id', 'admin.admins.delete', ['id' => 'id'], Align::CENTER)->iconable(LineAwesomeIcon::TRASH_O)->confirmable('Удаление', 'Вы уверены, что хотите удалить?');
+
+        return $tableContent;
     }
 }
