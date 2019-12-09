@@ -60,7 +60,7 @@
 <script type="text/javascript">
     $('.roles_select2').select2({
         ajax: {
-            url: '/rbkcp/admins/roles/api/all',
+            url: '/admin/admins/roles/api/all',
             dataType: 'json',
             data: function (params) {
                 return {
