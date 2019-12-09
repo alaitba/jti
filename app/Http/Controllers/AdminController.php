@@ -89,7 +89,12 @@ class AdminController extends Controller
      */
     public function getList(Request $request)
     {
-        $items = $this->adminCase->getList();
+        $items = $this->adminCase;
+        if (!Auth::guard('admins')->user()->develop)
+        {
+            $items = $items->where('develop', 0);
+        }
+        $items = $items->getList();
 
         $tableContent = $this->fillTableContent($items);
 
