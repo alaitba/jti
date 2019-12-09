@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ use App\Ui\Attributes\Align;
 // Layout
 use App\Ui\LayoutBuilder;
 use App\Http\Utils\ResponseBuilder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Throwable;
 
@@ -64,7 +66,10 @@ class AdminController extends Controller
         $table->addColumn('E-mail', Align::LEFT);
         $table->addColumn(LineAwesomeIcon::POWER_OFF, Align::CENTER, 50);
         $table->addColumn(LineAwesomeIcon::MAGIC, Align::CENTER, 50);
-        $table->addColumn(LineAwesomeIcon::CODE, Align::CENTER, 50);
+        if (Auth::guard('admins')->user()->develop)
+        {
+            $table->addColumn(LineAwesomeIcon::CODE, Align::CENTER, 50);
+        }
         $table->addColumn(LineAwesomeIcon::EDIT, Align::CENTER, 50);
         $table->addColumn(LineAwesomeIcon::TRASH, Align::CENTER, 50);
 
@@ -250,7 +255,7 @@ class AdminController extends Controller
     /**
      * @param $items
      * @return TableContent
-     * @throws \Exception
+     * @throws Exception
      */
     private function fillTableContent($items)
     {
@@ -261,7 +266,10 @@ class AdminController extends Controller
         $tableContent->textColumn('email');
         $tableContent->textColumn('active', Align::CENTER)->iconableBoolean(LineAwesomeIcon::POWER_OFF, 'green', 'red');
         $tableContent->textColumn('super_user', Align::CENTER)->iconableBoolean(LineAwesomeIcon::MAGIC, 'green', 'red');
-        $tableContent->textColumn('develop', Align::CENTER)->iconableBoolean(LineAwesomeIcon::CODE, 'green', 'red');
+        if (Auth::guard('admins')->user()->develop)
+        {
+            $tableContent->textColumn('develop', Align::CENTER)->iconableBoolean(LineAwesomeIcon::CODE, 'green', 'red');
+        }
         $tableContent->linkColumn('id', 'admin.admins.edit', ['id' => 'id'], Align::CENTER)->modalable(Modal::LARGE)->iconable(LineAwesomeIcon::EDIT);
         $tableContent->linkColumn('id', 'admin.admins.delete', ['id' => 'id'], Align::CENTER)->iconable(LineAwesomeIcon::TRASH_O)->confirmable('Удаление', 'Вы уверены, что хотите удалить?');
 
