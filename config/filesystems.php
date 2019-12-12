@@ -64,6 +64,12 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        'jti-sftp' => [
+            'driver' => 'sftp',
+            'host' => 'share.jti.com',
+            'username' => 'MVTTOVKAYZ',
+            'password' => 'Uh1dk68Q',
+        ],
     ],
 
 ];
