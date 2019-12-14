@@ -67,8 +67,16 @@ class SalesPlanImport implements ToModel, WithProgressBar, WithChunkReading, Wit
     /**
      * @return int
      */
-    public function getRowCount(): int
+    public function getAdded(): int
     {
         return $this->rows;
+    }
+
+    /*
+     * @return int
+     */
+    public function getUpdated(): int
+    {
+        return 0;
     }
 }

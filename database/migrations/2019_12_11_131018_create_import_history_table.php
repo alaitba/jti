@@ -16,7 +16,7 @@ class CreateImportHistoryTable extends Migration
         Schema::create('import_history', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('admin_id')->default(0);
-            $table->enum('type', ['SP', 'SPH', 'CNT']);
+            $table->string('type');
             $table->integer('added')->unsigned()->default(0);
             $table->integer('updated')->unsigned()->default(0);
             $table->integer('deleted')->unsigned()->default(0);
