@@ -98,10 +98,21 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
  * Front
  */
 
-Route::group(['prefix' => '/auth', 'middleware' => ['web']], function () {
-    Route::post('phone', 'Front\AuthController@postPhone')->name('partner.post.phone');
-    Route::post('sms-code', 'Front\AuthController@postSmsCode')->name('partner.post.sms_code');
-    Route::post('create-password', 'Front\AuthController@postCreatePassword')->name('partner.post.create_password');
-    Route::post('login', 'Front\AuthController@postLogin')->name('partner.post.login');
-    Route::get('logout', 'Front\AuthController@logout')->name('partner.logout');
+/**
+ * Auth
+ */
+Route::group(['prefix' => 'auth', 'as' => 'partner.auth', 'middleware' => ['web']], function () {
+    Route::post('phone', 'Front\AuthController@postPhone')->name('.phone');
+    Route::post('sms-code', 'Front\AuthController@postSmsCode')->name('.sms_code');
+    Route::post('create-password', 'Front\AuthController@postCreatePassword')->name('.create_password');
+    Route::post('login', 'Front\AuthController@postLogin')->name('.login');
+    Route::get('logout', 'Front\AuthController@logout')->name('.logout');
+    /**
+     * Password reset
+     */
+    Route::group(['prefix' => 'reset', 'as' => '.reset'], function () {
+        Route::post('phone', 'Front\AuthController@postPhoneReset')->name('.phone');
+        Route::post('sms-code', 'Front\AuthController@postSmsCodeReset')->name('.sms_code');
+        Route::post('create-password', 'Front\AuthController@postCreatePasswordReset')->name('.create_password');
+    });
 });
