@@ -6,14 +6,12 @@ use App\Models\Contact;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 
-class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, WithChunkReading, WithCustomCsvSettings, WithBatchInserts
+class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, WithChunkReading, WithCustomCsvSettings
 {
     use Importable;
 
@@ -21,8 +19,9 @@ class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, Wi
 
     public function collection(Collection $rows)
     {
+        $add = [];
         foreach ($rows as $row) {
-            $contact = Contact::withTrashed()->where(['contact_code' => $row['Contact code'], 'contact_uid' => $row['Contact UID']])->first();
+            $contact = Contact::withTrashed()->where(['contact_code' => $row['Contact code'], 'contact_uid' => $row['Contact ID']])->first();
             if ($contact)
             {
                 $contact->restore();
@@ -36,38 +35,30 @@ class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, Wi
                 ]);
                 if ($contact->isDirty())
                 {
-                    $this->updated ++;
+                    $this->updated++;
                 }
                 $contact->save();
             } else {
-                $contact = new Contact([
+                $add []= [
                     'contact_code' => $row['Contact code'],
-                    'contact_uid' => $row['Contact UID'],
+                    'contact_uid' => $row['Contact ID'],
                     'contact_type' => $row['Contact type'],
                     'mobile_phone' => $row['Mobile phone #'],
                     'first_name' => $row['Contact first name'],
                     'last_name' => $row['Contact last name'],
                     'middle_name' => $row['Contact middle name'] ?? '',
                     'iin_id' => $row['IIN ID'] ?? ''
-                ]);
-                $contact->save();
+                ];
                 $this->added++;
             }
         }
+        Contact::insert($add);
     }
 
     /**
      * @return int
      */
     public function chunkSize(): int
-    {
-        return 2000;
-    }
-
-    /**
-     * @return int
-     */
-    public function batchSize(): int
     {
         return 2000;
     }

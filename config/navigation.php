@@ -20,28 +20,24 @@ return [
                 'admin'
             ]
         ],
-/*
-        'modules' => [
-            'title' => 'Модули',
-            'items' => [
-
-            ],
-            'roles' => [
-                'admin',
-                'manager'
-            ]
-        ],
 
         'reports' => [
-            'title' => 'Модерация',
+            'title' => 'Отчеты',
             'items' => [
-
+                [
+                    'is_tree' => false,
+                    'title' => 'План/факт закупа',
+                    'route_name' => 'admin.reports.sales_plan.index',
+                    'item_active_on' => 'admin/reports/sales-plan*',
+                    'icon' => 'la la-bar-chart',
+                    'roles' => [
+                        'admin'
+                    ]
+                ]
             ],
             'roles' => [
-                'admin',
-                'manager'
+                'admin'
             ]
         ],
-*/
     ],
 ];

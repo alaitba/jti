@@ -158,3 +158,6 @@ legend {
     overflow-y: auto;
 }
 
+tr.nowrap th {
+    white-space: nowrap;
+}

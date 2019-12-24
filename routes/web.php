@@ -1,5 +1,6 @@
 <?php
 
+
 Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web']], function () {
     Route::get('login', 'AuthController@getLogin')->name('admin.get.login');
     Route::post('login', 'AuthController@postLogin')->name('admin.post.login');
@@ -45,20 +46,6 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         });
     });
 
-    Route::group(['prefix' => 'wysiwyg'], function () {
-        Route::get('objects', 'WysiwygController@objects')->name('admin.wysiwyg.objects');
-        Route::get('objects/{id}/inject', 'WysiwygController@inject')->name('admin.wysiwyg.objects.inject');
-        Route::get('folder/create', 'WysiwygController@folderCreate')->name('admin.wysiwyg.folder.create');
-        Route::post('folder/store', 'WysiwygController@folderStore')->name('admin.wysiwyg.folder.store');
-        Route::get('folder/{id}/edit', 'WysiwygController@folderEdit')->name('admin.wysiwyg.folder.edit');
-        Route::post('folder/{id}/update', 'WysiwygController@folderUpdate')->name('admin.wysiwyg.folder.update');
-        Route::get('folder/{id}/delete', 'WysiwygController@folderDelete')->name('admin.wysiwyg.folder.delete');
-        Route::post('file/store', 'WysiwygController@fileStore')->name('admin.wysiwyg.file.store');
-        Route::get('file/{id}/delete', 'WysiwygController@fileDelete')->name('admin.wysiwyg.file.delete');
-        Route::get('image/{id}/edit', 'WysiwygController@imageEdit')->name('admin.wysiwyg.image.edit');
-        Route::post('image/{id}/update', 'WysiwygController@imageUpdate')->name('admin.wysiwyg.image.update');
-    });
-
     Route::group(['prefix' => 'settings/localisation'], function () {
         Route::get('groups', 'Settings\LocalisationController@groups')->name('admin.settings.localisation');
         Route::get('groupsGetList', 'Settings\LocalisationController@groupList')->name('admin.settings.localisation.groups.list');
@@ -90,4 +77,28 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::post('store', 'Settings\EmailTemplateController@store')->name('admin.email_templates.store');
     });
 
+    /**
+     * Отчеты
+     */
+    Route::group(['prefix' => 'reports', 'as' => 'admin.reports'], function () {
+        /**
+         * Sales plan
+         */
+        Route::group(['prefix' => 'sales-plan', 'as' => '.sales_plan'], function () {
+            Route::get('/', 'SalesPlanController@index')->name('.index');
+            Route::match(['get', 'post'], 'get-list', 'SalesPlanController@getList')->name('.list');
+        });
+
+    });
+});
+
+
+
+/**
+ * Front
+ */
+
+Route::group(['prefix' => '/auth', 'middleware' => ['web']], function () {
+    Route::post('phone', 'Front\AuthController@postPhone')->name('partner.post.phone');
+    Route::get('logout', 'Front\AuthController@logout')->name('partner.logout');
 });

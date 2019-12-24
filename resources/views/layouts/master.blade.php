@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="editor-objects-url" content="{{ route('admin.wysiwyg.objects') }}">
 
     <title> @yield('title') :: Админ панель </title>
     <meta name="description" content="Latest updates and statistic charts">

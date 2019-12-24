@@ -296,4 +296,23 @@ class ResponseBuilder
     {
         return response()->json($data, 200);
     }
+
+    /**
+     * @param string $selector
+     * @param $content
+     * @param $pagination
+     */
+    public function updateTableContentHtml(string $selector, string $content, string $pagination)
+    {
+        $data = [
+
+            'params' => [
+                'selector' => $selector,
+                'content' => $content,
+                'pagination' => $pagination,
+            ],
+        ];
+
+        $this->functions['updateTableContent'] = $data;
+    }
 }

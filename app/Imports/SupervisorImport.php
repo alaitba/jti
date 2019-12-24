@@ -20,6 +20,7 @@ class SupervisorImport implements ToCollection, WithHeadingRow, WithProgressBar,
 
     public function collection(Collection $rows)
     {
+        $add = [];
         foreach ($rows as $row) {
             $supervisor = Supervisor::withTrashed()->where(['district_employee_code' => $row['District - Employee Code']])->first();
             if ($supervisor)
@@ -30,18 +31,18 @@ class SupervisorImport implements ToCollection, WithHeadingRow, WithProgressBar,
                 ]);
                 if ($supervisor->isDirty())
                 {
-                    $this->updated ++;
+                    $this->updated++;
                 }
                 $supervisor->save();
             } else {
-                $supervisor = new Supervisor([
+                $add []= [
                     'district_employee_code' => $row['District - Employee Code'],
                     'district_employee_name' => $row['District - Employee Name'],
-                ]);
-                $supervisor->save();
+                ];
                 $this->added++;
             }
         }
+        Supervisor::insert($add);
     }
 
 

@@ -6,6 +6,8 @@ use App\Imports\SalesPlan2Import;
 use App\Imports\SalesPlanImport;
 use App\Models\ImportHistory;
 use App\Models\SalesPlan;
+use App\Models\SalesPlan2;
+use App\Models\SalesPlanHistory;
 use App\Services\LogService\LogService;
 use Exception;
 use Illuminate\Console\Command;
@@ -36,7 +38,8 @@ class ImportFromSftp extends Command
         'Supervisor',
         'TradeAgent',
         'TradePoint',
-        'TradePointContact'
+        'TradePointContact',
+        'SalesPlanHistory'
     ];
 
     /**
@@ -80,10 +83,16 @@ class ImportFromSftp extends Command
         /*
         * Check if already imported
         */
-
-        if (ImportHistory::where('failed', 0)->where('type', $type)->whereDate('created_at', date('Y-m-d'))->count())
+        $importHistory = ImportHistory::where('failed', 0)->where('type', $type);
+        if ($type == 'SalesPlanHistory')
         {
-            $this->warn($type . ' сегодня уже импортировали');
+            $importHistory->where('created_at', 'like', date('Y-m-') . '%');
+        } else {
+            $importHistory->whereDate('created_at', date('Y-m-d'));
+        }
+        if ($importHistory->count())
+        {
+            $this->warn($type . ($type == 'SalesPlanHistory' ? ' в этом месяце' : ' сегодня') . ' уже импортировали');
             return false;
         }
 
@@ -91,22 +100,19 @@ class ImportFromSftp extends Command
         * Download files
         */
         $today = date('dmY');
-        $today = '12122019';
+        //$today = '12122019';
         $this->info('Скачиваем ' . $type);
-        $fileName = 'Trade/' . $type . '+' . $today . '.csv';
+
+        $fileName = 'Trade/' . ($type === 'SalesPlanHistory' ? 'SalesPlan_history' : $type) . '+' . $today . '.csv';
         $fileName2 = false;
         try {
             Storage::disk('local')->put($fileName, Storage::disk('jti-sftp')->get($fileName));
-            //FIXME: убрать этот костыль, если они поправят кодировку файлов, либо сделать нормально
-            //UPD: не поправят. переделать (но проверить, может не надо уже в новых версиях пыха)
             exec('iconv -f utf16 -t utf8 -o tmp ' . Storage::disk('local')->path($fileName));
             exec('mv tmp ' . Storage::disk('local')->path($fileName));
             if ($type == 'SalesPlan')
             {
                 $fileName2 = 'Trade/SalesPlan2+' . $today . '.csv';
                 Storage::disk('local')->put($fileName2, Storage::disk('jti-sftp')->get($fileName2));
-                //FIXME: убрать этот костыль, если они поправят кодировку файлов, либо сделать нормально
-                //UPD: не поправят. переделать (но проверить, может не надо уже в новых версиях пыха)
                 exec('iconv -f utf16 -t utf8 -o tmp ' . Storage::disk('local')->path($fileName2));
                 exec('mv tmp ' . Storage::disk('local')->path($fileName2));
             }
@@ -130,6 +136,7 @@ class ImportFromSftp extends Command
             }
             return false;
         }
+        Storage::disk('jti-sftp')->getDriver()->getAdapter()->disconnect();
 
         /*
          * Import
@@ -139,12 +146,17 @@ class ImportFromSftp extends Command
             $this->info('Импортируем ' . $type);
             $timeStamp = date('Y-m-d H:i:s');
             $model = '\App\Models\\' . $type;
-            if ($type == 'SalesImport')
+            if (!in_array($type, ['SalesPlan', 'SalesPlanHistory']))
             {
                 $model::withoutTrashed()->update(['deleted_at' => $timeStamp]);
             }
             $importClass = '\App\Imports\\' . $type . 'Import';
-            $baseImport = new $importClass();
+            if ($type == 'SalesPlanHistory')
+            {
+                $baseImport = new $importClass(SalesPlanHistory::count() == 0);
+            } else {
+                $baseImport = new $importClass();
+            }
             $baseImport->withOutput($this->output)->import(Storage::disk('local')->path($fileName), null, Excel::CSV);
 
             if ($type == 'SalesPlan')
@@ -154,13 +166,18 @@ class ImportFromSftp extends Command
                 $this->info('Импорт завершен');
                 $this->info('Удаляем старые записи');
                 $deleted = $model::whereDate('created_at', '<', date('Y-m-d'))->delete();
+                SalesPlan2::whereDate('created_at', '<', date('Y-m-d'))->delete();
+            } elseif ($type == 'SalesPlanHistory') {
+                $deleted = 0;
+            } else {
+                $deleted = $model::onlyTrashed()->where('deleted_at', $timeStamp)->count();
             }
             $importSuccess = new ImportHistory([
                 'type' => $type,
                 'failed' => 0,
                 'added' => $baseImport->getAdded(),
                 'updated' => $baseImport->getUpdated(),
-                'deleted' => $deleted ?? $model::onlyTrashed()->where('deleted_at', $timeStamp)->count()
+                'deleted' => $deleted
             ]);
             $importSuccess->save();
             DB::commit();

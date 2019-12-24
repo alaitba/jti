@@ -2,7 +2,6 @@
 
 namespace App\Imports;
 
-use App\Models\Supervisor;
 use App\Models\TradeAgent;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Importable;
@@ -21,6 +20,7 @@ class TradeAgentImport implements ToCollection, WithHeadingRow, WithProgressBar,
 
     public function collection(Collection $rows)
     {
+        $add = [];
         foreach ($rows as $row) {
             $tradeAgent = TradeAgent::withTrashed()->where(['employee_code' => $row['Employee code']])->first();
             if ($tradeAgent)
@@ -29,24 +29,24 @@ class TradeAgentImport implements ToCollection, WithHeadingRow, WithProgressBar,
                 $tradeAgent->fill([
                     'employee_name' => $row['Employee name'],
                     'district_employee_code' => $row['District - Employee code'],
-                    'phone' => '000'// FIXME: awaiting valid column name
+                    'phone' => $row['Cell Phone Nb'] ?? ''
                 ]);
                 if ($tradeAgent->isDirty())
                 {
-                    $this->updated ++;
+                    $this->updated++;
                 }
                 $tradeAgent->save();
             } else {
-                $tradeAgent = new TradeAgent([
+                $add []= [
                     'employee_code' => $row['Employee code'],
                     'employee_name' => $row['Employee name'],
                     'district_employee_code' => $row['District - Employee code'],
-                    'phone' => '000'// FIXME: awaiting valid column name
-                ]);
-                $tradeAgent->save();
+                    'phone' => $row['Cell Phone Nb'] ?? ''
+                ];
                 $this->added++;
             }
         }
+        TradeAgent::insert($add);
     }
 
 

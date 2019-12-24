@@ -2,9 +2,6 @@
 
 namespace App\Imports;
 
-use App\Models\Supervisor;
-use App\Models\TradeAgent;
-use App\Models\TradePoint;
 use App\Models\TradePointContact;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Importable;
@@ -23,29 +20,30 @@ class TradePointContactImport implements ToCollection, WithHeadingRow, WithProgr
 
     public function collection(Collection $rows)
     {
+        $add = [];
         foreach ($rows as $row) {
             $tradePointContact = TradePointContact::withTrashed()->where(['account_code' => $row['Account code'], 'contact_code' => $row['Contact code']])->first();
             if ($tradePointContact)
             {
                 $tradePointContact->restore();
                 $tradePointContact->fill([
-                    'contact_uid' => $row['Contact UID'],
+                    'contact_uid' => $row['Contact ID'],
                 ]);
                 if ($tradePointContact->isDirty())
                 {
-                    $this->updated ++;
+                    $this->updated++;
                 }
                 $tradePointContact->save();
             } else {
-                $tradePointContact = new TradePointContact([
+                $add []= [
                     'account_code' => $row['Account code'],
                     'contact_code' => $row['Contact code'],
-                    'contact_uid' => $row['Contact UID'],
-                ]);
-                $tradePointContact->save();
+                    'contact_uid' => $row['Contact ID'],
+                ];
                 $this->added++;
             }
         }
+        TradePointContact::insert($add);
     }
 
 

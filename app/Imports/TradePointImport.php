@@ -2,8 +2,6 @@
 
 namespace App\Imports;
 
-use App\Models\Supervisor;
-use App\Models\TradeAgent;
 use App\Models\TradePoint;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Importable;
@@ -22,6 +20,7 @@ class TradePointImport implements ToCollection, WithHeadingRow, WithProgressBar,
 
     public function collection(Collection $rows)
     {
+        $add = [];
         foreach ($rows as $row) {
             $tradePoint = TradePoint::withTrashed()->where(['employee_code' => $row['Employee code'], 'account_code' => $row['Account code']])->first();
             if ($tradePoint)
@@ -34,21 +33,21 @@ class TradePointImport implements ToCollection, WithHeadingRow, WithProgressBar,
                 ]);
                 if ($tradePoint->isDirty())
                 {
-                    $this->updated ++;
+                    $this->updated++;
                 }
                 $tradePoint->save();
             } else {
-                $tradePoint = new TradePoint([
+                $add []= [
                     'employee_code' => $row['Employee code'],
                     'account_code' => $row['Account code'],
                     'account_name' => $row['Account name'],
                     'street_address' => $row['Street address'],
                     'city' => $row['City']
-                ]);
-                $tradePoint->save();
+                ];
                 $this->added++;
             }
         }
+        TradePoint::insert($add);
     }
 
 
