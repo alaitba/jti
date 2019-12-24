@@ -104,6 +104,9 @@ class AuthController extends Controller
             'message' => 'need_otp',
             'sms_code_sent_at' => $partner->sms_code_sent_at
         ];
+        /**
+         * Return OTP if not in prod
+         */
         if (!$inProd)
         {
             $responseData['sms_code'] = $partner->sms_code;
@@ -113,6 +116,6 @@ class AuthController extends Controller
 
     public function logout() {
         Auth::guard( 'partners' )->logout();
-        return response()->json('ok');
+        return response()->json(['status' => 'ok']);
     }
 }
