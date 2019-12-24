@@ -1,0 +1,193 @@
+.deploy_template: &deploy_template
+  before_script:
+    ##
+    ## Install ssh-agent if not already installed, it is required by Docker.
+    ## (change apt-get to yum if you use an RPM-based image)
+    ##
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+
+    ##
+    ## Run ssh-agent (inside the build environment)
+    ##
+    - eval $(ssh-agent -s)
+
+    ##
+    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    ## We're using tr to fix line endings which makes ed25519 keys work
+    ## without extra base64 encoding.
+    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+    ##
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    ##
+    ## Create the SSH directory and give it the right permissions
+    ##
+    - mkdir -p ~/.ssh
+    - chmod -R 700 ~/.ssh
+
+    ##
+    ## Store key as file
+    ##
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    ##
+    ## Add required host data to known_hosts
+    ##
+    - echo "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+    ##
+    ## Install deployer
+    ##
+    - curl -LO https://deployer.org/releases/v6.4.3/deployer.phar
+    - chmod +x deployer.phar
+
+.deploy_template_prod: &deploy_template_prod
+  before_script:
+    ##
+    ## Install ssh-agent if not already installed, it is required by Docker.
+    ## (change apt-get to yum if you use an RPM-based image)
+    ##
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+
+    ##
+    ## Run ssh-agent (inside the build environment)
+    ##
+    - eval $(ssh-agent -s)
+
+    ##
+    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    ## We're using tr to fix line endings which makes ed25519 keys work
+    ## without extra base64 encoding.
+    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+    ##
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    ##
+    ## Create the SSH directory and give it the right permissions
+    ##
+    - mkdir -p ~/.ssh
+    - chmod -R 700 ~/.ssh
+
+    ##
+    ## Store key as file
+    ##
+    - echo "$SSH_PRIVATE_KEY_PROD" > ~/.ssh/id_rsa
+    ##
+    ## Add required host data to known_hosts
+    ##
+    - echo "$KNOWN_HOSTS_PROD" > ~/.ssh/known_hosts
+
+    ##
+    ## Install deployer
+    ##
+    - curl -LO https://deployer.org/releases/v6.4.3/deployer.phar
+    - chmod +x deployer.phar   
+
+stages:
+  # - test
+  # - analysis
+  - deploy
+
+# We test PHP7.2
+# phpunit:7.2_develop:
+  # stage: test
+  # tags:
+  # - sonarqube
+  # image: skeletondocker/php72-cli:1.0.4
+  # # Cache libraries in between jobs
+  # cache:
+  #   key: ${CI_COMMIT_REF_SLUG}
+  #   paths:
+  #   - vendor/
+  # script:
+  # # Run commands
+  # - composer install
+  # - cp .env.example .env
+  # - php artisan key:generate
+  # - phpunit --configuration phpunit.xml.dist
+  # only:
+  #   - develop
+
+# We test PHP7.2
+# phpunit_testing:7.2:
+  # stage: test
+  # tags:
+  # - sonarqube
+  # image: skeletondocker/php72-cli:1.0.4
+  # # Cache libraries in between jobs
+  # cache:
+  #   key: ${CI_COMMIT_REF_SLUG}
+  #   paths:
+  #   - vendor/
+  # script:
+  # # Run commands
+  # - composer install
+  # - cp .env.example .env
+  # - php artisan key:generate
+  # - phpunit --configuration phpunit.xml.dist --coverage-clover clover.xml --log-junit junit-logfile.xml
+  # artifacts: # Persist the files that we use as input for the analysis step 
+  #   paths:
+  #     - "clover.xml"
+  #     - "junit-logfile.xml"
+  #     - "*.xml.dist"
+  #   when: on_success
+  # only:
+  #   - master
+
+# # We test PHP7.2
+# phpunit_production:7.2:
+  # stage: test
+  # tags:
+  # - sonarqube
+  # image: skeletondocker/php72-cli:1.0.4
+  # # Cache libraries in between jobs
+  # cache:
+  #   key: ${CI_COMMIT_REF_SLUG}
+  #   paths:
+  #   - vendor/
+  # script:
+  # # Run commands
+  # - composer install
+  # - cp .env.example .env
+  # - php artisan key:generate
+  # - phpunit --configuration phpunit.xml.dist
+  # only:
+  #   - production
+
+sonar:
+  image: skeletondocker/gitlab-ci-sonarqube
+  stage: deploy
+  tags:
+    - sonarqube
+  script:
+    - export VERSION="${CI_PROJECT_NAMESPACE}_${CI_BUILD_ID}_$(date "+%Y-%m-%d-%H:%M:%S")"
+    - sonar-scanner -Dproject.settings=sonar-project.properties -Dsonar.projectVersion=$VERSION -X
+  only:
+    - master
+
+#
+# Runs deploy to host `prod` with verbose output for logs
+#
+deploy to prod:
+  image: composer:1.8.4
+  stage: deploy
+  tags:
+    - deployer
+  <<: *deploy_template_prod
+  script:
+    - ./deployer.phar deploy:unlock production -vvv
+    - ./deployer.phar deploy production -vvv
+  only:
+    - production
+
+#
+# Runs deploy to host `testing` with verbose output for logs
+#
+deploy to testing:
+  image: composer:1.8.4
+  stage: deploy
+  tags:
+    - deployer
+  <<: *deploy_template
+  script:
+    - ./deployer.phar deploy:unlock testing -vvv
+    - ./deployer.phar deploy testing --branch=testing -vvv
+  only:
+    - master
