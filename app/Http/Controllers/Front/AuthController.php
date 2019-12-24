@@ -82,7 +82,7 @@ class AuthController extends Controller
         /**
          * Check if mobile verified
          */
-        if ($partner->phone_verified_at)
+        if ($partner->phone_verified_at && $partner->password)
         {
             return response()->json([
                 'status' => 'ok',
@@ -164,9 +164,59 @@ class AuthController extends Controller
                 'message' => 'sms_code_expired_or_invalid'
             ], 403);
         }
+
+        $partner->update([
+            'sms_code' => null,
+            'sms_code_sent_at' => null,
+            'phone_verified_at' => now()
+        ]);
         return response()->json([
             'status' => 'ok',
             'message' => 'need_new_password'
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return array|bool|\Illuminate\Http\JsonResponse
+     */
+    public function postCreatePassword(Request $request)
+    {
+        /**
+         * Passwords validation
+         */
+        $validation = $this->validateRequest($request->only(['mobile_phone', 'password', 'password_check']), AuthRequests::CREATE_PASSWORD_REQUEST);
+        if ($validation !== true)
+        {
+            return $validation;
+        }
+
+        /**
+         * Check if password can be created
+         */
+        $partner = Partner::withoutTrashed()->where([
+            ['mobile_phone', $request->input('mobile_phone')],
+            ['phone_verified_at', '>=', Carbon::now()->subMinutes(config('project.create_password_lifetime', 2))],
+            ['password', null]
+        ])->first();
+        if (!$partner)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'password_creation_expired_or_not_allowed'
+            ], 403);
+        }
+        /**
+         * Set password and authorize
+         */
+        $partner->update([
+            'password' => $request->input('password'),
+        ]);
+        Auth::guard('partners')->login($partner);
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'authorized'
         ]);
     }
 

@@ -11,5 +11,6 @@ return [
             'admin_header_nav' => 'common.header_nav'
         ]
     ],
-    'sms_code_lifetime' => 2
+    'sms_code_lifetime' => 2,
+    'create_password_lifetime' => 2,
 ];

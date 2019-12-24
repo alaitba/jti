@@ -16,6 +16,14 @@ class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
     protected $hidden = ['password'];
     protected $guarded = [];
 
+    public function setPasswordAttribute($value)
+    {
+        if (strlen($value))
+        {
+            $this->attributes['password'] = bcrypt($value);
+        }
+    }
+
     public function contacts()
     {
         return $this->hasMany(Contact::class, 'mobile_phone', 'mobile_phone');
