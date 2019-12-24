@@ -102,5 +102,6 @@ Route::group(['prefix' => '/auth', 'middleware' => ['web']], function () {
     Route::post('phone', 'Front\AuthController@postPhone')->name('partner.post.phone');
     Route::post('sms-code', 'Front\AuthController@postSmsCode')->name('partner.post.sms_code');
     Route::post('create-password', 'Front\AuthController@postCreatePassword')->name('partner.post.create_password');
+    Route::post('login', 'Front\AuthController@postLogin')->name('partner.post.login');
     Route::get('logout', 'Front\AuthController@logout')->name('partner.logout');
 });

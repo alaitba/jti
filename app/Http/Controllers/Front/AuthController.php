@@ -10,11 +10,9 @@ use App\Models\Partner;
 use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -87,7 +85,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'ok',
                 'message' => 'need_password',
-                'phone' => $partner->mobile_phone
+                'mobile_phone' => $partner->mobile_phone
             ]);
         }
 
@@ -122,6 +120,7 @@ class AuthController extends Controller
         $responseData = [
             'status' => 'ok',
             'message' => 'need_otp',
+            'mobile_phone' => $partner->mobile_phone,
             'sms_code_sent_at' => $partner->sms_code_sent_at
         ];
         /**
@@ -172,7 +171,8 @@ class AuthController extends Controller
         ]);
         return response()->json([
             'status' => 'ok',
-            'message' => 'need_new_password'
+            'message' => 'need_new_password',
+            'mobile_phone' => $partner->mobile_phone
         ]);
     }
 
@@ -214,6 +214,34 @@ class AuthController extends Controller
         ]);
         Auth::guard('partners')->login($partner);
 
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'authorized'
+        ]);
+    }
+
+    public function postLogin(Request $request)
+    {
+        $credentials = $request->only(['mobile_phone', 'password']);
+        /**
+         * Auth validation
+         */
+        $validation = $this->validateRequest($credentials, AuthRequests::LOGIN_REQUEST);
+        if ($validation !== true)
+        {
+            return $validation;
+        }
+
+        /**
+         * Auth attempt
+         */
+        if (!Auth::guard('partners')->attempt($credentials))
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'wrong_password'
+            ], 403);
+        }
         return response()->json([
             'status' => 'ok',
             'message' => 'authorized'
