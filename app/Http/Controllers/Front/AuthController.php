@@ -9,6 +9,7 @@ use App\Models\Contact;
 use App\Models\Partner;
 use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,12 +19,14 @@ use Illuminate\Support\Str;
 class AuthController extends Controller
 {
 
-    public function postPhone(Request $request)
+    /**
+     * @param array $request
+     * @param array $rules
+     * @return array|bool|\Illuminate\Http\JsonResponse
+     */
+    private function validateRequest(array $request, array $rules)
     {
-        /**
-         * Mobile number validation
-         */
-        $validator = Validator::make($request->only('mobile_phone'), AuthRequests::PHONE_REQUEST);
+        $validator = Validator::make($request, $rules);
         if ($validator->fails())
         {
             return response()->json([
@@ -31,6 +34,23 @@ class AuthController extends Controller
                 'message' => 'validation_failed',
                 'errors' => $validator->errors()->toArray()
             ], 422);
+        }
+        return true;
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function postPhone(Request $request)
+    {
+        /**
+         * Mobile number validation
+         */
+        $validation = $this->validateRequest($request->only('mobile_phone'), AuthRequests::PHONE_REQUEST);
+        if ($validation !== true)
+        {
+            return $validation;
         }
 
         /*
@@ -114,6 +134,45 @@ class AuthController extends Controller
         return response()->json($responseData);
     }
 
+    /**
+     * @param Request $request
+     * @return array|bool|\Illuminate\Http\JsonResponse
+     */
+    public function postSmsCode(Request $request)
+    {
+        /**
+         * Sms code validation
+         */
+        $validation = $this->validateRequest($request->only(['mobile_phone', 'sms_code']), AuthRequests::SMSCODE_REQUEST);
+        if ($validation !== true)
+        {
+            return $validation;
+        }
+
+        /**
+         * Check if code exists, correct and not expired
+         */
+        $partner = Partner::withoutTrashed()->where([
+            ['mobile_phone', $request->input('mobile_phone')],
+            ['sms_code', $request->input('sms_code')],
+            ['sms_code_sent_at', '>=', Carbon::now()->subMinutes(config('project.sms_code_lifetime', 2))]
+        ])->first();
+        if (!$partner)
+        {
+            return response()->json([
+              'status' => 'error',
+                'message' => 'sms_code_expired_or_invalid'
+            ], 403);
+        }
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'need_new_password'
+        ]);
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function logout() {
         Auth::guard( 'partners' )->logout();
         return response()->json(['status' => 'ok']);

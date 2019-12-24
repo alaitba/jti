@@ -100,5 +100,6 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
 
 Route::group(['prefix' => '/auth', 'middleware' => ['web']], function () {
     Route::post('phone', 'Front\AuthController@postPhone')->name('partner.post.phone');
+    Route::post('sms-code', 'Front\AuthController@postSmsCode')->name('partner.post.sms_code');
     Route::get('logout', 'Front\AuthController@logout')->name('partner.logout');
 });

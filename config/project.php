@@ -10,6 +10,6 @@ return [
             'admin_navigation' => 'common.navigation',
             'admin_header_nav' => 'common.header_nav'
         ]
-    ]
-
+    ],
+    'sms_code_lifetime' => 2
 ];
