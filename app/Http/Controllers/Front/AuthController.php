@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\AuthRequests;
 use App\Models\Contact;
 use App\Models\Partner;
+use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -80,38 +81,34 @@ class AuthController extends Controller
         }
 
         $partner->sms_code = $smsCode;
-        try {
-            $client = new Client();
-            $response = $client->request(
-                'POST',
-                config('jti_api.sms_url'),
-                [
-                    'body' => json_encode([
-                        'data' => [
-                            'mobilePhone' => $partner->mobile_phone,
-                            'smsText' => $smsCode
-                        ],
-                        'identity' => [
-                            'userName' => '',
-                            'locale' => ''
-                        ]
-                    ], true)
-                ]
-            );
-        } catch(\Exception $e){
-            LogService::logException($e);
-            return response()->json([
-                'status' => 'error',
-                'message' => 'sms_not_sent'
-            ], 500);
+        /**
+         * Send sms if in production
+         */
+        $inProd = app()->environment() === 'production';
+        if ($inProd)
+        {
+            try {
+                JtiApiProvider::sendSms($partner->mobile_phone, $smsCode);
+            } catch(\Exception $e){
+                LogService::logException($e);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'sms_not_sent'
+                ], 500);
+            }
         }
         $partner->sms_code_sent_at = now();
         $partner->save();
-        return response()->json([
+        $responseData = [
             'status' => 'ok',
             'message' => 'need_otp',
             'sms_code_sent_at' => $partner->sms_code_sent_at
-        ]);
+        ];
+        if (!$inProd)
+        {
+            $responseData['sms_code'] = $partner->sms_code;
+        }
+        return response()->json($responseData);
     }
 
     public function logout() {
