@@ -43,6 +43,18 @@ class AuthController extends Controller
      */
     private function generateAndSendSms(Partner $partner)
     {
+        if ($partner->sms_code_sent_at)
+        {
+            $nextSend = Carbon::parse($partner->sms_code_sent_at)->addMinutes(2);
+            if ($nextSend->isFuture())
+            {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'sms_send_limit',
+                    'can_send_at' => $nextSend
+                ]);
+            }
+        }
         $smsCode = rand(0, 9999);
         while (strlen($smsCode) < 4) {
             $smsCode = '0' . $smsCode;
