@@ -325,6 +325,17 @@ class AuthController extends Controller
             ], 403);
         }
 
+        //Auth blocked
+        if ($partner->auth_blocked_till && Carbon::parse($partner->auth_blocked_till)->isFuture())
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'auth_blocked',
+                'auth_blocked_till' => $partner->auth_blocked_till,
+                'mobile_phone' => $partner->mobile_phone
+            ]);
+        }
+
         return $this->generateAndSendSms($partner);
     }
 
