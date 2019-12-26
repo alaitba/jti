@@ -115,4 +115,10 @@ Route::group(['prefix' => 'auth', 'as' => 'partner.auth', 'middleware' => ['web'
         Route::post('sms-code', 'Front\AuthController@postSmsCodeReset')->name('.sms_code');
         Route::post('create-password', 'Front\AuthController@postCreatePasswordReset')->name('.create_password');
     });
+
+    /**
+     * Set tradepoint
+     */
+    Route::post('set-tradepoint', 'Front\AuthController@postSetTradePoint')->middleware('partnerMiddleware');
 });
+

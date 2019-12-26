@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\AuthRequests;
 use App\Models\Contact;
 use App\Models\Partner;
+use App\Models\TradePoint;
 use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
 use Carbon\Carbon;
@@ -302,6 +303,23 @@ class AuthController extends Controller
         }
 
         $partner->update(['failed_auth' => 0, 'auth_blocked_till' => null]);
+
+        /**
+         * Check tradepoints
+         */
+        $tradepoints = $partner->tradepointsArray();
+        if (count($tradepoints) > 1)
+        {
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'need_tradepoint',
+                'tradepoints' => $tradepoints
+            ]);
+
+        }
+
+        $partner->update(['current_tradepoint' => array_key_first($tradepoints)]);
+
         return response()->json([
             'status' => 'ok',
             'message' => 'authorized'
@@ -367,6 +385,28 @@ class AuthController extends Controller
     public function postCreatePasswordReset(Request $request)
     {
         return $this->postCreatePassword($request, true);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function postSetTradepoint(Request $request)
+    {
+        $partner = Auth::guard('partners')->user();
+        $accountCode = $request->input('account_code');
+        $tradePoint = TradePoint::withoutTrashed()->where('account_code', $accountCode)->first();
+        if (!$tradePoint || !in_array($accountCode, array_keys($partner->tradepointsArray())))
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'tradepoint_not_found_or_invalid'
+            ]);
+        }
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'tradepoint_set'
+        ]);
     }
 
     /**

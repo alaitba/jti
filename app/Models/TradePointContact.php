@@ -10,4 +10,9 @@ class TradePointContact extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    public function tradepoint()
+    {
+        return $this->belongsTo(TradePoint::class, 'account_code');
+    }
 }

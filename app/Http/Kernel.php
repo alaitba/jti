@@ -7,6 +7,7 @@ use App\Http\Middleware\AdminPermissionMiddleware;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\PartnerMiddleware;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
@@ -85,7 +86,8 @@ class Kernel extends HttpKernel
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'adminMiddleware' => AdminMiddleware::class,
-        'adminPermissionMiddleware' => AdminPermissionMiddleware::class
+        'adminPermissionMiddleware' => AdminPermissionMiddleware::class,
+        'partnerMiddleware' => PartnerMiddleware::class
     ];
 
     /**
