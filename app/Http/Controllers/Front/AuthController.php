@@ -123,6 +123,18 @@ class AuthController extends Controller
          * Check if mobile verified
          */
         if ($partner->phone_verified_at && $partner->password) {
+
+            //Auth blocked
+            if ($partner->auth_blocked_till && Carbon::parse($partner->auth_blocked_till)->isFuture())
+            {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'auth_blocked',
+                    'auth_blocked_till' => $partner->auth_blocked_till,
+                    'mobile_phone' => $partner->mobile_phone
+                ]);
+            }
+
             return response()->json([
                 'status' => 'ok',
                 'message' => 'need_password',
@@ -248,15 +260,36 @@ class AuthController extends Controller
             return $validation;
         }
 
+        $partner = Partner::withoutTrashed()->where('mobile_phone', $credentials['mobile_phone'])->first();
+
+        //Auth blocked
+        if ($partner->auth_blocked_till && Carbon::parse($partner->auth_blocked_till)->isFuture())
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'auth_blocked',
+                'auth_blocked_till' => $partner->auth_blocked_till,
+                'mobile_phone' => $partner->mobile_phone
+            ]);
+        }
+
         /**
          * Auth attempt
          */
         if (!Auth::guard('partners')->attempt($credentials)) {
+            $partner->failed_auth++;
+            if ($partner->failed_auth >= 5)
+            {
+                $partner->auth_blocked_till = Carbon::now()->addMinutes(30);
+            }
+            $partner->save();
             return response()->json([
                 'status' => 'error',
                 'message' => 'wrong_password'
             ], 403);
         }
+
+        $partner->update(['failed_auth' => 0, 'auth_blocked_till' => null]);
         return response()->json([
             'status' => 'ok',
             'message' => 'authorized'
