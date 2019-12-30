@@ -53,7 +53,7 @@ class AuthController extends Controller
                     'status' => 'error',
                     'message' => 'sms_send_limit',
                     'can_send_at' => $nextSend
-                ]);
+                ], 403);
             }
         }
         $smsCode = rand(0, 9999);
@@ -145,7 +145,7 @@ class AuthController extends Controller
                     'message' => 'auth_blocked',
                     'auth_blocked_till' => $partner->auth_blocked_till,
                     'mobile_phone' => $partner->mobile_phone
-                ]);
+                ], 403);
             }
 
             return response()->json([
