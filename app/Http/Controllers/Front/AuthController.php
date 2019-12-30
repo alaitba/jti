@@ -401,7 +401,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'tradepoint_not_found_or_invalid'
-            ]);
+            ], 403);
         }
         return response()->json([
             'status' => 'ok',

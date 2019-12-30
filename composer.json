@@ -13,6 +13,7 @@
         "buzz/laravel-google-captcha": "^2.2",
         "cviebrock/eloquent-sluggable": "^6.0",
         "fideloper/proxy": "^4.0",
+        "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.5",
         "intervention/image": "^2.5",
         "laravel/framework": "^6.2",
