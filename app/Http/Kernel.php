@@ -89,7 +89,8 @@ class Kernel extends HttpKernel
         'verified' => EnsureEmailIsVerified::class,
         'adminMiddleware' => AdminMiddleware::class,
         'adminPermissionMiddleware' => AdminPermissionMiddleware::class,
-        'partnerMiddleware' => PartnerMiddleware::class
+        'partnerMiddleware' => PartnerMiddleware::class,
+        'auth.jwt'  =>  \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
     ];
 
     /**
