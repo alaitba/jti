@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Models\TradePoint;
+use App\Models\TobaccoProduct;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -12,44 +12,44 @@ use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 
-class TradePointImport implements ToCollection, WithHeadingRow, WithProgressBar, WithChunkReading, WithCustomCsvSettings, WithBatchInserts
+class TobaccoProductImport implements ToCollection, WithHeadingRow, WithProgressBar, WithChunkReading, WithCustomCsvSettings, WithBatchInserts
 {
     use Importable;
 
     private $added = 0, $updated = 0;
 
+    /**
+    * @param Collection $collection
+    */
     public function collection(Collection $rows)
     {
         $add = [];
         foreach ($rows as $row) {
-            $tradePoint = TradePoint::withTrashed()->where(['employee_code' => $row['Employee code'], 'account_code' => $row['Account code']])->first();
-            if ($tradePoint)
+            $product = TobaccoProduct::withTrashed()->where(['product_code' => $row['Tobacco product code']])->first();
+            if ($product)
             {
-                $tradePoint->restore();
-                $tradePoint->fill([
-                    'account_name' => $row['Account name'],
-                    'street_address' => $row['Street address'],
-                    'city' => $row['City']
+                $product->restore();
+                $product->fill([
+                    'brand' => $row['Brand'],
+                    'sku' => $row['SKU']
                 ]);
-                if ($tradePoint->isDirty())
+                if ($product->isDirty())
                 {
                     $this->updated++;
-                    $tradePoint->save();
+                    $product->save();
                 }
             } else {
                 $add []= [
-                    'employee_code' => $row['Employee code'],
-                    'account_code' => $row['Account code'],
-                    'account_name' => $row['Account name'],
-                    'street_address' => $row['Street address'],
-                    'city' => $row['City']
+                    'product_code' => $row['Tobacco product code'],
+                    'brand' => $row['Brand'],
+                    'sku' => $row['SKU']
                 ];
                 $this->added++;
             }
         }
-        TradePoint::insert($add);
-    }
+        TobaccoProduct::insert($add);
 
+    }
 
     /**
      * @return int

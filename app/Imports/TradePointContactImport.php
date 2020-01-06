@@ -32,8 +32,8 @@ class TradePointContactImport implements ToCollection, WithHeadingRow, WithProgr
                 if ($tradePointContact->isDirty())
                 {
                     $this->updated++;
+                    $tradePointContact->save();
                 }
-                $tradePointContact->save();
             } else {
                 $add []= [
                     'account_code' => $row['Account code'],

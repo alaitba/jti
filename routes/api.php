@@ -49,4 +49,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::post('set-tradepoint', 'Front\AuthController@postSetTradePoint')->middleware('partnerMiddleware');
     });
 
+    /**
+     * Анкеты
+     */
 });

@@ -32,8 +32,8 @@ class SupervisorImport implements ToCollection, WithHeadingRow, WithProgressBar,
                 if ($supervisor->isDirty())
                 {
                     $this->updated++;
+                    $supervisor->save();
                 }
-                $supervisor->save();
             } else {
                 $add []= [
                     'district_employee_code' => $row['District - Employee Code'],

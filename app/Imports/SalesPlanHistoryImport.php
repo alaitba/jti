@@ -47,8 +47,8 @@ class SalesPlanHistoryImport implements ToCollection, WithHeadingRow, WithProgre
                 if ($salesPlanHistory->isDirty())
                 {
                     $this->updated++;
+                    $salesPlanHistory->save();
                 }
-                $salesPlanHistory->save();
             } else {
                 $add []= [
                     'account_code' => $row['Account code'],

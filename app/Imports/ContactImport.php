@@ -36,8 +36,8 @@ class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, Wi
                 if ($contact->isDirty())
                 {
                     $this->updated++;
+                    $contact->save();
                 }
-                $contact->save();
             } else {
                 $add []= [
                     'contact_code' => $row['Contact code'],

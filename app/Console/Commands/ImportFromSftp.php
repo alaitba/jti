@@ -3,9 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Imports\SalesPlan2Import;
-use App\Imports\SalesPlanImport;
 use App\Models\ImportHistory;
-use App\Models\SalesPlan;
 use App\Models\SalesPlan2;
 use App\Models\SalesPlanHistory;
 use App\Services\LogService\LogService;
@@ -39,7 +37,8 @@ class ImportFromSftp extends Command
         'TradeAgent',
         'TradePoint',
         'TradePointContact',
-        'SalesPlanHistory'
+        'SalesPlanHistory',
+        'TobaccoProduct'
     ];
 
     /**
@@ -100,7 +99,7 @@ class ImportFromSftp extends Command
         * Download files
         */
         $today = date('dmY');
-        //$today = '12122019';
+        $today = '20122019';
         $this->info('Скачиваем ' . $type);
 
         $fileName = 'Trade/' . ($type === 'SalesPlanHistory' ? 'SalesPlan_history' : $type) . '+' . $today . '.csv';

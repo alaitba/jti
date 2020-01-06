@@ -34,8 +34,8 @@ class TradeAgentImport implements ToCollection, WithHeadingRow, WithProgressBar,
                 if ($tradeAgent->isDirty())
                 {
                     $this->updated++;
+                    $tradeAgent->save();
                 }
-                $tradeAgent->save();
             } else {
                 $add []= [
                     'employee_code' => $row['Employee code'],
