@@ -6,9 +6,9 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Support\Collection;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatable
+class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatable, JWTSubject
 {
     use Authorizable;
     use Authenticatable;
@@ -47,5 +47,25 @@ class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
             $tradepoints[$contact->tradepoint->account_code] = $contact->tradepoint->only(['account_name', 'street_address', 'city']);
         }
         return $tradepoints;
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

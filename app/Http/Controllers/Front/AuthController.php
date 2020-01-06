@@ -14,7 +14,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -250,11 +249,13 @@ class AuthController extends Controller
         $partner->update([
             'password' => $request->input('password'),
         ]);
-        Auth::guard('partners')->login($partner);
+        $token = auth('partners')->login($partner);
 
         return response()->json([
             'status' => 'ok',
-            'message' => 'authorized'
+            'message' => 'authorized',
+            'token' => $token,
+            'token_ttl' => auth('partners')->factory()->getTTL() * 60
         ]);
     }
 
@@ -289,7 +290,7 @@ class AuthController extends Controller
         /**
          * Auth attempt
          */
-        if (!Auth::guard('partners')->attempt($credentials)) {
+        if (!$token = auth('partners')->attempt($credentials)) {
             $partner->failed_auth++;
             if ($partner->failed_auth >= 5)
             {
@@ -312,6 +313,8 @@ class AuthController extends Controller
         {
             return response()->json([
                 'status' => 'ok',
+                'token' => $token,
+                'token_ttl' => auth('partners')->factory()->getTTL() * 60,
                 'message' => 'need_tradepoint',
                 'tradepoints' => $tradepoints
             ]);
@@ -322,7 +325,9 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'ok',
-            'message' => 'authorized'
+            'message' => 'authorized',
+            'token' => $token,
+            'token_ttl' => auth('partners')->factory()->getTTL() * 60
         ]);
     }
 
@@ -393,7 +398,7 @@ class AuthController extends Controller
      */
     public function postSetTradepoint(Request $request)
     {
-        $partner = Auth::guard('partners')->user();
+        $partner = auth('partners')->user();
         $accountCode = $request->input('account_code');
         $tradePoint = TradePoint::withoutTrashed()->where('account_code', $accountCode)->first();
         if (!$tradePoint || !in_array($accountCode, array_keys($partner->tradepointsArray())))
@@ -414,8 +419,33 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        Auth::guard('partners')->logout();
+        auth('partners')->logout();
         return response()->json(['status' => 'ok']);
     }
 
+
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->respondWithToken(auth('partners')->refresh());
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'token' => $token,
+            'token_ttl' => auth('partners')->factory()->getTTL() * 60
+        ]);
+    }
 }

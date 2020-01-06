@@ -92,33 +92,3 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
     });
 });
 
-
-
-/**
- * Front
- */
-
-/**
- * Auth
- */
-Route::group(['prefix' => 'auth', 'as' => 'partner.auth', 'middleware' => ['web']], function () {
-    Route::post('phone', 'Front\AuthController@postPhone')->name('.phone');
-    Route::post('sms-code', 'Front\AuthController@postSmsCode')->name('.sms_code');
-    Route::post('create-password', 'Front\AuthController@postCreatePassword')->name('.create_password');
-    Route::post('login', 'Front\AuthController@postLogin')->name('.login');
-    Route::get('logout', 'Front\AuthController@logout')->name('.logout');
-    /**
-     * Password reset
-     */
-    Route::group(['prefix' => 'reset', 'as' => '.reset'], function () {
-        Route::post('phone', 'Front\AuthController@postPhoneReset')->name('.phone');
-        Route::post('sms-code', 'Front\AuthController@postSmsCodeReset')->name('.sms_code');
-        Route::post('create-password', 'Front\AuthController@postCreatePasswordReset')->name('.create_password');
-    });
-
-    /**
-     * Set tradepoint
-     */
-    Route::post('set-tradepoint', 'Front\AuthController@postSetTradePoint')->middleware('partnerMiddleware');
-});
-
