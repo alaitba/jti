@@ -10,32 +10,15 @@ use App\Models\Partner;
 use App\Models\TradePoint;
 use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
+use App\Services\SmsService\SmsService;
+use App\Services\ValidatorService\ValidatorService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-
-    /**
-     * @param array $request
-     * @param array $rules
-     * @return array|bool|JsonResponse
-     */
-    private function validateRequest(array $request, array $rules)
-    {
-        $validator = Validator::make($request, $rules);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'validation_failed',
-                'errors' => $validator->errors()->toArray()
-            ], 422);
-        }
-        return true;
-    }
 
     /**
      * @param Partner $partner
@@ -43,54 +26,15 @@ class AuthController extends Controller
      */
     private function generateAndSendSms(Partner $partner)
     {
-        if ($partner->sms_code_sent_at)
-        {
-            $nextSend = Carbon::parse($partner->sms_code_sent_at)->addMinutes(2);
-            if ($nextSend->isFuture())
-            {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'sms_send_limit',
-                    'can_send_at' => $nextSend
-                ], 403);
-            }
-        }
-        $smsCode = rand(0, 9999);
-        while (strlen($smsCode) < 4) {
-            $smsCode = '0' . $smsCode;
-        }
-        $partner->sms_code = $smsCode;
+        $smsService = new SmsService($partner);
 
-        /**
-         * Send sms if in production
-         */
-        $inProd = app()->environment() === 'production';
-        if ($inProd) {
-            try {
-                JtiApiProvider::sendSms($partner->mobile_phone, $smsCode);
-            } catch (Exception $e) {
-                LogService::logException($e);
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'sms_not_sent'
-                ], 500);
-            }
+        $canSend = $smsService->checkLimit();
+        if ($canSend !== true)
+        {
+            return $canSend;
         }
-        $partner->sms_code_sent_at = now();
-        $partner->save();
-        $responseData = [
-            'status' => 'ok',
-            'message' => 'need_otp',
-            'mobile_phone' => $partner->mobile_phone,
-            'sms_code_sent_at' => $partner->sms_code_sent_at
-        ];
-        /**
-         * Return OTP if not in prod
-         */
-        if (!$inProd) {
-            $responseData['sms_code'] = $partner->sms_code;
-        }
-        return response()->json($responseData);
+
+        return $smsService->sendSms();
     }
 
     /**
@@ -102,7 +46,7 @@ class AuthController extends Controller
         /**
          * Mobile number validation
          */
-        $validation = $this->validateRequest($request->only('mobile_phone'), AuthRequests::PHONE_REQUEST);
+        $validation = ValidatorService::validateRequest($request->only('mobile_phone'), AuthRequests::PHONE_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
@@ -169,7 +113,7 @@ class AuthController extends Controller
         /**
          * Sms code validation
          */
-        $validation = $this->validateRequest($request->only(['mobile_phone', 'sms_code']), AuthRequests::SMSCODE_REQUEST);
+        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'sms_code']), AuthRequests::SMSCODE_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
@@ -218,7 +162,7 @@ class AuthController extends Controller
         /**
          * Passwords validation
          */
-        $validation = $this->validateRequest($request->only(['mobile_phone', 'password', 'password_check']), AuthRequests::CREATE_PASSWORD_REQUEST);
+        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'password', 'password_check']), AuthRequests::CREATE_PASSWORD_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
@@ -269,7 +213,7 @@ class AuthController extends Controller
         /**
          * Auth validation
          */
-        $validation = $this->validateRequest($credentials, AuthRequests::LOGIN_REQUEST);
+        $validation = ValidatorService::validateRequest($credentials, AuthRequests::LOGIN_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
@@ -340,7 +284,7 @@ class AuthController extends Controller
         /**
          * Mobile number validation
          */
-        $validation = $this->validateRequest($request->only('mobile_phone'), AuthRequests::PHONE_REQUEST);
+        $validation = ValidatorService::validateRequest($request->only('mobile_phone'), AuthRequests::PHONE_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
