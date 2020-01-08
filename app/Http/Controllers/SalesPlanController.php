@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Utils\ResponseBuilder;
 use App\Models\ImportHistory;
 use App\Models\SalesPlan;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
@@ -15,7 +14,7 @@ class SalesPlanController extends Controller
 
     /**
      * @return array|string
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function index()
     {

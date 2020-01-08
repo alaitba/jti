@@ -19,8 +19,8 @@ class TobaccoProductImport implements ToCollection, WithHeadingRow, WithProgress
     private $added = 0, $updated = 0;
 
     /**
-    * @param Collection $collection
-    */
+     * @param Collection $rows
+     */
     public function collection(Collection $rows)
     {
         $add = [];

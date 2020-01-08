@@ -4,7 +4,6 @@
 namespace App\Providers;
 
 
-use App\Services\LogService\LogService;
 use GuzzleHttp\Client;
 
 class JtiApiProvider

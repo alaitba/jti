@@ -4,8 +4,7 @@
 namespace App\Services\ValidatorService;
 
 
-use Exception;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 
 class ValidatorService
@@ -13,7 +12,7 @@ class ValidatorService
     /**
      * @param array $request
      * @param array $rules
-     * @return bool|\Illuminate\Http\JsonResponse
+     * @return bool|JsonResponse
      */
     public static function validateRequest(array $request, array $rules)
     {

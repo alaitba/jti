@@ -3,6 +3,7 @@
 use App\Ui\Components\Form\OptionsFieldset;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\View\View;
+use Throwable;
 
 /**
  * Class Content
@@ -59,7 +60,7 @@ abstract class Content
 
     /**
      * Рендер компонента
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function getContent()
     {

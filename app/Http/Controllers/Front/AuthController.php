@@ -8,12 +8,9 @@ use App\Http\Requests\Front\AuthRequests;
 use App\Models\Contact;
 use App\Models\Partner;
 use App\Models\TradePoint;
-use App\Providers\JtiApiProvider;
-use App\Services\LogService\LogService;
 use App\Services\SmsService\SmsService;
 use App\Services\ValidatorService\ValidatorService;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -106,6 +103,7 @@ class AuthController extends Controller
 
     /**
      * @param Request $request
+     * @param bool $reset
      * @return array|bool|JsonResponse
      */
     public function postSmsCode(Request $request, bool $reset = false)
@@ -155,6 +153,7 @@ class AuthController extends Controller
 
     /**
      * @param Request $request
+     * @param bool $reset
      * @return array|bool|JsonResponse
      */
     public function postCreatePassword(Request $request, bool $reset = false)
@@ -371,7 +370,7 @@ class AuthController extends Controller
     /**
      * Refresh a token.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function refresh()
     {
@@ -383,7 +382,7 @@ class AuthController extends Controller
      *
      * @param  string $token
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     protected function respondWithToken($token)
     {

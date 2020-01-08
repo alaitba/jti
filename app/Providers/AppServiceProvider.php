@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Middleware\AdminMiddleware;
-use App\Http\Middleware\AdminPermissionMiddleware;
 use App\Models\Localisation;
 use App\Models\LocalisationGroup;
 use App\Models\NotifyTemplate;

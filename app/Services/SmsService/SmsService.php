@@ -8,6 +8,7 @@ use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 
 class SmsService
@@ -65,7 +66,7 @@ class SmsService
     }
 
     /**
-     * @return bool|\Illuminate\Http\JsonResponse
+     * @return bool|JsonResponse
      */
     public function checkLimit()
     {

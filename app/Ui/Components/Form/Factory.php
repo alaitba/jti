@@ -11,7 +11,7 @@ class Factory
      * Создание филдсета
      * @param string $title
      * @param bool $tabeable
-     * @return \App\Ui\Components\Form\Fieldset
+     * @return Fieldset
      */
     public function fieldSet(string $title, $tabeable = true): Fieldset
     {
@@ -26,7 +26,7 @@ class Factory
      * @param bool $tabeable
      * @param bool $localeable
      * @param bool $disableable
-     * @return \App\Ui\Components\Form\Input
+     * @return Input
      */
     public function input(string $label, string $name, string $type = "text", bool $tabeable = true, bool $localeable = true, bool $disableable = false): Input
     {
@@ -38,7 +38,7 @@ class Factory
      * @param string $label
      * @param string $name
      * @param bool $editorable
-     * @return \App\Ui\Components\Form\Textarea
+     * @return Textarea
      */
     public function textarea(string $label, string $name, bool $editorable = false): Textarea
     {
@@ -49,7 +49,7 @@ class Factory
      * Создание чекбокса
      * @param string $label
      * @param string $name
-     * @return \App\Ui\Components\Form\Checkbox
+     * @return Checkbox
      */
     public function checkbox(string $label, string $name): Checkbox
     {
@@ -59,7 +59,7 @@ class Factory
     /**
      * Создание филдсета для опций
      * @param string $title
-     * @return \App\Ui\Components\Form\OptionsFieldset
+     * @return OptionsFieldset
      */
     public function optionsFieldSet(string $title): OptionsFieldset
     {
@@ -72,7 +72,7 @@ class Factory
      * @param string $action
      * @param string $submitButtonText
      * @param string $id
-     * @return \App\Ui\Components\Form\Form
+     * @return Form
      */
     public function form(string $method, string $action, string $submitButtonText, string $id): Form
     {

@@ -7,10 +7,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\CustomerRequests;
 use App\Services\SmsService\SmsService;
 use App\Services\ValidatorService\ValidatorService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return bool|JsonResponse
+     */
     public function sendSMS(Request $request)
     {
         $validation = ValidatorService::validateRequest($request->only('mobile_phone'), CustomerRequests::PHONE_REQUEST);

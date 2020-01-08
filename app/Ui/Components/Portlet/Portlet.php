@@ -31,7 +31,7 @@ class Portlet extends Content
      * @param string $url
      * @param string $icon
      * @param string|null $tooltipText
-     * @return \App\Ui\Components\Portlet\ModalableIconButton
+     * @return ModalableIconButton
      */
     public function addModalableIconButton(string $modal, string $url, string $icon, string $tooltipText = null): ModalableIconButton
     {

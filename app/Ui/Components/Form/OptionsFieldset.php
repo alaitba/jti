@@ -33,7 +33,7 @@ class OptionsFieldset extends Component
     }
 
     /**
-     * @param \App\Ui\Components\Form\Checkbox $checkbox
+     * @param Checkbox $checkbox
      */
     public function addChecbox(Checkbox $checkbox): void
     {
@@ -41,7 +41,7 @@ class OptionsFieldset extends Component
     }
 
     /**
-     * @param \App\Ui\Components\Form\Input $input
+     * @param Input $input
      */
     public function addInput(Input $input):void
     {
