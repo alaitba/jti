@@ -2,29 +2,66 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Models\Contact;
 use App\Models\CustomerPhoneVerification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\CustomerRequests;
+use App\Models\TradePointContact;
+use App\Providers\JtiApiProvider;
+use App\Services\LogService\LogService;
 use App\Services\SmsService\SmsService;
 use App\Services\ValidatorService\ValidatorService;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
+
     /**
      * @param Request $request
      * @return JsonResponse
      */
     public function sendSMS(Request $request)
     {
+        $mobilePhone = $request->input('mobile_phone');
         $validation = ValidatorService::validateRequest($request->only('mobile_phone'), CustomerRequests::PHONE_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
 
-        $customerPhoneVerification = CustomerPhoneVerification::firstOrCreate(['mobile_phone' => $request->input('mobile_phone')]);
+        /**
+         * А можно ли ему заполнять анкету?
+         */
+
+        try {
+            $tradePointContact = TradePointContact::withoutTrashed()
+                ->where('account_code', auth('partners')->user()->current_tradepoint)
+                ->first();
+            if (!$tradePointContact)
+            {
+                return response()->json(['status' => 'error', 'message' => 'tradepoint_not_set'], 403);
+            }
+            $result = JtiApiProvider::checkConsumer('+' . $mobilePhone, $tradePointContact->contact_uid)->getBody();
+            $result = json_decode($result, true);
+            if (!$result['result'])
+            {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'already_filled'
+                ], 403);
+            }
+        } catch (Exception $e) {
+            LogService::logException($e);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'phone_not_checked'
+            ], 500);
+        }
+
+
+        $customerPhoneVerification = CustomerPhoneVerification::firstOrCreate(['mobile_phone' => $mobilePhone]);
 
         $smsService = new SmsService($customerPhoneVerification);
 
