@@ -56,4 +56,11 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::post('send-sms', 'Front\ClientController@sendSms');
         Route::post('check-sms', 'Front\ClientController@checkSms');
     });
+
+    /**
+     * Справочники
+     */
+    Route::group(['prefix' => 'dict', 'middleware' => 'partnerMiddleware'], function () {
+        Route::get('tobacco-products', 'Front\DictionaryController@getTobaccoProducts');
+    });
 });

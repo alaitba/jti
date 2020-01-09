@@ -15,7 +15,7 @@ class ClientController extends Controller
 {
     /**
      * @param Request $request
-     * @return bool|JsonResponse
+     * @return JsonResponse
      */
     public function sendSMS(Request $request)
     {
@@ -37,6 +37,10 @@ class ClientController extends Controller
         return $smsService->sendSms();
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function checkSms(Request $request)
     {
         $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'sms_code']), CustomerRequests::SMSCODE_REQUEST);
