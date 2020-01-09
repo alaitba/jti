@@ -244,7 +244,8 @@ class AuthController extends Controller
             $partner->save();
             return response()->json([
                 'status' => 'error',
-                'message' => 'wrong_password'
+                'message' => 'wrong_password',
+                'auth_fail_count' => $partner->failed_auth,
             ], 403);
         }
 
