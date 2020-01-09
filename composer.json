@@ -11,6 +11,7 @@
         "php": "^7.2",
         "ext-json": "*",
         "buzz/laravel-google-captcha": "^2.2",
+        "crazybooot/base64-validation": "^1.0",
         "cviebrock/eloquent-sluggable": "^6.0",
         "fideloper/proxy": "^4.0",
         "fruitcake/laravel-cors": "^1.0",

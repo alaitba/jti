@@ -15,6 +15,7 @@ class JtiApiProvider
 
     private const SMS_URI = 'Contact/Send360Sms';
     private const CHECK_CONSUMER_URI = 'Contact/CheckContact';
+    private const CREATE_LEAD_URI = 'Contact/Create360Lead';
 
     private static function makeUrl(string $uri): string
     {
@@ -70,4 +71,16 @@ class JtiApiProvider
         ];
         return self::executeQuery(self::makeUrl(self::CHECK_CONSUMER_URI), $body);
     }
+
+    public static function createLead(array $data)
+    {
+        $body = [
+            'data' => $data,
+            'identity' => [
+                'locale' => 'ru-RU'
+            ]
+        ];
+        return self::executeQuery(self::makeUrl(self::CREATE_LEAD_URI), $body);
+    }
+
 }
