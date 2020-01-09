@@ -54,5 +54,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
      */
     Route::group(['prefix' => 'client', 'middleware' => 'partnerMiddleware'], function () {
         Route::post('send-sms', 'Front\ClientController@sendSms');
+        Route::post('check-sms', 'Front\ClientController@checkSms');
     });
 });

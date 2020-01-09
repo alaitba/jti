@@ -99,7 +99,7 @@ class ImportFromSftp extends Command
         * Download files
         */
         $today = date('dmY');
-        $today = '20122019';
+        //$today = '20122019';
         $this->info('Скачиваем ' . $type);
 
         $fileName = 'Trade/' . ($type === 'SalesPlanHistory' ? 'SalesPlan_history' : $type) . '+' . $today . '.csv';
