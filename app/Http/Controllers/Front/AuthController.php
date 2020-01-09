@@ -84,6 +84,7 @@ class AuthController extends Controller
                     'status' => 'error',
                     'message' => 'auth_blocked',
                     'auth_blocked_till' => $partner->auth_blocked_till,
+                    'auth_fail_count' => $partner->failed_auth,
                     'mobile_phone' => $partner->mobile_phone
                 ], 403);
             }
@@ -226,6 +227,7 @@ class AuthController extends Controller
                 'status' => 'error',
                 'message' => 'auth_blocked',
                 'auth_blocked_till' => $partner->auth_blocked_till,
+                'auth_fail_count' => $partner->failed_auth,
                 'mobile_phone' => $partner->mobile_phone
             ]);
         }
@@ -310,6 +312,7 @@ class AuthController extends Controller
                 'status' => 'error',
                 'message' => 'auth_blocked',
                 'auth_blocked_till' => $partner->auth_blocked_till,
+                'auth_fail_count' => $partner->failed_auth,
                 'mobile_phone' => $partner->mobile_phone
             ]);
         }

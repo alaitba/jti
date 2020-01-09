@@ -112,6 +112,10 @@ class ClientController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function createLead(Request $request)
     {
         $validation = ValidatorService::validateRequest($request->only([
