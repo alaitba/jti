@@ -56,6 +56,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::post('send-sms', 'Front\ClientController@sendSms');
         Route::post('check-sms', 'Front\ClientController@checkSms');
         Route::post('create-lead', 'Front\ClientController@createLead');
+        Route::get('lead-history', 'Front\ClientController@getLeadHistory');
     });
 
     /**

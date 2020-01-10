@@ -153,13 +153,14 @@ class ClientController extends Controller
             {
                 return response()->json(['status' => 'error', 'message' => 'tradepoint_not_set'], 403);
             }
+
             $data = [
                 'isMobilePhoneVerified' => true,
                 'verificationCode' => $verified->sms_code,
                 'confirmationCode' => $verified->sms_code,
                 'birthDate' => Carbon::parse($request->input('birthdate'))->toISOString(),
                 'regularProductCode' => $request->input('product_code'),
-                'sellerId' => $tradePointContact->contact_code,
+                'sellerId' => $tradePointContact->contact_uid,
                 'annotation' => $request->input('signature'),
                 'mobilePhone' => '+' . $request->input('mobile_phone'),
                 'firstName' => $request->input('firstname'),
@@ -185,6 +186,44 @@ class ClientController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'not_created'
+            ], 500);
+        }
+    }
+
+    public function getLeadHistory(Request $request)
+    {
+        try {
+            $tradePointContact = TradePointContact::withoutTrashed()
+                ->where('account_code', auth('partners')->user()->current_tradepoint)
+                ->first();
+            if (!$tradePointContact)
+            {
+                return response()->json(['status' => 'error', 'message' => 'tradepoint_not_set'], 403);
+            }
+
+            $result = JtiApiProvider::getLeadHistory(
+                $tradePointContact->contact_uid,
+                $request->input('perpage', 100),
+                $request->input('page', 1)
+            )->getBody();
+            $result = json_decode($result, true);
+            if (!$result['result'])
+            {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'no_data'
+                ], 404);
+            }
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'got_leads',
+                'data' => $result['resultObject']
+            ]);
+        } catch (Exception $e) {
+            LogService::logException($e);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'api_failed'
             ], 500);
         }
     }
