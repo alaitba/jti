@@ -17,10 +17,10 @@ class CustomerRequests
 
     public const CREATELEAD_REQUEST = [
         'mobile_phone' => 'required|regex:/77[0-9]{9}/',
-        'firstname' => 'required|string',
-        'lastname' => 'required|string',
-        'birthdate' => 'required|date',
-        'product_code' => 'required|string',
-        'signature' => 'required|base64image'
+        'firstname' => 'required_unless:self,1|string',
+        'lastname' => 'required_unless:self,1|string',
+        'birthdate' => 'required_unless:self,1|date',
+        'product_code' => 'required_unless:self,1|string',
+        'signature' => 'required_unless:self,1|base64image'
     ];
 }

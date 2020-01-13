@@ -124,7 +124,8 @@ class ClientController extends Controller
             'lastname',
             'birthdate',
             'product_code',
-            'signature'
+            'signature',
+            'self'
         ]), CustomerRequests::CREATELEAD_REQUEST);
         if ($validation !== true) {
             return $validation;
@@ -158,16 +159,21 @@ class ClientController extends Controller
                 'isMobilePhoneVerified' => true,
                 'verificationCode' => $verified->sms_code,
                 'confirmationCode' => $verified->sms_code,
-                'birthDate' => Carbon::parse($request->input('birthdate'))->toISOString(),
-                'regularProductCode' => $request->input('product_code'),
                 'sellerId' => $tradePointContact->contact_uid,
-                'annotation' => $request->input('signature'),
                 'mobilePhone' => '+' . $request->input('mobile_phone'),
-                'firstName' => $request->input('firstname'),
-                'lastName' => $request->input('lastname'),
                 'fillingDate' => Carbon::now()->toISOString(),
                 'internalId' => Str::random()
             ];
+            if (!$request->input('self', 0))
+            {
+                $data = array_merge($data, [
+                    'birthDate' => Carbon::parse($request->input('birthdate'))->toISOString(),
+                    'regularProductCode' => $request->input('product_code'),
+                    'annotation' => $request->input('signature'),
+                    'firstName' => $request->input('firstname'),
+                    'lastName' => $request->input('lastname'),
+                ]);
+            }
             $result = JtiApiProvider::createLead($data)->getBody();
             $result = json_decode($result, true);
             if (!$result['result'])
@@ -190,6 +196,10 @@ class ClientController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function getLeadHistory(Request $request)
     {
         try {
