@@ -17,6 +17,7 @@ class JtiApiProvider
     private const CHECK_CONSUMER_URI = 'Contact/CheckContact';
     private const CREATE_LEAD_URI = 'Contact/Create360Lead';
     private const LEAD_HISTORY_URI = 'Seller/GetSellerLeadsHistory';
+    private const GET_DICTIONARY_URI = 'Dictionary/Get';
 
     private static function makeUrl(string $uri): string
     {
@@ -99,4 +100,14 @@ class JtiApiProvider
         return self::executeQuery(self::makeUrl(self::LEAD_HISTORY_URI), $body);
     }
 
+    public static function getDictionary(string $type)
+    {
+        $body = [
+            'data' => $type,
+            'identity' => [
+                'locale' => 'ru-RU'
+            ]
+        ];
+        return self::executeQuery(self::makeUrl(self::GET_DICTIONARY_URI), $body);
+    }
 }
