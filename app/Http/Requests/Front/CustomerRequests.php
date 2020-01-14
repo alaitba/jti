@@ -7,7 +7,8 @@ namespace App\Http\Requests\Front;
 class CustomerRequests
 {
     public const PHONE_REQUEST = [
-        'mobile_phone' => 'required|regex:/77[0-9]{9}/'
+        'mobile_phone' => 'required|regex:/77[0-9]{9}/',
+        'legal_age' => 'required|accepted'
     ];
 
     public const SMSCODE_REQUEST = [

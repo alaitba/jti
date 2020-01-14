@@ -28,7 +28,7 @@ class ClientController extends Controller
     public function sendSMS(Request $request)
     {
         $mobilePhone = $request->input('mobile_phone');
-        $validation = ValidatorService::validateRequest($request->only('mobile_phone'), CustomerRequests::PHONE_REQUEST);
+        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'legal_age']), CustomerRequests::PHONE_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
