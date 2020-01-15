@@ -65,4 +65,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
     Route::group(['prefix' => 'dict', 'middleware' => 'partnerMiddleware'], function () {
         Route::get('tobacco-products', 'Front\DictionaryController@getTobaccoProducts');
     });
+
+    /**
+     * Призы
+     */
+    Route::group(['prefix' => 'rewards', 'middleware' => 'partnerMiddleware'], function () {
+        Route::get('balance', 'Front\RewardsController@getBalance');
+    });
+
 });

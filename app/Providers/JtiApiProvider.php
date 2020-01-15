@@ -18,6 +18,7 @@ class JtiApiProvider
     private const CREATE_LEAD_URI = 'Contact/Create360Lead';
     private const LEAD_HISTORY_URI = 'Seller/GetSellerLeadsHistory';
     private const GET_DICTIONARY_URI = 'Dictionary/Get';
+    private const GET_BALANCE_URI = 'Seller/GetSellerPointAmount';
 
     private static function makeUrl(string $uri): string
     {
@@ -109,5 +110,16 @@ class JtiApiProvider
             ]
         ];
         return self::executeQuery(self::makeUrl(self::GET_DICTIONARY_URI), $body);
+    }
+
+    public static function getBalance(string $sellerId)
+    {
+        $body = [
+            'data' => $sellerId,
+            'identity' => [
+                'locale' => 'ru-RU'
+            ]
+        ];
+        return self::executeQuery(self::makeUrl(self::GET_BALANCE_URI), $body);
     }
 }
