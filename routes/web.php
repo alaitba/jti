@@ -90,5 +90,18 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         });
 
     });
+
+    /**
+     * Призы
+     */
+    Route::group(['prefix' => 'rewards', 'as' => 'admin.rewards'], function () {
+        Route::get('/', 'RewardsController@index')->name('.index');
+        Route::match(['get', 'post'], 'get-list', 'RewardsController@getList')->name('.list');
+        Route::get('{id}/edit', 'RewardsController@edit')->name('.edit');
+        Route::post('{id}/update', 'RewardsController@update')->name('.update');
+        Route::post('{rewardId}/media', 'RewardsController@media')->name('.media');
+        Route::get('{rewardId}/media-delete', 'RewardsController@deleteMedia')->name('.media.delete');
+    });
+
 });
 

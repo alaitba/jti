@@ -13,7 +13,7 @@ $(document.body).on('submit', '#formImage', function (e) {
     var url = $(this).attr('action');
     var formData = new FormData($(this)[0]);
     var method = $(this).attr('method');
-    let blockSelector = ".www";
+    let blockSelector = ".media-div";
 
     $.ajax({
         method: method,
@@ -27,6 +27,7 @@ $(document.body).on('submit', '#formImage', function (e) {
 
         beforeSend: function () {
             // mask(blockSelector)
+            app.functions.blockElement({selector: blockSelector})
         },
         success: function (data) {
 
@@ -49,6 +50,7 @@ $(document.body).on('submit', '#formImage', function (e) {
         complete: function () {
             // unmask(blockSelector)
             $("#addLookForm").find('.look-file-input').val('');
+            app.functions.unblockElement({selector: blockSelector});
         }
 
     });

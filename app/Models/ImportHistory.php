@@ -12,6 +12,6 @@ class ImportHistory extends Model
 
     public function getCreatedAtStringAttribute()
     {
-        return Carbon::parse($this->created_at)->locale('ru')->ago();
+        return $this->created_at->locale('ru')->ago();
     }
 }

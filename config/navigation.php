@@ -14,7 +14,17 @@ return [
                     'roles' => [
                         'admin'
                     ]
-                ]
+                ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Призы',
+                    'route_name' => 'admin.rewards.index',
+                    'item_active_on' => 'admin/rewards*',
+                    'icon' => 'la la-gift',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
             ],
             'roles' => [
                 'admin'

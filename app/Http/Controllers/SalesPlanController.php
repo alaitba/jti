@@ -18,7 +18,7 @@ class SalesPlanController extends Controller
      */
     public function index()
     {
-        $updated = ImportHistory::where('failed', 0)->where('type', 'SalesPlan')->orderBy('id', 'DESC')->first();
+        $updated = ImportHistory::where('failed', 0)->where('type', 'SalesPlan')->latest('id')->first();
         return view('reports.sales_plan.index', [
             'lastUpdate' => $updated->created_at_string ?? '-'
         ])->render();
