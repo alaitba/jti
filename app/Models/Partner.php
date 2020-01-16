@@ -45,7 +45,10 @@ class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
         $tradepoints = [];
         foreach ($this->contacts as $contact)
         {
-            $tradepoints[$contact->tradepoint->account_code] = $contact->tradepoint->only(['account_name', 'street_address', 'city']);
+            $tradepoints[$contact->tradepoint->account_code] = array_merge($contact->tradepoint->only([
+                'account_name',
+                'street_address',
+                'city']), ['contact_uid' => $contact->contact_uid]);
         }
         return $tradepoints;
     }

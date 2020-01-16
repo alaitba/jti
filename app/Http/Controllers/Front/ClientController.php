@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Models\Contact;
 use App\Models\CustomerPhoneVerification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\CustomerRequests;
@@ -16,7 +15,6 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Ramsey\Uuid\Uuid;
 
 class ClientController extends Controller
 {
@@ -38,14 +36,7 @@ class ClientController extends Controller
          */
 
         try {
-            $tradePointContact = TradePointContact::withoutTrashed()
-                ->where('account_code', auth('partners')->user()->current_tradepoint)
-                ->first();
-            if (!$tradePointContact)
-            {
-                return response()->json(['status' => 'error', 'message' => 'tradepoint_not_set'], 403);
-            }
-            $result = JtiApiProvider::checkConsumer('+' . $mobilePhone, $tradePointContact->contact_uid)->getBody();
+            $result = JtiApiProvider::checkConsumer('+' . $mobilePhone, auth('partners')->user()->current_uid)->getBody();
             $result = json_decode($result, true);
             if (!$result['result'])
             {
@@ -147,19 +138,11 @@ class ClientController extends Controller
          * Post to JTI
          */
         try {
-            $tradePointContact = TradePointContact::withoutTrashed()
-                ->where('account_code', auth('partners')->user()->current_tradepoint)
-                ->first();
-            if (!$tradePointContact)
-            {
-                return response()->json(['status' => 'error', 'message' => 'tradepoint_not_set'], 403);
-            }
-
             $data = [
                 'isMobilePhoneVerified' => true,
                 'verificationCode' => $verified->sms_code,
                 'confirmationCode' => $verified->sms_code,
-                'sellerId' => $tradePointContact->contact_uid,
+                'sellerId' =>  auth('partners')->user()->current_uid,
                 'mobilePhone' => '+' . $request->input('mobile_phone'),
                 'fillingDate' => Carbon::now()->toISOString(),
                 'internalId' => Str::random()
@@ -203,16 +186,8 @@ class ClientController extends Controller
     public function getLeadHistory(Request $request)
     {
         try {
-            $tradePointContact = TradePointContact::withoutTrashed()
-                ->where('account_code', auth('partners')->user()->current_tradepoint)
-                ->first();
-            if (!$tradePointContact)
-            {
-                return response()->json(['status' => 'error', 'message' => 'tradepoint_not_set'], 403);
-            }
-
             $result = JtiApiProvider::getLeadHistory(
-                $tradePointContact->contact_uid,
+                auth('partners')->user()->current_uid,
                 $request->input('perpage', 100),
                 $request->input('page', 1)
             )->getBody();

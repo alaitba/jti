@@ -19,6 +19,7 @@ class JtiApiProvider
     private const LEAD_HISTORY_URI = 'Seller/GetSellerLeadsHistory';
     private const GET_DICTIONARY_URI = 'Dictionary/Get';
     private const GET_BALANCE_URI = 'Seller/GetSellerPointAmount';
+    private const GET_AVAILABLE_REWARDS_URI = 'Seller/GetSellerAvailableRewards';
 
     private static function makeUrl(string $uri): string
     {
@@ -121,5 +122,16 @@ class JtiApiProvider
             ]
         ];
         return self::executeQuery(self::makeUrl(self::GET_BALANCE_URI), $body);
+    }
+
+    public static function getAvailableRewards(string $sellerId)
+    {
+        $body = [
+            'data' => $sellerId,
+            'identity' => [
+                'locale' => 'ru-RU'
+            ]
+        ];
+        return self::executeQuery(self::makeUrl(self::GET_AVAILABLE_REWARDS_URI), $body);
     }
 }

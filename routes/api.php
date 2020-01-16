@@ -71,6 +71,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
      */
     Route::group(['prefix' => 'rewards', 'middleware' => 'partnerMiddleware'], function () {
         Route::get('balance', 'Front\RewardsController@getBalance');
+        Route::get('available', 'Front\RewardsController@getAvailableRewards');
     });
 
 });

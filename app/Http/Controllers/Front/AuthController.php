@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\AuthRequests;
 use App\Models\Contact;
 use App\Models\Partner;
-use App\Models\TradePoint;
+use App\Models\TradePointContact;
 use App\Services\SmsService\SmsService;
 use App\Services\ValidatorService\ValidatorService;
 use Carbon\Carbon;
@@ -195,6 +195,24 @@ class AuthController extends Controller
         ]);
         $token = auth('partners')->login($partner);
 
+        /**
+         * Check tradepoints
+         */
+        $tradepoints = $partner->tradepointsArray();
+        if (count($tradepoints) > 1)
+        {
+            return response()->json([
+                'status' => 'ok',
+                'token' => $token,
+                'token_ttl' => auth('partners')->factory()->getTTL() * 60,
+                'message' => 'need_tradepoint',
+                'tradepoints' => $tradepoints
+            ]);
+
+        }
+        $tpAcc = array_key_first($tradepoints);
+        $partner->update(['current_tradepoint' => $tpAcc, 'current_uid' => $tradepoints[$tpAcc]['contact_uid']]);
+
         return response()->json([
             'status' => 'ok',
             'message' => 'authorized',
@@ -219,7 +237,13 @@ class AuthController extends Controller
         }
 
         $partner = Partner::withoutTrashed()->where('mobile_phone', $credentials['mobile_phone'])->first();
-
+        if (!$partner)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'phone_does_not_exist'
+            ], 403);
+        }
         //Auth blocked
         if ($partner->auth_blocked_till && Carbon::parse($partner->auth_blocked_till)->isFuture())
         {
@@ -266,8 +290,8 @@ class AuthController extends Controller
             ]);
 
         }
-
-        $partner->update(['current_tradepoint' => array_key_first($tradepoints)]);
+        $tpAcc = array_key_first($tradepoints);
+        $partner->update(['current_tradepoint' => $tpAcc, 'current_uid' => $tradepoints[$tpAcc]['contact_uid']]);
 
         return response()->json([
             'status' => 'ok',
@@ -347,14 +371,20 @@ class AuthController extends Controller
     {
         $partner = auth('partners')->user();
         $accountCode = $request->input('account_code');
-        $tradePoint = TradePoint::withoutTrashed()->where('account_code', $accountCode)->first();
-        if (!$tradePoint || !in_array($accountCode, array_keys($partner->tradepointsArray())))
+        $tradePointContact = TradePointContact::withoutTrashed()->where('account_code', $accountCode)->first();
+        if (!$tradePointContact || !in_array($accountCode, array_keys($partner->tradepointsArray())))
         {
             return response()->json([
                 'status' => 'error',
                 'message' => 'tradepoint_not_found_or_invalid'
             ], 403);
         }
+
+        $user = auth('partners')->user();
+        $user->current_tradepoint = $accountCode;
+        $user->current_uid = $tradePointContact->contact_uid;
+        $user->save();
+
         return response()->json([
             'status' => 'ok',
             'message' => 'tradepoint_set'
