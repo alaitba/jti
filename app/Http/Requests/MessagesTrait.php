@@ -2,8 +2,15 @@
 
 namespace App\Http\Requests;
 
+/**
+ * Trait MessagesTrait
+ * @package App\Http\Requests
+ */
 trait MessagesTrait
 {
+    /**
+     * @return array
+     */
     public function messages()
     {
         return [

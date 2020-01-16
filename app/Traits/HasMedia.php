@@ -6,8 +6,15 @@ use App\Models\Media;
 use Illuminate\Database\Eloquent\Relations\morphMany;
 use Illuminate\Database\Eloquent\Relations\morphOne;
 
+/**
+ * Trait HasMedia
+ * @package App\Traits
+ */
 trait HasMedia
 {
+    /**
+     * @return mixed
+     */
     protected function getArrayableAppends()
     {
         $this->appends = array_unique(array_merge($this->appends, ['url_endpoint', 'url_endpoint_reverse_proxy']));
@@ -15,12 +22,18 @@ trait HasMedia
         return parent::getArrayableAppends();
     }
 
-    public function getUrlEndpointAttribute($value)
+    /**
+     * @return string
+     */
+    public function getUrlEndpointAttribute()
     {
         return asset('storage/media/');
     }
 
-    public function getUrlEndpointReverseProxyAttribute($value)
+    /**
+     * @return string
+     */
+    public function getUrlEndpointReverseProxyAttribute()
     {
         return '/public/media/';
     }

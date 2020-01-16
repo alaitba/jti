@@ -2,17 +2,29 @@
 
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * Trait ValidationTrait
+ * @package App\Http\Utils
+ */
 trait ValidationTrait
 {
 
+    /**
+     * @param array $request
+     * @param array $rules
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
     public function validateRequest(array $request, array $rules)
     {
-        $validator = Validator::make($request, $rules);
+        //$validator = Validator::make($request, $rules);
 
 
         return Validator::make($request, $rules, $this->getMessages());
     }
 
+    /**
+     * @return array
+     */
     private function getMessages(): array
     {
         return [

@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\TobaccoProduct;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
+/**
+ * Class DictionaryController
+ * @package App\Http\Controllers\Front
+ */
 class DictionaryController extends Controller
 {
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getTobaccoProducts()
     {

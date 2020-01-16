@@ -4,13 +4,20 @@
 namespace App\Services\SmsService;
 
 
+use App\Models\CustomerPhoneVerification;
+use App\Models\Partner;
 use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 
+/**
+ * Class SmsService
+ * @package App\Services\SmsService
+ */
 class SmsService
 {
     const DIGITS = 0;
@@ -21,6 +28,10 @@ class SmsService
     private $codeType = self::DIGITS;
     private $code;
 
+    /**
+     * SmsService constructor.
+     * @param Partner|CustomerPhoneVerification|Model $smsableItem
+     */
     public function __construct($smsableItem)
     {
         $this->smsableItem = $smsableItem;
@@ -86,6 +97,9 @@ class SmsService
         return true;
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function sendSms()
     {
         $this->generateCode();

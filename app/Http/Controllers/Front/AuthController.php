@@ -14,6 +14,10 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Class AuthController
+ * @package App\Http\Controllers\Front
+ */
 class AuthController extends Controller
 {
 
@@ -195,30 +199,7 @@ class AuthController extends Controller
         ]);
         $token = auth('partners')->login($partner);
 
-        /**
-         * Check tradepoints
-         */
-        $tradepoints = $partner->tradepointsArray();
-        if (count($tradepoints) > 1)
-        {
-            return response()->json([
-                'status' => 'ok',
-                'token' => $token,
-                'token_ttl' => auth('partners')->factory()->getTTL() * 60,
-                'message' => 'need_tradepoint',
-                'tradepoints' => $tradepoints
-            ]);
-
-        }
-        $tpAcc = array_key_first($tradepoints);
-        $partner->update(['current_tradepoint' => $tpAcc, 'current_uid' => $tradepoints[$tpAcc]['contact_uid']]);
-
-        return response()->json([
-            'status' => 'ok',
-            'message' => 'authorized',
-            'token' => $token,
-            'token_ttl' => auth('partners')->factory()->getTTL() * 60
-        ]);
+        return $this->setTradePoint($partner, $token);
     }
 
     /**
@@ -275,30 +256,7 @@ class AuthController extends Controller
 
         $partner->update(['failed_auth' => 0, 'auth_blocked_till' => null]);
 
-        /**
-         * Check tradepoints
-         */
-        $tradepoints = $partner->tradepointsArray();
-        if (count($tradepoints) > 1)
-        {
-            return response()->json([
-                'status' => 'ok',
-                'token' => $token,
-                'token_ttl' => auth('partners')->factory()->getTTL() * 60,
-                'message' => 'need_tradepoint',
-                'tradepoints' => $tradepoints
-            ]);
-
-        }
-        $tpAcc = array_key_first($tradepoints);
-        $partner->update(['current_tradepoint' => $tpAcc, 'current_uid' => $tradepoints[$tpAcc]['contact_uid']]);
-
-        return response()->json([
-            'status' => 'ok',
-            'message' => 'authorized',
-            'token' => $token,
-            'token_ttl' => auth('partners')->factory()->getTTL() * 60
-        ]);
+        return $this->setTradePoint($partner, $token);
     }
 
     /**
@@ -421,6 +379,39 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         return response()->json([
+            'token' => $token,
+            'token_ttl' => auth('partners')->factory()->getTTL() * 60
+        ]);
+    }
+
+    /**
+     * @param Partner $partner
+     * @param $token
+     * @return JsonResponse
+     */
+    private function setTradePoint(Partner $partner, $token)
+    {
+        /**
+         * Check tradepoints
+         */
+        $tradepoints = $partner->tradepointsArray();
+        if (count($tradepoints) > 1)
+        {
+            return response()->json([
+                'status' => 'ok',
+                'token' => $token,
+                'token_ttl' => auth('partners')->factory()->getTTL() * 60,
+                'message' => 'need_tradepoint',
+                'tradepoints' => $tradepoints
+            ]);
+
+        }
+        $tpAcc = array_key_first($tradepoints);
+        $partner->update(['current_tradepoint' => $tpAcc, 'current_uid' => $tradepoints[$tpAcc]['contact_uid']]);
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'authorized',
             'token' => $token,
             'token_ttl' => auth('partners')->factory()->getTTL() * 60
         ]);

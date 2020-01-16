@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Media;
 
 
+/**
+ * Class MediaService
+ * @package App\Services\MediaService
+ */
 class MediaService
 {
     /**
@@ -246,17 +250,32 @@ class MediaService
         }
     }
 
+    /**
+     * @param int $mediaId
+     * @return mixed
+     */
     public function getMedia(int $mediaId)
     {
         return Media::find($mediaId);
     }
 
+    /**
+     * @param string $imageableType
+     * @param int $imageableId
+     * @return mixed
+     */
     public function getMediaForType(string $imageableType, int $imageableId)
     {
         return Media::where('imageable_type', $imageableType)->where('imageable_id', $imageableId)->get();
     }
 
 
+    /**
+     * @param string $path
+     * @param array $params
+     * @return string
+     * @throws Exception
+     */
     public function cropImage(string $path, array $params): string
     {
 
@@ -293,6 +312,12 @@ class MediaService
         return $path;
     }
 
+    /**
+     * @param string $src
+     * @param string $target
+     * @param int $width
+     * @param int $height
+     */
     public function resize(string $src, string $target, int $width, int $height): void
     {
         $image = Image::make($src);

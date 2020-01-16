@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * @property mixed contacts
+ */
 class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatable, JWTSubject
 {
     use Authorizable;

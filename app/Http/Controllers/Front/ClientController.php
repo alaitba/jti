@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Front;
 use App\Models\CustomerPhoneVerification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\CustomerRequests;
-use App\Models\TradePointContact;
 use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
 use App\Services\SmsService\SmsService;
@@ -16,6 +15,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+/**
+ * Class ClientController
+ * @package App\Http\Controllers\Front
+ */
 class ClientController extends Controller
 {
 
@@ -54,7 +57,7 @@ class ClientController extends Controller
         }
 
 
-        $customerPhoneVerification = CustomerPhoneVerification::firstOrCreate(['mobile_phone' => $mobilePhone]);
+        $customerPhoneVerification = CustomerPhoneVerification::query()->firstOrCreate(['mobile_phone' => $mobilePhone]);
 
         $smsService = new SmsService($customerPhoneVerification);
 
@@ -81,7 +84,7 @@ class ClientController extends Controller
         /**
          * Check if code exists, correct and not expired
          */
-        $customerPhoneVerification = CustomerPhoneVerification::where([
+        $customerPhoneVerification = CustomerPhoneVerification::query()->where([
             ['mobile_phone', $request->input('mobile_phone')],
             ['sms_code', $request->input('sms_code')],
             ['sms_code_sent_at', '>=', Carbon::now()->subMinutes(config('project.sms_code_lifetime', 2))]
@@ -125,7 +128,7 @@ class ClientController extends Controller
         /**
          * Check if mobile verified
          */
-        $verified = CustomerPhoneVerification::where(['mobile_phone' => $request->input('mobile_phone'), 'status' => true])->first();
+        $verified = CustomerPhoneVerification::query()->where(['mobile_phone' => $request->input('mobile_phone'), 'status' => true])->first();
         if (!$verified)
         {
             return response()->json([

@@ -12,12 +12,19 @@ use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 
+/**
+ * Class TradePointContactImport
+ * @package App\Imports
+ */
 class TradePointContactImport implements ToCollection, WithHeadingRow, WithProgressBar, WithChunkReading, WithCustomCsvSettings, WithBatchInserts
 {
     use Importable;
 
     private $added = 0, $updated = 0;
 
+    /**
+     * @param Collection $rows
+     */
     public function collection(Collection $rows)
     {
         $add = [];
@@ -43,7 +50,7 @@ class TradePointContactImport implements ToCollection, WithHeadingRow, WithProgr
                 $this->added++;
             }
         }
-        TradePointContact::insert($add);
+        TradePointContact::query()->insert($add);
     }
 
 
@@ -74,11 +81,17 @@ class TradePointContactImport implements ToCollection, WithHeadingRow, WithProgr
         ];
     }
 
+    /**
+     * @return int
+     */
     public function getAdded()
     {
         return $this->added;
     }
 
+    /**
+     * @return int
+     */
     public function getUpdated()
     {
         return $this->updated;

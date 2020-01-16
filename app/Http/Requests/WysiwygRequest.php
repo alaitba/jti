@@ -8,6 +8,10 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
 
+/**
+ * Class WysiwygRequest
+ * @package App\Http\Requests
+ */
 class WysiwygRequest extends FormRequest
 {
     use MessagesTrait;

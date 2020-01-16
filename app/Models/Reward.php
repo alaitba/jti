@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
 
+/**
+ * @property mixed updated_at
+ */
 class Reward extends Model
 {
     use SoftDeletes;
@@ -16,17 +19,26 @@ class Reward extends Model
 
     public $translatable = ['name', 'description'];
 
+    /**
+     * @return mixed
+     */
     public function getUpdatedAtStringAttribute()
     {
         return $this->updated_at->locale('ru')->ago();
     }
 
+    /**
+     * @return string
+     */
     public function getNamesAttribute()
     {
         $kz = $this->getTranslation('name', 'kz');
         return $this->getTranslation('name', 'ru') . ' | ' . ($kz ? $kz : '<span class="text-danger">[нет названия на казахском]</span>');
     }
 
+    /**
+     * @return string
+     */
     public function getHasDescAttribute()
     {
         $ru = $this->getTranslation('description', 'ru');
@@ -41,6 +53,9 @@ class Reward extends Model
         return '<i class="la la-check text-warning"></i>';
     }
 
+    /**
+     * @return MorphMany
+     */
     public function photos()
     {
         return $this->morphMany(Media::class, 'imageable');

@@ -6,6 +6,10 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
 
+/**
+ * Class LocalisationGroupRequest
+ * @package App\Http\Requests
+ */
 class LocalisationGroupRequest extends FormRequest
 {
     use MessagesTrait;

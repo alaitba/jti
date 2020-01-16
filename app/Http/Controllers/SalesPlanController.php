@@ -9,6 +9,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
 
+/**
+ * Class SalesPlanController
+ * @package App\Http\Controllers
+ */
 class SalesPlanController extends Controller
 {
 
@@ -18,7 +22,7 @@ class SalesPlanController extends Controller
      */
     public function index()
     {
-        $updated = ImportHistory::where('failed', 0)->where('type', 'SalesPlan')->latest('id')->first();
+        $updated = ImportHistory::query()->where('failed', 0)->where('type', 'SalesPlan')->latest('id')->first();
         return view('reports.sales_plan.index', [
             'lastUpdate' => $updated->created_at_string ?? '-'
         ])->render();
@@ -32,7 +36,7 @@ class SalesPlanController extends Controller
      */
     public function getList(Request $request)
     {
-        $items = SalesPlan::paginate(30);
+        $items = SalesPlan::query()->paginate(30);
         $itemsHtml = '';
         foreach ($items as $item) {
             $itemsHtml .= view('reports.sales_plan.table_row', ['item' => $item])->render();

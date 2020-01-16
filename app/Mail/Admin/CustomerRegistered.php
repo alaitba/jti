@@ -6,6 +6,10 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Class CustomerRegistered
+ * @package App\Mail\Admin
+ */
 class CustomerRegistered extends Mailable
 {
     use Queueable, SerializesModels;

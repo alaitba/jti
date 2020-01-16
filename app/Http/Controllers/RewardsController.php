@@ -7,10 +7,15 @@ use App\Http\Utils\ResponseBuilder;
 use App\Models\Reward;
 use App\Services\MediaService\MediaService;
 use App\Ui\Attributes\Modal;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
 
+/**
+ * Class RewardsController
+ * @package App\Http\Controllers
+ */
 class RewardsController extends Controller
 {
 
@@ -136,7 +141,7 @@ class RewardsController extends Controller
 
     /**
      * @param $mediaId
-     * @throws \Exception
+     * @throws Exception
      */
     public function deleteMedia($mediaId)
     {

@@ -12,6 +12,10 @@ use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 
+/**
+ * Class SalesPlanImport
+ * @package App\Imports
+ */
 class SalesPlanImport implements ToModel, WithProgressBar, WithChunkReading, WithHeadingRow, WithCustomCsvSettings, WithBatchInserts
 {
     use Importable;
@@ -73,6 +77,9 @@ class SalesPlanImport implements ToModel, WithProgressBar, WithChunkReading, Wit
     }
 
     /*
+     * @return int
+     */
+    /**
      * @return int
      */
     public function getUpdated(): int

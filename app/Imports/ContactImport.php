@@ -11,12 +11,19 @@ use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 
+/**
+ * Class ContactImport
+ * @package App\Imports
+ */
 class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, WithChunkReading, WithCustomCsvSettings
 {
     use Importable;
 
     private $added = 0, $updated = 0;
 
+    /**
+     * @param Collection $rows
+     */
     public function collection(Collection $rows)
     {
         $add = [];
@@ -52,7 +59,7 @@ class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, Wi
                 $this->added++;
             }
         }
-        Contact::insert($add);
+        Contact::query()->insert($add);
     }
 
     /**
@@ -74,11 +81,17 @@ class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, Wi
         ];
     }
 
+    /**
+     * @return int
+     */
     public function getAdded()
     {
         return $this->added;
     }
 
+    /**
+     * @return int
+     */
     public function getUpdated()
     {
         return $this->updated;

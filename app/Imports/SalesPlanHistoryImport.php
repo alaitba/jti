@@ -12,17 +12,28 @@ use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 
+/**
+ * Class SalesPlanHistoryImport
+ * @package App\Imports
+ */
 class SalesPlanHistoryImport implements ToCollection, WithHeadingRow, WithProgressBar, WithChunkReading, WithCustomCsvSettings
 {
     use Importable;
 
     private $added = 0, $updated = 0, $full = false;
 
+    /**
+     * SalesPlanHistoryImport constructor.
+     * @param $full
+     */
     public function __construct($full)
     {
         $this->full = $full;
     }
 
+    /**
+     * @param Collection $rows
+     */
     public function collection(Collection $rows)
     {
         $add = [];
@@ -33,7 +44,7 @@ class SalesPlanHistoryImport implements ToCollection, WithHeadingRow, WithProgre
                 continue;
             }
             $yearMonth = $yearMonth->format('Y-m-d');
-            $salesPlanHistory = SalesPlanHistory::where(['account_code' => $row['Account code'], 'year_month' => $yearMonth])->first();
+            $salesPlanHistory = SalesPlanHistory::query()->where(['account_code' => $row['Account code'], 'year_month' => $yearMonth])->first();
             if ($salesPlanHistory)
             {
                 $salesPlanHistory->fill([
@@ -63,7 +74,7 @@ class SalesPlanHistoryImport implements ToCollection, WithHeadingRow, WithProgre
                 $this->added++;
             }
         }
-        SalesPlanHistory::insert($add);
+        SalesPlanHistory::query()->insert($add);
 
     }
 
@@ -88,11 +99,17 @@ class SalesPlanHistoryImport implements ToCollection, WithHeadingRow, WithProgre
         ];
     }
 
+    /**
+     * @return int
+     */
     public function getAdded()
     {
         return $this->added;
     }
 
+    /**
+     * @return int
+     */
     public function getUpdated()
     {
         return $this->updated;

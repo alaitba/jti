@@ -14,6 +14,10 @@ use App\Models\NotifyTemplate as NotifyTemplateContract;
 // traits
 use App\Mail\CommonTrait;
 
+/**
+ * Class PasswordRemind
+ * @package App\Mail\Customer
+ */
 class PasswordRemind extends Mailable
 {
     use Queueable, SerializesModels;

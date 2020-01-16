@@ -12,6 +12,10 @@ use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 
+/**
+ * Class TobaccoProductImport
+ * @package App\Imports
+ */
 class TobaccoProductImport implements ToCollection, WithHeadingRow, WithProgressBar, WithChunkReading, WithCustomCsvSettings, WithBatchInserts
 {
     use Importable;
@@ -47,7 +51,7 @@ class TobaccoProductImport implements ToCollection, WithHeadingRow, WithProgress
                 $this->added++;
             }
         }
-        TobaccoProduct::insert($add);
+        TobaccoProduct::query()->insert($add);
 
     }
 
@@ -78,11 +82,17 @@ class TobaccoProductImport implements ToCollection, WithHeadingRow, WithProgress
         ];
     }
 
+    /**
+     * @return int
+     */
     public function getAdded()
     {
         return $this->added;
     }
 
+    /**
+     * @return int
+     */
     public function getUpdated()
     {
         return $this->updated;

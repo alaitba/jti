@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel;
 
+/**
+ * Class ImportFromSftp
+ * @package App\Console\Commands
+ */
 class ImportFromSftp extends Command
 {
     /**
@@ -77,12 +81,16 @@ class ImportFromSftp extends Command
     }
 
 
+    /**
+     * @param $type
+     * @return bool
+     */
     private function processImport($type)
     {
         /*
         * Check if already imported
         */
-        $importHistory = ImportHistory::where('failed', 0)->where('type', $type);
+        $importHistory = ImportHistory::query()->where('failed', 0)->where('type', $type);
         if ($type == 'SalesPlanHistory')
         {
             $importHistory->where('created_at', 'like', date('Y-m-') . '%');
@@ -152,7 +160,7 @@ class ImportFromSftp extends Command
             $importClass = '\App\Imports\\' . $type . 'Import';
             if ($type == 'SalesPlanHistory')
             {
-                $baseImport = new $importClass(SalesPlanHistory::count() == 0);
+                $baseImport = new $importClass(SalesPlanHistory::query()->count() == 0);
             } else {
                 $baseImport = new $importClass();
             }
@@ -165,7 +173,7 @@ class ImportFromSftp extends Command
                 $this->info('Импорт завершен');
                 $this->info('Удаляем старые записи');
                 $deleted = $model::whereDate('created_at', '<', date('Y-m-d'))->delete();
-                SalesPlan2::whereDate('created_at', '<', date('Y-m-d'))->delete();
+                SalesPlan2::query()->whereDate('created_at', '<', date('Y-m-d'))->delete();
             } elseif ($type == 'SalesPlanHistory') {
                 $deleted = 0;
             } else {

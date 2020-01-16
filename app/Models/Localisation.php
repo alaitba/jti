@@ -1,11 +1,16 @@
 <?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Translatable\HasTranslations;
 use Cviebrock\EloquentSluggable\Sluggable;
 
 use App\Contracts\Localisation as LocalisationContract;
 
+/**
+ * Class Localisation
+ * @package App\Models
+ */
 class Localisation extends Model implements LocalisationContract
 {
     use Sluggable;
@@ -20,6 +25,10 @@ class Localisation extends Model implements LocalisationContract
         'values',
     ];
 
+    /**
+     * Localisation constructor.
+     * @param array $attributes
+     */
     public function __construct(array $attributes = [])
     {
 
@@ -28,6 +37,9 @@ class Localisation extends Model implements LocalisationContract
 
     public $translatable = ['values'];
 
+    /**
+     * @return array
+     */
     public function sluggable()
     {
         return [
@@ -37,11 +49,17 @@ class Localisation extends Model implements LocalisationContract
         ];
     }
 
+    /**
+     * @return BelongsTo
+     */
     public function group()
     {
         return $this->belongsTo(LocalisationGroup::class, 'group_id');
     }
 
+    /**
+     * @return string
+     */
     public function getInjectCode()
     {
         return "{{ st_trans('$this->slug') }}";

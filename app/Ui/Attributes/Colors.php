@@ -1,5 +1,9 @@
 <?php namespace App\UiKit\Attributes;
 
+/**
+ * Class Colors
+ * @package App\UiKit\Attributes
+ */
 class Colors
 {
     public const SUCCESS = 'success';

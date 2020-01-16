@@ -5,9 +5,13 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Contracts\NotifyTemplate;
 
+/**
+ * Class EmailTemplateCommand
+ * @package App\Console\Commands
+ */
 class EmailTemplateCommand extends Command
 {
-    private $admin;
+    //private $admin;
 
     /**
      * The name and signature of the console command.

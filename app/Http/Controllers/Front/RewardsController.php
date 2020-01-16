@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Front;
 
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Front\CustomerRequests;
 use App\Models\Reward;
 use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
@@ -13,6 +12,10 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Class RewardsController
+ * @package App\Http\Controllers\Front
+ */
 class RewardsController extends Controller
 {
     /**
@@ -99,6 +102,10 @@ class RewardsController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return bool|JsonResponse
+     */
     public function createReward(Request $request)
     {
         $rewardId = $request->input('reward_id');

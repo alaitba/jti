@@ -6,8 +6,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 // models
 use App\Models\Localisation;
 use App\Models\LocalisationGroup;
-use Illuminate\Support\Collection;
 
+/**
+ * Class LocalisationService
+ * @package App\Services\LocalisationService
+ */
 class LocalisationService {
 
     private $localisation;
@@ -173,9 +176,8 @@ class LocalisationService {
         {
             if (isset($item['values'][$locale]))
             {
-
+                $localisations[$item['name']] = $item['values'][$locale];
             }
-            $localisations[$item['name']] = $item['values'][$locale];
         }
 
         return $localisations;

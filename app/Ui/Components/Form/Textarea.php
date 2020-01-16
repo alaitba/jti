@@ -23,6 +23,10 @@ class Textarea extends Component
 
     }
 
+    /**
+     * @param int $number
+     * @return $this
+     */
     public function setRowsNumber(int $number)
     {
         $this->textareaRowsNumber = $number;

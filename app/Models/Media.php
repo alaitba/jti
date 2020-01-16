@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Media
+ * @package App\Models
+ */
 class Media extends Model
 {
     protected $table = 'media';
@@ -27,21 +31,34 @@ class Media extends Model
     protected $appends = ['url', 'url_reverse_proxy'];
 
 
-    public function getUrlAttribute($value)
+    /**
+     * @return string
+     */
+    public function getUrlAttribute()
     {
         return asset('storage/media/' . $this->original_file_name);
     }
 
-    public function getUrlReverseProxyAttribute($value)
+    /**
+     * @return string
+     */
+    public function getUrlReverseProxyAttribute()
     {
         return '/public/media/' . $this->original_file_name;
     }
 
+    /**
+     * @param $value
+     */
     public function setConversionsAttribute($value)
     {
         $this->attributes['conversions'] = json_encode($value);
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     */
     public function getConversionsAttribute($value)
     {
         $conversions = json_decode($value, true);

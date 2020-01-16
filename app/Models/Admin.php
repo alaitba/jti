@@ -8,6 +8,10 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * Class Admin
+ * @package App\Models
+ */
 class Admin extends Model implements \Illuminate\Contracts\Auth\Authenticatable
 {
     use Authorizable;
@@ -40,6 +44,9 @@ class Admin extends Model implements \Illuminate\Contracts\Auth\Authenticatable
         'develop',
     ];
 
+    /**
+     * @param $value
+     */
     public function setPasswordAttribute($value)
     {
         if (strlen($value))

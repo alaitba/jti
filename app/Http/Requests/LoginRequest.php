@@ -4,6 +4,10 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Class LoginRequest
+ * @package App\Http\Requests
+ */
 class LoginRequest extends FormRequest
 {
     use MessagesTrait;

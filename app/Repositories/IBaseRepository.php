@@ -57,6 +57,12 @@ interface IBaseRepository
      * @return mixed
      */
     public function deleteById(int $id);
+
+    /**
+     * @param string $field
+     * @param string $value
+     * @return mixed
+     */
     public function deleteByField(string $field, string $value);
 
 

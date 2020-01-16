@@ -3,6 +3,10 @@
 namespace App\UiKit\Attributes;
 
 
+/**
+ * Class FlatIcon
+ * @package App\UiKit\Attributes
+ */
 class FlatIcon
 {
 

@@ -15,6 +15,10 @@ use App\Models\NotifyTemplate as NotifyTemplateContract;
 // traits
 use App\Mail\CommonTrait;
 
+/**
+ * Class PasswordGenerated
+ * @package App\Mail\Customer
+ */
 class PasswordGenerated extends Mailable
 {
     use Queueable, SerializesModels;

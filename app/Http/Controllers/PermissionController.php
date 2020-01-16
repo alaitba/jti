@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RoleRequest;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,6 +27,10 @@ class PermissionController extends Controller
 {
     private $permissionsCase;
 
+    /**
+     * PermissionController constructor.
+     * @param PermissionsCase $permissionsCase
+     */
     public function __construct(PermissionsCase $permissionsCase)
     {
         $this->permissionsCase = $permissionsCase;

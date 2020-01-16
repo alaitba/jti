@@ -4,6 +4,10 @@
 namespace App\Ui\Attributes;
 
 
+/**
+ * Class Modal
+ * @package App\Ui\Attributes
+ */
 class Modal
 {
     public const REGULAR = 'regularModal';

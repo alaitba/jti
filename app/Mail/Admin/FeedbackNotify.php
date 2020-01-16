@@ -14,6 +14,10 @@ use App\Contracts\NotifyTemplate as NotifyTemplateContract;
 
 use App\Mail\CommonTrait;
 
+/**
+ * Class FeedbackNotify
+ * @package App\Mail\Admin
+ */
 class FeedbackNotify extends Mailable
 {
     use Queueable, SerializesModels;

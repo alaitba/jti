@@ -3,9 +3,12 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Admin;
 use App\Traits\Seedable;
 
+/**
+ * Class RolesAndPermissionsCommand
+ * @package App\Console\Commands
+ */
 class RolesAndPermissionsCommand extends Command
 {
     use Seedable;
@@ -50,7 +53,7 @@ class RolesAndPermissionsCommand extends Command
         }
     }
 
-    private function askemail()
+    /*private function askemail()
     {
         $email = $this->ask('Введите email');
 
@@ -66,5 +69,5 @@ class RolesAndPermissionsCommand extends Command
 
         return $email;
 
-    }
+    }*/
 }

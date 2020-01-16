@@ -5,9 +5,13 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Admin;
 
+/**
+ * Class SuperUserCommand
+ * @package App\Console\Commands
+ */
 class SuperUserCommand extends Command
 {
-    private $admin;
+    //private $admin;
 
     /**
      * The name and signature of the console command.
@@ -27,7 +31,7 @@ class SuperUserCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
@@ -36,7 +40,7 @@ class SuperUserCommand extends Command
         $password = $this->ask('Введите пароль');
         $develop = $this->choice('Develop?', [0, 1], 'No');
 
-        $admin = Admin::create([
+        Admin::query()->create([
             'super_user' => 1,
             'email' => $email,
             'name' => $name,
@@ -44,11 +48,14 @@ class SuperUserCommand extends Command
             'develop' => $develop
         ]);
 
-        $admin->assignRole('admin');
+        //$admin->assignRole('admin');
 
         $this->info('Супер администратор успешно добавлен.');
     }
 
+    /**
+     * @return mixed
+     */
     private function askemail()
     {
         $email = $this->ask('Введите email');
@@ -58,7 +65,7 @@ class SuperUserCommand extends Command
             $email = $this->askemail();
         }
 
-        if (Admin::where('email', $email)->count()) {
+        if (Admin::query()->where('email', $email)->count()) {
             $this->error('Администратор с таким e-mail уже существует:');
             $email = $this->askemail();
         }

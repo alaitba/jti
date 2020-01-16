@@ -7,6 +7,10 @@ namespace App\Providers;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Class JtiApiProvider
+ * @package App\Providers
+ */
 class JtiApiProvider
 {
     private const USER = 'P360Test';
@@ -22,6 +26,10 @@ class JtiApiProvider
     private const GET_AVAILABLE_REWARDS_URI = 'Seller/GetSellerAvailableRewards';
     private const CREATE_REWARD_URI = 'Seller/CreateReward';
 
+    /**
+     * @param string $uri
+     * @return string
+     */
     private static function makeUrl(string $uri): string
     {
         return self::BASE_URI . $uri;
@@ -63,6 +71,11 @@ class JtiApiProvider
         self::executeQuery(self::makeUrl(self::SMS_URI), $body);
     }
 
+    /**
+     * @param string $phone
+     * @param string $sellerId
+     * @return ResponseInterface
+     */
     public static function checkConsumer(string $phone, string $sellerId)
     {
         $body = [
@@ -77,6 +90,10 @@ class JtiApiProvider
         return self::executeQuery(self::makeUrl(self::CHECK_CONSUMER_URI), $body);
     }
 
+    /**
+     * @param array $data
+     * @return ResponseInterface
+     */
     public static function createLead(array $data)
     {
         $body = [
@@ -88,6 +105,12 @@ class JtiApiProvider
         return self::executeQuery(self::makeUrl(self::CREATE_LEAD_URI), $body);
     }
 
+    /**
+     * @param string $sellerId
+     * @param int $perPage
+     * @param int $page
+     * @return ResponseInterface
+     */
     public static function getLeadHistory(string $sellerId, int $perPage, int $page)
     {
         $body = [
@@ -103,6 +126,10 @@ class JtiApiProvider
         return self::executeQuery(self::makeUrl(self::LEAD_HISTORY_URI), $body);
     }
 
+    /**
+     * @param string $type
+     * @return ResponseInterface
+     */
     public static function getDictionary(string $type)
     {
         $body = [
@@ -114,6 +141,10 @@ class JtiApiProvider
         return self::executeQuery(self::makeUrl(self::GET_DICTIONARY_URI), $body);
     }
 
+    /**
+     * @param string $sellerId
+     * @return ResponseInterface
+     */
     public static function getBalance(string $sellerId)
     {
         $body = [
@@ -125,6 +156,10 @@ class JtiApiProvider
         return self::executeQuery(self::makeUrl(self::GET_BALANCE_URI), $body);
     }
 
+    /**
+     * @param string $sellerId
+     * @return ResponseInterface
+     */
     public static function getAvailableRewards(string $sellerId)
     {
         $body = [
@@ -136,6 +171,11 @@ class JtiApiProvider
         return self::executeQuery(self::makeUrl(self::GET_AVAILABLE_REWARDS_URI), $body);
     }
 
+    /**
+     * @param string $sellerId
+     * @param string $rewardId
+     * @return ResponseInterface
+     */
     public static function createReward(string $sellerId, string $rewardId)
     {
         $body = [

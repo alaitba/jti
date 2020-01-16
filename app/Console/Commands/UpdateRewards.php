@@ -8,6 +8,10 @@ use App\Services\LogService\LogService;
 use Exception;
 use Illuminate\Console\Command;
 
+/**
+ * Class UpdateRewards
+ * @package App\Console\Commands
+ */
 class UpdateRewards extends Command
 {
     /**

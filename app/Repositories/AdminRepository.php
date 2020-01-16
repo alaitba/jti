@@ -28,6 +28,10 @@ class AdminRepository extends BaseRepository implements IAdminRepository
       return Auth::guard('admins')->attempt($credentials);
     }
 
+    /**
+     * @return LengthAwarePaginator
+     * @throws Exception
+     */
     public function filterForApi(): LengthAwarePaginator
     {
         $filteredModel = $this->filterModel();

@@ -2,6 +2,10 @@
 
 namespace App\Ui\Attributes;
 
+/**
+ * Class LineAwesomeIcon
+ * @package App\Ui\Attributes
+ */
 class LineAwesomeIcon
 {
 

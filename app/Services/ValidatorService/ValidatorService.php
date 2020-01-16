@@ -7,6 +7,10 @@ namespace App\Services\ValidatorService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * Class ValidatorService
+ * @package App\Services\ValidatorService
+ */
 class ValidatorService
 {
     /**

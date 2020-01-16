@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Segment
+ * @package App\Models
+ */
 class Segment extends Model
 {
     protected $table = 'segments';
@@ -12,11 +16,18 @@ class Segment extends Model
         'data'
     ];
 
+    /**
+     * @param $value
+     */
     public function setDataAttribute($value)
     {
         $this->attributes['data'] = json_encode($value);
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     */
     public function getDataAttribute($value)
     {
         return json_decode($value, true);

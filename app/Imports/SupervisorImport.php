@@ -12,12 +12,19 @@ use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 
+/**
+ * Class SupervisorImport
+ * @package App\Imports
+ */
 class SupervisorImport implements ToCollection, WithHeadingRow, WithProgressBar, WithChunkReading, WithCustomCsvSettings, WithBatchInserts
 {
     use Importable;
 
     private $added = 0, $updated = 0;
 
+    /**
+     * @param Collection $rows
+     */
     public function collection(Collection $rows)
     {
         $add = [];
@@ -42,7 +49,7 @@ class SupervisorImport implements ToCollection, WithHeadingRow, WithProgressBar,
                 $this->added++;
             }
         }
-        Supervisor::insert($add);
+        Supervisor::query()->insert($add);
     }
 
 
@@ -73,11 +80,17 @@ class SupervisorImport implements ToCollection, WithHeadingRow, WithProgressBar,
         ];
     }
 
+    /**
+     * @return int
+     */
     public function getAdded()
     {
         return $this->added;
     }
 
+    /**
+     * @return int
+     */
     public function getUpdated()
     {
         return $this->updated;

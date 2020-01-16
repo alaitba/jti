@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Upload
+ * @package App\Models
+ */
 class Upload extends Model
 {
     protected $table = 'uploads';
@@ -19,6 +23,10 @@ class Upload extends Model
         'mime',
     ];
 
+    /**
+     * @param $value
+     * @return string
+     */
     public function getMimeAttribute($value)
     {
         switch ($value)
@@ -59,6 +67,10 @@ class Upload extends Model
         }
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
     public function getSizeAttribute($value)
     {
         $precision = 0;

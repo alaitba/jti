@@ -4,7 +4,6 @@ namespace App\Ui\Components\Table;
 
 
 use Throwable;
-use Illuminate\Pagination\LengthAwarePaginator;
 use App\Ui\Components\Table\Columns\ImageColumn;
 use App\Ui\Components\Table\Columns\TextColumn;
 use App\Ui\Components\Table\Columns\LinkColumn;

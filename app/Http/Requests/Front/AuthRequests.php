@@ -4,6 +4,10 @@
 namespace App\Http\Requests\Front;
 
 
+/**
+ * Class AuthRequests
+ * @package App\Http\Requests\Front
+ */
 class AuthRequests
 {
     public const PHONE_REQUEST = [

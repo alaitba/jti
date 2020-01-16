@@ -81,10 +81,10 @@ class ResponseBuilder
     }
 
 
-
     /**
      * Обновление контента модального окна
      * @param Modal $modal
+     * @throws Throwable
      */
     public function updateModal(Modal $modal)
     {
@@ -184,6 +184,10 @@ class ResponseBuilder
         ]);
     }
 
+    /**
+     * @param $data
+     * @return JsonResponse
+     */
     public function apiSuccess($data)
     {
         return response()->json([
@@ -192,7 +196,13 @@ class ResponseBuilder
         ], 200);
     }
 
-    public function apiError(string $error,  string $message, int $code = 500)
+    /**
+     * @param string $error
+     * @param string $message
+     * @param int $code
+     * @return JsonResponse
+     */
+    public function apiError(string $error, string $message, int $code = 500)
     {
         return response()->json([
             'error' => $error,
@@ -200,6 +210,11 @@ class ResponseBuilder
         ], $code);
     }
 
+    /**
+     * @param string $error
+     * @param MessageBag $validationErrors
+     * @return JsonResponse
+     */
     public function apiRequestValidationError(string $error, MessageBag $validationErrors)
     {
         return response()->json([
@@ -259,6 +274,9 @@ class ResponseBuilder
         $this->functions['showNotify'] = $data ;
     }
 
+    /**
+     * @param string $url
+     */
     public function redirect(string $url)
     {
         $data = [
@@ -271,6 +289,11 @@ class ResponseBuilder
         $this->functions['redirect'] = $data ;
     }
 
+    /**
+     * @param string $header
+     * @param string $message
+     * @param string $type
+     */
     public function showAlert(string $header, string $message, string $type = 'error')
     {
         $data = [

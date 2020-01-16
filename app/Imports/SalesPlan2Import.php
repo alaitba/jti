@@ -12,6 +12,10 @@ use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 
+/**
+ * Class SalesPlan2Import
+ * @package App\Imports
+ */
 class SalesPlan2Import implements ToModel, WithProgressBar, WithChunkReading, WithHeadingRow, WithCustomCsvSettings, WithBatchInserts
 {
     use Importable;

@@ -17,6 +17,10 @@ use App\Contracts\Localisation as LocalisationContract;
 use App\Contracts\LocalisationGroup as LocalisationGroupContract;
 use App\Contracts\NotifyTemplate as NotifyTemplateContract;
 
+/**
+ * Class AppServiceProvider
+ * @package App\Providers
+ */
 class AppServiceProvider extends ServiceProvider
 {
     /**

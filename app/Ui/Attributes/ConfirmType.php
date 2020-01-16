@@ -3,6 +3,10 @@
 namespace App\UiKit\Attributes;
 
 
+/**
+ * Class ConfirmType
+ * @package App\UiKit\Attributes
+ */
 class ConfirmType
 {
     public const WARNING = 'warning';

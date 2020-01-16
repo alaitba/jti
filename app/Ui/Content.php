@@ -1,8 +1,6 @@
 <?php namespace App\Ui;
 
 use App\Ui\Components\Form\OptionsFieldset;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\View\View;
 use Throwable;
 
 /**

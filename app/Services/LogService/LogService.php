@@ -7,8 +7,15 @@ namespace App\Services\LogService;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Class LogService
+ * @package App\Services\LogService
+ */
 class LogService
 {
+    /**
+     * @param Exception $e
+     */
     public static function logException(Exception $e)
     {
         Log::error('================');

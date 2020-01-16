@@ -47,6 +47,9 @@ abstract class Component
 
     protected $textareaRowsNumber = 3;
 
+    /**
+     * @return int
+     */
     public function getTextareRowsNumber()
     {
         return $this->textareaRowsNumber;
@@ -100,22 +103,35 @@ abstract class Component
         return $this->tabeable;
     }
 
+    /**
+     * @return bool
+     */
     public function isDatePicker(): bool
     {
         return $this->datePickerable;
     }
 
+    /**
+     * @return bool
+     */
     public function isDateTimePicker(): bool
     {
         return $this->dateTimePickerable;
     }
 
+    /**
+     * @return $this
+     */
     public function hasNotValue(): self
     {
         $this->hasValue = false;
         return $this;
     }
 
+    /**
+     * @param string $placeholder
+     * @return $this
+     */
     public function setPlaceholder(string $placeholder)
     {
         $this->placeHolder = $placeholder;
@@ -127,6 +143,9 @@ abstract class Component
         return $this->placeHolder;
     }
 
+    /**
+     * @return bool
+     */
     public function hasValue(): bool
     {
         return $this->hasValue;

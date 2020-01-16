@@ -46,12 +46,18 @@ class Input extends Component
         $this->disableable = $disableable;
     }
 
+    /**
+     * @return $this
+     */
     public function datePicker()
     {
         $this->datePickerable = true;
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function dateTimePicker()
     {
         $this->dateTimePickerable = true;

@@ -6,6 +6,10 @@ use Closure;
 use Illuminate\Http\Request;
 
 
+/**
+ * Class PartnerMiddleware
+ * @package App\Http\Middleware
+ */
 class PartnerMiddleware
 {
     /**

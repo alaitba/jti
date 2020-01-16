@@ -15,6 +15,10 @@ use App\Contracts\NotifyTemplate as NotifyTemplateContract;
 // traits
 use App\Mail\CommonTrait;
 
+/**
+ * Class ConfirmRegister
+ * @package App\Mail\Customer
+ */
 class ConfirmRegister extends Mailable
 {
     use Queueable, SerializesModels;
