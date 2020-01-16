@@ -20,6 +20,7 @@ class JtiApiProvider
     private const GET_DICTIONARY_URI = 'Dictionary/Get';
     private const GET_BALANCE_URI = 'Seller/GetSellerPointAmount';
     private const GET_AVAILABLE_REWARDS_URI = 'Seller/GetSellerAvailableRewards';
+    private const CREATE_REWARD_URI = 'Seller/CreateReward';
 
     private static function makeUrl(string $uri): string
     {
@@ -134,4 +135,19 @@ class JtiApiProvider
         ];
         return self::executeQuery(self::makeUrl(self::GET_AVAILABLE_REWARDS_URI), $body);
     }
+
+    public static function createReward(string $sellerId, string $rewardId)
+    {
+        $body = [
+            'data' => [
+                'sellerId' => $sellerId,
+                'rewardId' => $rewardId
+            ],
+            'identity' => [
+                'locale' => 'ru-RU'
+            ]
+        ];
+        return self::executeQuery(self::makeUrl(self::CREATE_REWARD_URI), $body);
+    }
+
 }

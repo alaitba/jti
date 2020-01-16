@@ -4,17 +4,19 @@ namespace App\Http\Controllers\Front;
 
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Front\CustomerRequests;
 use App\Models\Reward;
-use App\Models\TradePointContact;
 use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
+use App\Services\ValidatorService\ValidatorService;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class RewardsController extends Controller
 {
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getBalance()
     {
@@ -41,6 +43,10 @@ class RewardsController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function getAvailableRewards(Request $request)
     {
         $locale = $request->input('locale', 'ru');
@@ -93,4 +99,33 @@ class RewardsController extends Controller
         }
     }
 
+    public function createReward(Request $request)
+    {
+        $rewardId = $request->input('reward_id');
+        $validation = ValidatorService::validateRequest(['reward_id' => $rewardId], ['reward_id' => 'required|uuid']);
+        if ($validation !== true) {
+            return $validation;
+        }
+
+        try {
+            $result = JtiApiProvider::createReward(auth('partners')->user()->current_uid, $rewardId)->getBody();
+            $result = json_decode($result, true);
+            if (!$result['result'])
+            {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'unavailable'
+                ], 403);
+            }
+            return response()->json([
+                'status' => 'ok'
+            ]);
+        } catch (Exception $e) {
+            LogService::logException($e);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'api_failed'
+            ], 500);
+        }
+    }
 }
