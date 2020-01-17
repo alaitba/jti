@@ -17,7 +17,7 @@ class DictionaryController extends Controller
      */
     public function getTobaccoProducts()
     {
-        $items = TobaccoProduct::withoutTrashed()->get(['product_code', 'brand', 'sku'])->groupBy('brand')->toArray();
+        $items = TobaccoProduct::withoutTrashed()->get(['product_code', 'brand', 'sku'])->toArray();
         return response()->json([
             'status' => 'ok',
             'data' => $items
