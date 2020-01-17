@@ -24,4 +24,11 @@ class LogService
         Log::error($e->getTraceAsString());
         Log::error('================');
     }
+
+    public static function logInfo($msg)
+    {
+        Log::info('=================');
+        Log::info($msg);
+        Log::info('=================');
+    }
 }
