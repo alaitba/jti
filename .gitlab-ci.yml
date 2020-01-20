@@ -69,6 +69,14 @@
     ## Store key as file
     ##
     - echo "$SSH_PRIVATE_KEY_PROD" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+
+    ##
+    ## Store public key as file
+    ##
+    # - echo "$SSH_PUBLIC_KEY_PROD" > ~/.ssh/id_rsa.pub
+    # - chmod 644 ~/.ssh/id_rsa.pub
+
     ##
     ## Add required host data to known_hosts
     ##
