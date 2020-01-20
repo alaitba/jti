@@ -32,7 +32,7 @@ class AdminsRequest extends FormRequest
     public function rules()
     {
 
-        if ($this->segment(2) == 'admins' && $this->segment(4) == 'update') {
+        if ($this->segment(1) == 'admins' && $this->segment(3) == 'update') {
             return [
                 'name' => 'required',
                 'email' => 'required|email|unique:admins,email,' . $this->segment(3),
