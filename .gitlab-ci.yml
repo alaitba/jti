@@ -36,7 +36,7 @@
     ##
     ## Install deployer
     ##
-    - curl -L https://github.com/Rishats/deployer/releases/download/v6.6.0/deployer-6.6.0.phar > deployer.phar
+    - curl -L https://github.com/Rishats/deployer/releases/download/v6.6.0/deployer-6.6.0-dev.phar > deployer.phar
     - chmod +x deployer.phar
 
 .deploy_template_prod: &deploy_template_prod
