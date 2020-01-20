@@ -10,6 +10,6 @@ http://jti.ibec.systems
 
 ##### PRODUCTION СРЕДА(production):
 Вам достаточно сделать любой пуш в ветку production с ветки **master** и автодэплой подгрузит ваши наработки. 
-In Progress
+http://backend.partner360.kz
 
 **Happy coding**!
