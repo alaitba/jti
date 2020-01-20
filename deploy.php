@@ -115,6 +115,11 @@ task('cachetool:clear:opcache', function () {
     }
 
     cd($releasePath);
+    $hasCachetool = run("if [ -e $releasePath/{{bin/cachetool}} ]; then echo 'true'; fi");
+
+    if ('true' !== $hasCachetool) {
+        run("curl -sO https://gordalina.github.io/cachetool/downloads/{{bin/cachetool}}");
+    }
 
     run("{{bin/php}} {{bin/cachetool}} opcache:reset {$options}");
 })->onStage('production');
