@@ -35,7 +35,7 @@ class AdminsRequest extends FormRequest
         if ($this->segment(1) == 'admins' && $this->segment(3) == 'update') {
             return [
                 'name' => 'required',
-                'email' => 'required|email|unique:admins,email,' . $this->segment(3),
+                'email' => 'required|email|unique:admins,email,' . $this->segment(2),
             ];
         }
 
