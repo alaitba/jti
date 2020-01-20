@@ -25,7 +25,7 @@ class ImportFromSftp extends Command
      *
      * @var string
      */
-    protected $signature = 'jti:import-from-sftp {type?}';
+    protected $signature = 'jti:import-from-sftp {type?} {--date=?}';
 
     /**
      * The console command description.
@@ -106,8 +106,8 @@ class ImportFromSftp extends Command
         /*
         * Download files
         */
-        $today = date('dmY');
-        //$today = '20122019';
+        $today = $this->option('date') ?? date('dmY');
+
         $this->info('Скачиваем ' . $type);
 
         $fileName = 'Trade/' . ($type === 'SalesPlanHistory' ? 'SalesPlan_history' : $type) . '+' . $today . '.csv';
