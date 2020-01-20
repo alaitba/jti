@@ -85,72 +85,6 @@ stages:
   # - analysis
   - deploy
 
-# We test PHP7.2
-# phpunit:7.2_develop:
-  # stage: test
-  # tags:
-  # - sonarqube
-  # image: skeletondocker/php72-cli:1.0.4
-  # # Cache libraries in between jobs
-  # cache:
-  #   key: ${CI_COMMIT_REF_SLUG}
-  #   paths:
-  #   - vendor/
-  # script:
-  # # Run commands
-  # - composer install
-  # - cp .env.example .env
-  # - php artisan key:generate
-  # - phpunit --configuration phpunit.xml.dist
-  # only:
-  #   - develop
-
-# We test PHP7.2
-# phpunit_testing:7.2:
-  # stage: test
-  # tags:
-  # - sonarqube
-  # image: skeletondocker/php72-cli:1.0.4
-  # # Cache libraries in between jobs
-  # cache:
-  #   key: ${CI_COMMIT_REF_SLUG}
-  #   paths:
-  #   - vendor/
-  # script:
-  # # Run commands
-  # - composer install
-  # - cp .env.example .env
-  # - php artisan key:generate
-  # - phpunit --configuration phpunit.xml.dist --coverage-clover clover.xml --log-junit junit-logfile.xml
-  # artifacts: # Persist the files that we use as input for the analysis step 
-  #   paths:
-  #     - "clover.xml"
-  #     - "junit-logfile.xml"
-  #     - "*.xml.dist"
-  #   when: on_success
-  # only:
-  #   - master
-
-# # We test PHP7.2
-# phpunit_production:7.2:
-  # stage: test
-  # tags:
-  # - sonarqube
-  # image: skeletondocker/php72-cli:1.0.4
-  # # Cache libraries in between jobs
-  # cache:
-  #   key: ${CI_COMMIT_REF_SLUG}
-  #   paths:
-  #   - vendor/
-  # script:
-  # # Run commands
-  # - composer install
-  # - cp .env.example .env
-  # - php artisan key:generate
-  # - phpunit --configuration phpunit.xml.dist
-  # only:
-  #   - production
-
 sonar:
   image: skeletondocker/gitlab-ci-sonarqube
   stage: deploy
@@ -169,7 +103,7 @@ deploy to prod:
   image: composer:1.8.4
   stage: deploy
   tags:
-    - deployer
+    - jti_terminal
   <<: *deploy_template_prod
   script:
     - ./deployer.phar deploy:unlock production -vvv
