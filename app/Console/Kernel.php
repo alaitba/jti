@@ -28,8 +28,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('jti:import-from-sftp')->dailyAt('7:30');
+        $schedule->command('jti:update-rewards')->hourly();
     }
 
     /**

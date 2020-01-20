@@ -17,6 +17,10 @@ class JtiApiProvider
     private const PASS = '123';
     private const BASE_URI = 'http://crmservices.jti.kz:8081/api/';
 
+    private const USER_PROD = 'Partner360User';
+    private const PASS_PROD = 'u31Km7P>5Qe%';
+    private const BASE_URI_PROD = 'https://crmservices.jti.kz:8444/api/';
+
     private const SMS_URI = 'Contact/Send360Sms';
     private const CHECK_CONSUMER_URI = 'Contact/CheckContact';
     private const CREATE_LEAD_URI = 'Contact/Create360Lead';
@@ -32,7 +36,7 @@ class JtiApiProvider
      */
     private static function makeUrl(string $uri): string
     {
-        return self::BASE_URI . $uri;
+        return (app()->environment() === 'production' ? self::BASE_URI_PROD : self::BASE_URI) . $uri;
     }
 
     /**
@@ -47,7 +51,7 @@ class JtiApiProvider
             $method,
             $url,
             [
-                'auth' => [self::USER, self::PASS],
+                'auth' => app()->environment() === 'production' ? [self::USER_PROD, self::PASS_PROD] : [self::USER, self::PASS],
                 'json' => $body
             ]
         );
