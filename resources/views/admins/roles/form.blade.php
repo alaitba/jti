@@ -41,7 +41,7 @@
 <script type="text/javascript">
     $('.permissions_select2').select2({
         ajax: {
-            url: '/admin/admins/permissions/api/all',
+            url: '/admins/permissions/api/all',
             dataType: 'json',
             data: function (params) {
                 return {

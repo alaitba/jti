@@ -60,7 +60,7 @@
 <script type="text/javascript">
     $('.roles_select2').select2({
         ajax: {
-            url: '/admin/admins/roles/api/all',
+            url: '/admins/roles/api/all',
             dataType: 'json',
             data: function (params) {
                 return {
