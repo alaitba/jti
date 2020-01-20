@@ -3,7 +3,7 @@
 return [
     'default_locale' => 'ru',
     'locales' => ['ru', 'kz'],
-    'admin_prefix' => 'admin',
+    'admin_prefix' => '',
 
     'views' => [
         'defaults' => [
