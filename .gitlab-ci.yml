@@ -36,7 +36,7 @@
     ##
     ## Install deployer
     ##
-    - curl -LO https://deployer.org/releases/v6.4.3/deployer.phar
+    - curl -LO https://github.com/Rishats/deployer/releases/download/v6.6.0/deployer-6.6.0.phar
     - chmod +x deployer.phar
 
 .deploy_template_prod: &deploy_template_prod
@@ -85,14 +85,8 @@
     ##
     ## Install deployer
     ##
-    - curl -LO https://deployer.org/releases/v6.4.3/deployer.phar
+    - curl -LO https://github.com/Rishats/deployer/releases/download/v6.6.0/deployer-6.6.0-dev.phar
     - chmod +x deployer.phar
-    
-    ##
-    ## Install cachetool recepient for deployer for clear cache after deploy without reloading FPM
-    ##
-    - curl -LO https://github.com/Rishats/cachetool/releases/download/4.1.2/cachetool.phar
-    - chmod +x cachetool.phar
 
 stages:
   # - test
@@ -122,7 +116,6 @@ deploy to prod:
   script:
     - ./deployer.phar deploy:unlock production -vvv
     - ./deployer.phar deploy production -vvv
-    - ./cachetool.phar opcache:reset -vvv
   only:
     - production
 

@@ -2,6 +2,7 @@
 namespace Deployer;
 
 require 'recipe/laravel.php';
+require 'recipe/cachetool.php';
 
 // Название проекта
 set('application', 'jti');
@@ -30,7 +31,8 @@ host('production')
     ->user('partner360')
     ->set('deploy_path', '/home/partner360/www/backend.partner360.kz')
     ->set('composer_options', 'install --no-dev --verbose')
-    ->set('keep_releases', 3);
+    ->set('keep_releases', 3)
+    ->set('cachetool', '127.0.0.1:9000');
 
 host('testing')
     ->hostname('188.0.151.149')
@@ -97,13 +99,41 @@ task('cleanup', function () {
     run("cd {{deploy_path}} && if [ -h release ]; then $sudo rm release; fi", $runOpts);
 });
 
+/**
+ * Clear opcache cache
+ */
+desc('Clearing OPcode cache');
+task('cachetool:clear:opcache', function () {
+    $releasePath = get('release_path');
+    $options = get('cachetool');
+    $fullOptions = get('cachetool_args');
+
+    if (strlen($fullOptions) > 0) {
+        $options = "{$fullOptions}";
+    } elseif (strlen($options) > 0) {
+        $options = "--fcgi={$options}";
+    }
+
+    cd($releasePath);
+
+    run("{{bin/php}} {{bin/cachetool}} opcache:reset {$options}");
+})->onStage('production');
+
 // Удалим багнутный конфиг с Closure
 task('deploy:writable', function() {
     run('echo do not writable');
 });
 
+desc('Clear opcache for production');
+task('opcache:clear', function () {
+    run('echo do not writable');
+})->onStage('production');
+
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
+
+// Cache clear
+after('deploy:symlink', 'cachetool:clear:opcache');
 
 // Migrate database before symlink new release.
 before('deploy:symlink', 'artisan:migrate');
