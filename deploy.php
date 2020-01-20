@@ -22,16 +22,15 @@ set('allow_anonymous_stats', false);
 set('http_user', 'nginx');
 set('default_timeout', 1000);
 
-// Хост
-// host('production')
-//     ->hostname('34.67.122.192')
-//     ->port(22)
-//     ->set('branch', 'production')
-//     ->stage('production')
-//     ->user('deployer')
-//     ->set('deploy_path', '/var/www/jti.kz')
-//     ->set('composer_options', 'install --no-dev --verbose')
-//     ->set('keep_releases', 3);
+host('production')
+    ->hostname('109.233.110.131')
+    ->port(2223)
+    ->set('branch', 'production')
+    ->stage('production')
+    ->user('partner360')
+    ->set('deploy_path', '/home/partner360/www/backend.partner360.kz')
+    ->set('composer_options', 'install --no-dev --verbose')
+    ->set('keep_releases', 3);
 
 host('testing')
     ->hostname('188.0.151.149')
@@ -41,7 +40,7 @@ host('testing')
     ->user('jti')
     ->set('deploy_path', '/var/www/jti/data/www/jti.ibec.systems')
     ->set('composer_options', 'install --no-dev --verbose')
-    ->set('keep_releases', 1);
+    ->set('keep_releases', 2);
 
 // Build
 task('build', function () {
