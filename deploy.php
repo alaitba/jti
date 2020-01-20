@@ -31,8 +31,7 @@ host('production')
     ->user('partner360')
     ->set('deploy_path', '/home/partner360/www/backend.partner360.kz')
     ->set('composer_options', 'install --no-dev --verbose')
-    ->set('keep_releases', 3)
-    ->set('cachetool', '127.0.0.1:9000');
+    ->set('keep_releases', 3);
 
 host('testing')
     ->hostname('188.0.151.149')
