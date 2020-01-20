@@ -121,7 +121,7 @@ class JtiApiProvider
             'data' => [
                 'key' => $sellerId,
                 'recordsPerPage' => $perPage,
-                'page' => $page
+                'pageNumber' => $page
             ],
             'identity' => [
                 'locale' => 'ru-RU'
