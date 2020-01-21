@@ -21,7 +21,8 @@ class AuthRequests
 
     public const CREATE_PASSWORD_REQUEST = [
         'mobile_phone' => 'required|regex:/77[0-9]{9}/',
-        'password' => 'required|regex:/.*^(?=.{6,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).*$/',
+        //'password' => 'required|regex:/.*^(?=.{6,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).*$/',
+        'password' => 'required|regex:/[\x20-\x7F]{6,}/',
         'password_check' => 'required|same:password'
     ];
 
