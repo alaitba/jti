@@ -21,9 +21,9 @@ class PartnerMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if (auth('partners')->guest()) {
+        /*if (auth('partners')->guest()) {
             return response('Unauthorized.', 401);
-        }
+        }*/
 
         return $next($request);
     }
