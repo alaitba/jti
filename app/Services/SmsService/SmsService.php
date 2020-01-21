@@ -22,6 +22,7 @@ class SmsService
 {
     const DIGITS = 0;
     const STRING = 1;
+    const TEST = 2;
 
     private $smsableItem;
     private $codeLength = 4;
@@ -69,6 +70,9 @@ class SmsService
                 break;
             case self::STRING:
                 $this->code = Str::random($this->codeLength);
+                break;
+            case self::TEST:
+                $this->code = '7777';
                 break;
             default:
                 $this->code = '';

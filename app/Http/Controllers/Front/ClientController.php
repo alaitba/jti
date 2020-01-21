@@ -68,6 +68,11 @@ class ClientController extends Controller
             return $canSend;
         }
 
+        /**
+         * FIXME: temporary send 7777 code
+         */
+        $smsService->setCodeType(SmsService::TEST);
+
         return $smsService->sendSms();
     }
 
