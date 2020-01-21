@@ -24,10 +24,14 @@ class SmsService
     const STRING = 1;
     const TEST = 2;
 
+    const SELLER = 0;
+    const CUSTOMER = 1;
+
     private $smsableItem;
     private $codeLength = 4;
     private $codeType = self::DIGITS;
     private $code;
+    private $userType = self::SELLER;
 
     /**
      * SmsService constructor.
@@ -113,7 +117,7 @@ class SmsService
         $inProd = app()->environment() === 'production';
         if ($inProd) {
             try {
-                $result = JtiApiProvider::sendSms($this->smsableItem->mobile_phone, $this->code)->getBody();
+                $result = JtiApiProvider::sendSms($this->smsableItem->mobile_phone, $this->code, $this->userType)->getBody();
                 $result = json_decode($result, true);
                 if (!$result['result'])
                 {
@@ -146,5 +150,13 @@ class SmsService
             $responseData['sms_code'] = $this->code;
         }
         return response()->json($responseData);
+    }
+
+    /**
+     * @param int $userType
+     */
+    public function setUserType(int $userType): void
+    {
+        $this->userType = $userType;
     }
 }
