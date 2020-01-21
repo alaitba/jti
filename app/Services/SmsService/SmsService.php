@@ -109,7 +109,16 @@ class SmsService
         $inProd = app()->environment() === 'production';
         if ($inProd) {
             try {
-                JtiApiProvider::sendSms($this->smsableItem->mobile_phone, $this->code);
+                $result = JtiApiProvider::sendSms($this->smsableItem->mobile_phone, $this->code);
+                $result = json_decode($result, true);
+                if (!$result['result'])
+                {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'sms_not_sent',
+                        'crm_message' => $result['message']['messageText'] ?? ''
+                    ], 403);
+                }
             } catch (Exception $e) {
                 LogService::logException($e);
                 return response()->json([

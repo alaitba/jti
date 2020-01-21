@@ -72,7 +72,7 @@ class JtiApiProvider
                 'locale' => 'ru-RU'
             ]
         ];
-        self::executeQuery(self::makeUrl(self::SMS_URI), $body);
+       return self::executeQuery(self::makeUrl(self::SMS_URI), $body);
     }
 
     /**
