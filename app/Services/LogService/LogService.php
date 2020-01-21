@@ -25,6 +25,9 @@ class LogService
         Log::error('================');
     }
 
+    /**
+     * @param $msg
+     */
     public static function logInfo($msg)
     {
         Log::info('=================');

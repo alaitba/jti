@@ -176,8 +176,7 @@ class AuthController extends Controller
          */
         $where = $reset ? [
             ['mobile_phone', $request->input('mobile_phone')],
-            ['phone_verified_at', '!=', null],
-            ['password', '!=', null]
+            ['phone_verified_at', '!=', null]
         ] : [
             ['mobile_phone', $request->input('mobile_phone')],
             ['phone_verified_at', '>=', Carbon::now()->subMinutes(config('project.create_password_lifetime', 2))],
