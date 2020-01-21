@@ -69,7 +69,7 @@ class JtiApiProvider
     {
         $body = [
             'data' => [
-                'mobilePhone' => $phone,
+                'mobilePhone' => '+' . $phone,
                 'smsText' => $text
             ],
             'identity' => [
