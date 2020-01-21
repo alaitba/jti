@@ -106,7 +106,8 @@ class ImportFromSftp extends Command
         /*
         * Download files
         */
-        $today = $this->option('date') ?? date('dmY');
+        $date = $this->option('date')
+        $today =  $date == '?' ? date('dmY') : $date;
 
         $this->info('Скачиваем ' . $type);
 
