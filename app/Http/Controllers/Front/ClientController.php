@@ -39,7 +39,7 @@ class ClientController extends Controller
          */
 
         try {
-            $result = JtiApiProvider::checkConsumer('+' . $mobilePhone, auth('partners')->user()->current_uid)->getBody();
+            $result = JtiApiProvider::checkConsumer($mobilePhone, auth('partners')->user()->current_uid)->getBody();
             $result = json_decode($result, true);
             if (!$result['result'])
             {
