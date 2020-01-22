@@ -46,7 +46,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         /**
          * Set tradepoint
          */
-        Route::post('set-tradepoint', 'Front\AuthController@postSetTradePoint')->middleware('partnerMiddleware');
+        Route::post('set-tradepoint', 'Front\AuthController@postSetTradePoint')->middleware('partnerMiddleware:true');
     });
 
     /**

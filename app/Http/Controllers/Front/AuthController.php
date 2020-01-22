@@ -55,10 +55,11 @@ class AuthController extends Controller
         /**
          * Check phone number in Partners
          */
-        $partner = Partner::withoutTrashed()->where('mobile_phone', $request->input('mobile_phone'))->first();
+        $mobilePhone = $request->input('mobile_phone');
+        $partner = Partner::withoutTrashed()->where('mobile_phone', $mobilePhone)->first();
         if (!$partner) {
             $contact = Contact::withoutTrashed()->select('mobile_phone')
-                ->where('mobile_phone', $request->input('mobile_phone'))
+                ->where('mobile_phone', $mobilePhone)
                 ->first();
             /**
              * No such phone at all
