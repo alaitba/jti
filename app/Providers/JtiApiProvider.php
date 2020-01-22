@@ -23,7 +23,7 @@ class JtiApiProvider
     private const BASE_URI_PROD = 'https://crmservices.jti.kz:8444/api/';
 
     private const SMS_URI = 'Contact/Send360Sms';
-    private const SMS_SELLER_URI = 'Seller/SendSeller360Sms';
+    private const SMS_SELLER_URI = 'Seller/Send360Sms';
     private const CHECK_CONSUMER_URI = 'Contact/CheckContact';
     private const CREATE_LEAD_URI = 'Contact/Create360Lead';
     private const LEAD_HISTORY_URI = 'Seller/GetSellerLeadsHistory';
