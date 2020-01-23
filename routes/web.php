@@ -45,7 +45,7 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
             Route::get('api/all', 'PermissionController@getAllPermissions')->name('admin.admins.permissions.all');
         });
     });
-
+/*
     Route::group(['prefix' => 'settings/localisation'], function () {
         Route::get('groups', 'Settings\LocalisationController@groups')->name('admin.settings.localisation');
         Route::get('groupsGetList', 'Settings\LocalisationController@groupList')->name('admin.settings.localisation.groups.list');
@@ -64,11 +64,11 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
             Route::post('items/{itemId}/update', 'Settings\LocalisationController@groupsItemsUpdate')->name('admin.settings.localisation.groups.items.update');
         });
     });
-
+*/
     /**
      * Шаблоны писем
      */
-    Route::group(['prefix' => 'email-templates'], function () {
+/*    Route::group(['prefix' => 'email-templates'], function () {
         Route::get('/', 'Settings\EmailTemplateController@index')->name('admin.email_templates.index');
         Route::get('{id}/edit', 'Settings\EmailTemplateController@edit')->name('admin.email_templates.edit');
         Route::post('{id}/update', 'Settings\EmailTemplateController@update')->name('admin.email_templates.update');
@@ -76,7 +76,7 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('create', 'Settings\EmailTemplateController@create')->name('admin.email_templates.create');
         Route::post('store', 'Settings\EmailTemplateController@store')->name('admin.email_templates.store');
     });
-
+*/
     /**
      * Отчеты
      */
