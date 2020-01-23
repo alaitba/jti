@@ -171,7 +171,6 @@ class ClientController extends Controller
             $result = json_decode($result, true);
             if (!$result['result'])
             {
-                LogService::logInfo($result);
                 LogService::logInfo($data);
                 return response()->json([
                     'status' => 'error',
