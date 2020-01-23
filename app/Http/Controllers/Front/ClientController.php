@@ -153,7 +153,7 @@ class ClientController extends Controller
                 'verificationCode' => $verified->sms_code,
                 'confirmationCode' => $verified->sms_code,
                 'sellerId' =>  auth('partners')->user()->current_uid,
-                'mobilePhone' => '+' . $request->input('mobile_phone'),
+                'mobilePhone' => $request->input('mobile_phone'),
                 'fillingDate' => Carbon::now()->toISOString(),
                 'internalId' => Str::random()
             ];
@@ -172,6 +172,7 @@ class ClientController extends Controller
             if (!$result['result'])
             {
                 LogService::logInfo($result);
+                LogService::logInfo($data);
                 return response()->json([
                     'status' => 'error',
                     'message' => 'already_filled'
