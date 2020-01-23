@@ -41,7 +41,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         /**
          * Refresh token
          */
-        Route::post('refresh', 'Front\AuthController@refresh')->middleware('partnerMiddleware');
+        Route::post('refresh', 'Front\AuthController@refresh')->middleware('partnerMiddleware:true');
 
         /**
          * Set tradepoint
