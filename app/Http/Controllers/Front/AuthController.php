@@ -62,19 +62,30 @@ class AuthController extends Controller
                 ->where('mobile_phone', $mobilePhone)
                 ->first();
             /**
-             * No such phone at all
+             * No such phone at all or no tradepoint
              */
-            if (!$contact) {
+            if (!$contact || !$contact->tradepoint->count()) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'phone_does_not_exist'
                 ], 403);
             }
+
             /**
              * Create Partner
              */
             $partner = new Partner($contact->toArray());
             $partner->save();
+        }
+
+        /**
+         * Fix for already registered w/o tradepoint
+         */
+        if (count($partner->tradepointsArray()) == 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'phone_does_not_exist'
+            ], 403);
         }
 
         /**
