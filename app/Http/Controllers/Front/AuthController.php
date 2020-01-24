@@ -58,7 +58,7 @@ class AuthController extends Controller
         $mobilePhone = $request->input('mobile_phone');
         $partner = Partner::withoutTrashed()->where('mobile_phone', $mobilePhone)->first();
         if (!$partner) {
-            $contact = Contact::withoutTrashed()->withCount('tradepoint')->select('mobile_phone')
+            $contact = Contact::withoutTrashed()->withCount('tradepoint')
                 ->where('mobile_phone', $mobilePhone)
                 ->first();
             /**
@@ -74,7 +74,7 @@ class AuthController extends Controller
             /**
              * Create Partner
              */
-            $partner = new Partner($contact->toArray());
+            $partner = new Partner($contact->only(['mobile_phone']));
             $partner->save();
         }
 
