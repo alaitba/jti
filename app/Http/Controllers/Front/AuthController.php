@@ -64,7 +64,7 @@ class AuthController extends Controller
             /**
              * No such phone at all or no tradepoint
              */
-            if (!$contact || !$contact->tradepoint->count()) {
+            if (!$contact || !$contact->tradepoint || !$contact->tradepoint->count()) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'phone_does_not_exist'
