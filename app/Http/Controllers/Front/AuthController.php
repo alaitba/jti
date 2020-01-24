@@ -395,6 +395,13 @@ class AuthController extends Controller
          * Check tradepoints
          */
         $tradepoints = $partner->tradepointsArray();
+        if (count($tradepoints) == 0)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'no_tradepoint',
+            ], 403);
+        }
         if (count($tradepoints) > 1)
         {
             return response()->json([
@@ -404,7 +411,6 @@ class AuthController extends Controller
                 'message' => 'need_tradepoint',
                 'tradepoints' => $tradepoints
             ]);
-
         }
         $tpAcc = array_key_first($tradepoints);
         $partner->update(['current_tradepoint' => $tpAcc, 'current_uid' => $tradepoints[$tpAcc]['contact_uid']]);
