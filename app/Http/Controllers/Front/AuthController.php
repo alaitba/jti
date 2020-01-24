@@ -58,13 +58,13 @@ class AuthController extends Controller
         $mobilePhone = $request->input('mobile_phone');
         $partner = Partner::withoutTrashed()->where('mobile_phone', $mobilePhone)->first();
         if (!$partner) {
-            $contact = Contact::withoutTrashed()->select('mobile_phone')
+            $contact = Contact::withoutTrashed()->withCount('tradepoint')->select('mobile_phone')
                 ->where('mobile_phone', $mobilePhone)
                 ->first();
             /**
              * No such phone at all or no tradepoint
              */
-            if (!$contact || !$contact->tradepoint || !$contact->tradepoint->count()) {
+            if (!$contact || !$contact->tradepoint_count) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'phone_does_not_exist'
