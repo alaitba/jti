@@ -26,7 +26,7 @@ class RewardsController extends Controller
         try {
             $result = JtiApiProvider::getBalance(auth('partners')->user()->current_uid)->getBody();
             $result = json_decode($result, true);
-            if (!$result['result'] || !isset($result['resultObject']['points']))
+            if (!$result['result'])
             {
                 return response()->json([
                     'status' => 'error',
@@ -35,7 +35,7 @@ class RewardsController extends Controller
             }
             return response()->json([
                 'status' => 'ok',
-                'balance' => $result['resultObject']['points']
+                'balance' => $result['resultObject']['points'] ?? 0
             ]);
         } catch (Exception $e) {
             LogService::logException($e);
