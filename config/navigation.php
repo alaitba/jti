@@ -25,6 +25,16 @@ return [
                         'admin'
                     ]
                 ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Новости',
+                    'route_name' => 'admin.news.index',
+                    'item_active_on' => 'news*',
+                    'icon' => 'la la-newspaper-o',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
             ],
             'roles' => [
                 'admin'
