@@ -82,10 +82,11 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('create', 'NewsController@create')->name('.create');
         Route::post('store', 'NewsController@store')->name('.store');
         Route::get('list', 'NewsController@getList')->name('.list');
-/*        Route::get('{id}/edit', 'RewardsController@edit')->name('.edit');
-        Route::post('{id}/update', 'RewardsController@update')->name('.update');
-        Route::post('{rewardId}/media', 'RewardsController@media')->name('.media');
-        Route::get('{rewardId}/media-delete', 'RewardsController@deleteMedia')->name('.media.delete');*/
+        Route::get('{id}/edit', 'NewsController@edit')->name('.edit');
+        Route::post('{id}/update', 'NewsController@update')->name('.update');
+        Route::get('{id}/delete', 'NewsController@delete')->name('.delete');
+        Route::post('{newsId}/media', 'NewsController@media')->name('.media');
+        Route::get('{newsId}/media-delete', 'NewsController@deleteMedia')->name('.media.delete');
     });
 
 });

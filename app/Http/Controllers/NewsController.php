@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\NewsRequest;
+use App\Http\Utils\ResponseBuilder;
 use App\Models\News;
 use App\Services\LogService\LogService;
 use App\Services\MediaService\MediaService;
+use App\Ui\Attributes\Modal;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -92,8 +94,7 @@ class NewsController extends Controller
 
         if ($request->has('image')) {
             $file = $request->file('image');
-            $media = $this->mediaService->upload($file, News::class, $news->id);
-            $this->mediaService->setMainById($media->id, News::class, $media->id);
+            $this->mediaService->upload($file, News::class, $news->id);
         }
 
         return response()->json([
@@ -120,16 +121,13 @@ class NewsController extends Controller
      */
     public function edit($newsId)
     {
-        $item = News::with('mainImage', 'media')->find($newsId);
+        $item = News::with('media')->find($newsId);
         $medias = $item->media->chunk(2);
 
-        $categories = $this->categoryService->categoriesForSelect('news');
-
-        $item = $this->newsCase->item($newsId);
         if (!$item) {
             $response = new ResponseBuilder();
             $response->showAlert('Ошибка!', 'Новость не найдена');
-            $response->closeModal(Modal::LARGE);
+            $response->closeModal(Modal::SUPER_LARGE);
             return $response->makeJson();
         }
 
@@ -139,12 +137,11 @@ class NewsController extends Controller
                     'params' => [
                         'modal' => 'superLargeModal',
                         'title' => 'Редактирование новости',
-                        'content' => view('news::forms.form', [
-                            'formAction' => route(config('news.routes.update.name'), $newsId),
+                        'content' => view('news.form', [
+                            'formAction' => route('admin.news.update', $newsId),
                             'buttonText' => 'Сохранить',
                             'medias' => $medias,
                             'item' => $item,
-                            'categories' => $categories,
                         ])->render(),
                     ]
                 ]
@@ -154,15 +151,8 @@ class NewsController extends Controller
 
     public function update(NewsRequest $request, $newsId)
     {
-        $published = (strtotime($request->input('published_at'))) ? date("Y-m-d H:i:s", strtotime($request->published_at)) : date("Y-m-d H:i:s", time());
-
-        $request->merge([
-            'site_display' => ($request->has('site_display')) ? 1 : 0,
-            'display_on_main_page' => ($request->has('display_on_main_page')) ? 1 : 0,
-            'published_at' => $published
-        ]);
-
-        $news = $this->newsCase->update($newsId, $request->all());
+        $news = News::query()->find($newsId);
+        $news->update($request->all());
 
         return response()->json([
             'functions' => [
@@ -175,22 +165,24 @@ class NewsController extends Controller
                     'params' => [
                         'selector' => '.ajax-content',
                         'row' => '.row-' . $newsId,
-                        'content' => view('news::item',['item' => $news])->render()
+                        'content' => view('news.item',['item' => $news])->render()
                     ]
                 ]
             ]
         ]);
     }
 
+    /**
+     * @param $id
+     * @return JsonResponse
+     * @throws \Exception
+     */
     public function delete($id)
     {
-        $item = $this->newsCase->item($id);
+        $item = News::query()->find($id);
 
         if($item) {
-            $media = $item->media->first();
-            if(isset($media)){
-                $this->mediaService->deleteById($item->media->first()->id);
-            }
+            $this->mediaService->deleteForModel(News::class, $id);
             $item->delete();
         }
 
@@ -206,6 +198,12 @@ class NewsController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param int $itemId
+     * @return JsonResponse
+     * @throws \Throwable
+     */
     public function media(Request $request, int $itemId)
     {
         foreach ($request->file('image') as $image) {
@@ -215,16 +213,14 @@ class NewsController extends Controller
         $items = News::find($itemId);
 
         return response()->json(([
-            'media' => view('news::media.media_list', ['items' => $items])->render(), // DO NOT FORGET MAYBE WRONG
+            'media' => view('news.media_list', ['items' => $items])->render(), // DO NOT FORGET MAYBE WRONG
         ]));
     }
 
-    public function mainMedia(int $itemId, int $mediaId)
-    {
-        $news = News::find($itemId);
-        $this->mediaService->setMainById($mediaId, News::class, $news->id);
-    }
-
+    /**
+     * @param $mediaId
+     * @throws \Exception
+     */
     public function deleteMedia($mediaId)
     {
         $this->mediaService->deleteById($mediaId);

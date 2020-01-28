@@ -1,6 +1,6 @@
 <div class="row">
     <div @if(isset($item)) class="col-md-8" @else class="col-md-12" @endif>
-        <form action="{{$formAction}}" method="post" class="ajax" id="newsForm">
+        <form action="{{$formAction}}" method="post" class="ajax" id="newsForm" data-ui-block-element="#newsForm">
             @if(!isset($item))
                 <fieldset>
                     <legend>Медиа новости</legend>
@@ -48,12 +48,12 @@
         </form>
     </div>
     @if(isset($item))
-    <div class="col-md-4">
+    <div class="col-md-4" id="media_container">
         <fieldset>
             <legend>Изображения</legend>
             <form action="{{ route('admin.news.media', ['newsId' => $item->id]) }}"
                   method="post"
-                  id="formImage">
+                  id="formImage" data-ui-block-element="#media_container" class="ajax">
                 @csrf
                 <input type="file" name="image[]" class="form-input-image-media" style="display: none"
                        accept="image/x-png,image/gif,image/jpeg,image/svg"

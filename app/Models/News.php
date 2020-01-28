@@ -13,5 +13,15 @@ class News extends Model
 
     protected $guarded = [];
 
-    public $translatable = ['title', 'content'];
+    public $translatable = ['title', 'contents'];
+
+    /**
+     * A Post may have media.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\morphMany
+     */
+    public function media()
+    {
+        return $this->morphMany(Media::class, 'imageable');
+    }
 }
