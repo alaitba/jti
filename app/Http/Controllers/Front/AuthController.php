@@ -341,7 +341,8 @@ class AuthController extends Controller
         $partner = auth('partners')->user();
         $accountCode = $request->input('account_code');
         $tradePointContact = TradePointContact::withoutTrashed()->where('account_code', $accountCode)->first();
-        if (!$tradePointContact || !in_array($accountCode, array_keys($partner->tradepointsArray())))
+        $tradePoints = $partner->tradepointsArray();
+        if (!$tradePointContact || !in_array($accountCode, array_keys($tradePoints)))
         {
             return response()->json([
                 'status' => 'error',
@@ -356,7 +357,8 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'ok',
-            'message' => 'tradepoint_set'
+            'message' => 'tradepoint_set',
+            'tradepoint' => $tradePoints[$accountCode]
         ]);
     }
 

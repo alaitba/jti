@@ -59,7 +59,7 @@ class UpdateRewards extends Command
             {
                 Reward::withTrashed()->updateOrCreate(['crm_id' => $reward['rewardId']], [
                     'qty' => $reward['availableQty'],
-                    'price' => $reward['pricePoints'],
+                    'price' => $reward['priceInPoints'],
                     'name->ru' => $reward['name']
                 ])->restore();
             }
