@@ -429,6 +429,7 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'ok',
             'message' => 'authorized',
+            'tradepoint' => array_pop($tradepoints),
             'token' => $token,
             'token_ttl' => auth('partners')->factory()->getTTL() * 60
         ]);
