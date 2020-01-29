@@ -91,7 +91,7 @@ class RewardsController extends Controller
             }
             return response()->json([
                 'status' => 'ok',
-                'rewards' => $result['resultObject']
+                'rewards' => array_values($result['resultObject'])
             ]);
         } catch (Exception $e) {
             LogService::logException($e);
