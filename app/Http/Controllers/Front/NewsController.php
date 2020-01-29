@@ -20,7 +20,7 @@ class NewsController extends Controller
     {
         $news = News::withoutTrashed()->with(['media' => function(MorphMany $q) {
             $q->select('id', 'imageable_id', 'imageable_type', 'original_file_name', 'conversions', 'mime');
-        }])->where('created_at', '>', $request->input('from_date', '1970-01-01 00:00:00'));
+        }])->where('created_at', '>', $request->input('from_date') ?? '1970-01-01 00:00:00');
 
         if ($perPage = $request->input('perpage', 0))
         {
