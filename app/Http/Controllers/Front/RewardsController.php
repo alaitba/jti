@@ -74,7 +74,7 @@ class RewardsController extends Controller
                     {
                         unset($result['resultObject'][$key]);
                     } else {
-                        $result['resultObject'][$key]['price'] = $dbReward->price;
+                        $result['resultObject'][$key]['price'] = $result['resultObject'][$key]['priceInPoints'];
                         $result['resultObject'][$key]['totalQty'] = $dbReward->qty;
                         $result['resultObject'][$key]['name'] = $dbReward->getTranslation('name', $locale);
                         $result['resultObject'][$key]['description'] = $dbReward->getTranslation('description', $locale);

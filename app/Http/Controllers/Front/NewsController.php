@@ -20,8 +20,8 @@ class NewsController extends Controller
     {
         $news = News::withoutTrashed()->with(['media' => function(MorphMany $q) {
             $q->select('id', 'imageable_id', 'imageable_type', 'original_file_name', 'conversions', 'mime');
-        }])
-            ->where('created_at', '>', $request->input('from_date', '1970-01-01 00:00:00'));
+        }])->where('created_at', '>', $request->input('from_date', '1970-01-01 00:00:00'));
+
         if ($perPage = $request->input('perpage', 0))
         {
             $news = $news->skip(($request->input('page', 0) - 1) * $perPage)->take($perPage);
@@ -31,7 +31,6 @@ class NewsController extends Controller
         $news = $news->orderBy('id', 'DESC')->get(['id', 'title', 'contents', 'created_at']);
 
         $newsItems = $news->keyBy('id')->map(function (News $newsItem) {
-            $newsItem->makeHidden('id');
             $newsItem->media->map(function (Media $media) {
                 $media->makeHidden([
                     'id',
@@ -48,9 +47,9 @@ class NewsController extends Controller
                 }
                 $media->setAttribute('sizes', $conversions);
                 $media->makeHidden('conversions');
-                return $media;
+                return $media->toArray();
             });
-            return $newsItem;
+            return $newsItem->toArray();
         })->toArray();
 
         return response()->json([
