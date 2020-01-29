@@ -39,17 +39,14 @@ class NewsController extends Controller
                     'original_file_name',
                     'url_reverse_proxy'
                 ]);
-                $conversions = $media->conversions;
-                foreach ($conversions as $key => $conv)
-                {
-                    unset($conversions[$key]['name']);
-                    unset($conversions[$key]['url_reverse_proxy']);
-                }
+                $conversions = collect($media->conversions)->map(function ($conversion) {
+                    return collect($conversion)->only(['mime', 'width', 'height', 'url']);
+                });
                 $media->setAttribute('sizes', $conversions);
                 $media->makeHidden('conversions');
-                return $media->toArray();
+                return $media;
             });
-            return $newsItem->toArray();
+            return $newsItem;
         })->toArray();
 
         return response()->json([
