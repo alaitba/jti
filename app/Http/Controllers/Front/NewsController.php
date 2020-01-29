@@ -30,7 +30,7 @@ class NewsController extends Controller
         }
         $news = $news->orderBy('id', 'DESC')->get(['id', 'title', 'contents', 'created_at']);
 
-        $newsItems = $news->map(function (News $newsItem) {
+        $newsItems = $news->keyBy('id')->map(function (News $newsItem) {
             $newsItem->makeHidden('id');
             $newsItem->media->map(function (Media $media) {
                 $media->makeHidden([
@@ -51,7 +51,7 @@ class NewsController extends Controller
                 return $media;
             });
             return $newsItem;
-        });
+        })->toArray();
 
         return response()->json([
             'status' => 'ok',
