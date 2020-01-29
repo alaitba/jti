@@ -358,7 +358,9 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'ok',
             'message' => 'tradepoint_set',
-            'tradepoint' => $tradePoints[$accountCode]
+            'tradepoint' => $tradePoints[$accountCode],
+            'account' => $partner->current_contact->only(['first_name', 'last_name', 'middle_name', 'mobile_phone']) ?? [],
+            'tradeagent' => $partner->current_contact->tradepoint->trade_agent->only(['employee_name', 'phone']) ?? [],
         ]);
     }
 
@@ -432,6 +434,8 @@ class AuthController extends Controller
             'status' => 'ok',
             'message' => 'authorized',
             'tradepoint' => array_pop($tradepoints),
+            'account' => $partner->current_contact->only(['first_name', 'last_name', 'middle_name', 'mobile_phone']) ?? [],
+            'tradeagent' => $partner->current_contact->tradepoint->trade_agent->only(['employee_name', 'phone']) ?? [],
             'token' => $token,
             'token_ttl' => auth('partners')->factory()->getTTL() * 60
         ]);
