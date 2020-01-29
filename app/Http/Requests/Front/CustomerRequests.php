@@ -53,5 +53,5 @@ class CustomerRequests
         'product_code' => 'required_unless:self,1|string',
         'signature' => 'required_unless:self,1|base64image'
     ];
-    
+
 }
