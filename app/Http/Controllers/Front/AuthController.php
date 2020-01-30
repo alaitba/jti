@@ -255,7 +255,7 @@ class AuthController extends Controller
             $partner->failed_auth++;
             if ($partner->failed_auth >= 5)
             {
-                $partner->auth_blocked_till = Carbon::now()->addMinutes(30);
+                $partner->auth_blocked_till = Carbon::now()->addMinutes(config('project.failed_auth_block_time', 10));
             }
             $partner->save();
             return response()->json([
