@@ -60,6 +60,13 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
             Route::match(['get', 'post'], 'get-list', 'SalesPlanController@getList')->name('.list');
         });
 
+        /**
+         * Registered partners
+         */
+        Route::group(['prefix' => 'partners', 'as' => '.partners'], function () {
+            Route::get('/', 'PartnersReportController@index')->name('.index');
+            Route::get('get-list', 'PartnersReportController@getList')->name('.list');
+        });
     });
 
     /**

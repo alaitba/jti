@@ -53,7 +53,17 @@ return [
                     'roles' => [
                         'admin'
                     ]
-                ]
+                ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Зарегистрированные продавцы',
+                    'route_name' => 'admin.reports.partners.index',
+                    'item_active_on' => 'reports/partners*',
+                    'icon' => 'la la-users',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
             ],
             'roles' => [
                 'admin'
