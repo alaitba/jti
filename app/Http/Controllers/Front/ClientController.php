@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -88,9 +89,9 @@ class ClientController extends Controller
          * Check if code exists, correct and not expired
          */
         $customerPhoneVerification = CustomerPhoneVerification::query()->where([
-            ['mobile_phone', trim($request->input('mobile_phone')), '+'],
+            ['mobile_phone', trim($request->input('mobile_phone'), '+')],
             ['sms_code', $request->input('sms_code')],
-            //['sms_code_sent_at', '>=', Carbon::now()->subMinutes(config('project.sms_code_lifetime', 2))]
+            ['sms_code_sent_at', '>=', Carbon::now()->subMinutes(config('project.sms_code_lifetime', 3))]
         ])->first();
 
         if (!$customerPhoneVerification) {
