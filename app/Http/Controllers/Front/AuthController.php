@@ -55,7 +55,7 @@ class AuthController extends Controller
         /**
          * Check phone number in Partners
          */
-        $mobilePhone = $request->input('mobile_phone');
+        $mobilePhone = trim($request->input('mobile_phone'), '+');
         $partner = Partner::withoutTrashed()->where('mobile_phone', $mobilePhone)->first();
         if (!$partner) {
             $contact = Contact::withoutTrashed()->withCount('tradepoint')
@@ -137,7 +137,7 @@ class AuthController extends Controller
          * Check if code exists, correct and not expired
          */
         $partner = Partner::withoutTrashed()->where([
-            ['mobile_phone', $request->input('mobile_phone')],
+            ['mobile_phone', trim($request->input('mobile_phone'), '+')],
             ['sms_code', $request->input('sms_code')],
             ['sms_code_sent_at', '>=', Carbon::now()->subMinutes(config('project.sms_code_lifetime', 2))]
         ])->first();
@@ -187,10 +187,10 @@ class AuthController extends Controller
          * Check if password can be created
          */
         $where = $reset ? [
-            ['mobile_phone', $request->input('mobile_phone')],
+            ['mobile_phone', trim($request->input('mobile_phone'), '+')],
             ['phone_verified_at', '!=', null]
         ] : [
-            ['mobile_phone', $request->input('mobile_phone')],
+            ['mobile_phone', trim($request->input('mobile_phone'), '+')],
             ['phone_verified_at', '>=', Carbon::now()->subMinutes(config('project.create_password_lifetime', 2))],
             ['password', null]
         ];
@@ -220,6 +220,7 @@ class AuthController extends Controller
     public function postLogin(Request $request)
     {
         $credentials = $request->only(['mobile_phone', 'password']);
+        $credentials['mobile_phone'] = trim($credentials['mobile_phone'], '+');
         /**
          * Auth validation
          */
@@ -287,7 +288,7 @@ class AuthController extends Controller
          * Check phone number in Partners
          */
         $partner = Partner::withoutTrashed()->where([
-            ['mobile_phone', $request->input('mobile_phone')],
+            ['mobile_phone', trim($request->input('mobile_phone'), '+')],
             ['password', '!=', null],
             ['phone_verified_at', '!=', null]
         ])->first();
