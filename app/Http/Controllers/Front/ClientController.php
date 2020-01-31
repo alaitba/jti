@@ -28,9 +28,8 @@ class ClientController extends Controller
      */
     public function sendSMS(Request $request)
     {
-        $inProd = app()->environment() === 'production';
         $mobilePhone = $request->input('mobile_phone');
-        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'legal_age']), $inProd ? CustomerRequests::PHONE_REQUEST : CustomerRequests::PHONE_REQUEST_TEST);
+        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'legal_age']), CustomerRequests::PHONE_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
@@ -69,10 +68,6 @@ class ClientController extends Controller
             return $canSend;
         }
 
-        /**
-         * FIXME: temporary send 7777 code
-         */
-        $smsService->setCodeType(SmsService::TEST);
         $smsService->setUserType(SmsService::CUSTOMER);
 
         return $smsService->sendSms();
@@ -84,8 +79,7 @@ class ClientController extends Controller
      */
     public function checkSms(Request $request)
     {
-        $inProd = app()->environment() === 'production';
-        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'sms_code']), $inProd? CustomerRequests::SMSCODE_REQUEST : CustomerRequests::SMSCODE_REQUEST_TEST);
+        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'sms_code']), CustomerRequests::SMSCODE_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
@@ -96,7 +90,7 @@ class ClientController extends Controller
         $customerPhoneVerification = CustomerPhoneVerification::query()->where([
             ['mobile_phone', $request->input('mobile_phone')],
             ['sms_code', $request->input('sms_code')],
-            //['sms_code_sent_at', '>=', Carbon::now()->subMinutes(config('project.sms_code_lifetime', 2))]
+            ['sms_code_sent_at', '>=', Carbon::now()->subMinutes(config('project.sms_code_lifetime', 2))]
         ])->first();
 
         if (!$customerPhoneVerification) {
@@ -121,7 +115,6 @@ class ClientController extends Controller
      */
     public function createLead(Request $request)
     {
-        $inProd = app()->environment() === 'production';
         $validation = ValidatorService::validateRequest($request->only([
             'mobile_phone',
             'firstname',
@@ -130,7 +123,7 @@ class ClientController extends Controller
             'product_code',
             'signature',
             'self'
-        ]), $inProd ? CustomerRequests::CREATELEAD_REQUEST : CustomerRequests::CREATELEAD_REQUEST_TEST);
+        ]), CustomerRequests::CREATELEAD_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
