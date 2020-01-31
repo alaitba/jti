@@ -117,7 +117,7 @@ class SmsService
         $inProd = app()->environment() === 'production';
         if ($inProd && !$this->codeType == self::TEST) {
             try {
-                $result = JtiApiProvider::sendSms($this->smsableItem->mobile_phone, $this->code, $this->userType)->getBody();
+                $result = JtiApiProvider::sendSms('+' . $this->smsableItem->mobile_phone, $this->code, $this->userType)->getBody();
                 $result = json_decode($result, true);
                 if (!$result['result'])
                 {
