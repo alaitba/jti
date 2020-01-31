@@ -58,7 +58,7 @@ class ClientController extends Controller
         }
 
 
-        $customerPhoneVerification = CustomerPhoneVerification::query()->firstOrCreate(['mobile_phone' => $mobilePhone]);
+        $customerPhoneVerification = CustomerPhoneVerification::query()->firstOrCreate(['mobile_phone' => trim($mobilePhone, '+')]);
 
         $smsService = new SmsService($customerPhoneVerification);
 
