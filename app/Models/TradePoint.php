@@ -14,4 +14,9 @@ class TradePoint extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    public function trade_agent()
+    {
+        return $this->belongsTo(TradeAgent::class, 'employee_code', 'employee_code');
+    }
 }

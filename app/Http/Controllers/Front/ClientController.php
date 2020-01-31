@@ -28,8 +28,9 @@ class ClientController extends Controller
      */
     public function sendSMS(Request $request)
     {
+        $inProd = app()->environment() === 'production';
         $mobilePhone = $request->input('mobile_phone');
-        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'legal_age']), CustomerRequests::PHONE_REQUEST);
+        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'legal_age']), $inProd ? CustomerRequests::PHONE_REQUEST : CustomerRequests::PHONE_REQUEST_TEST);
         if ($validation !== true) {
             return $validation;
         }
@@ -43,6 +44,7 @@ class ClientController extends Controller
             $result = json_decode($result, true);
             if (!$result['result'])
             {
+                LogService::logInfo($result);
                 return response()->json([
                     'status' => 'error',
                     'message' => 'already_filled'
@@ -82,7 +84,8 @@ class ClientController extends Controller
      */
     public function checkSms(Request $request)
     {
-        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'sms_code']), CustomerRequests::SMSCODE_REQUEST);
+        $inProd = app()->environment() === 'production';
+        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'sms_code']), $inProd? CustomerRequests::SMSCODE_REQUEST : CustomerRequests::SMSCODE_REQUEST_TEST);
         if ($validation !== true) {
             return $validation;
         }
@@ -118,6 +121,7 @@ class ClientController extends Controller
      */
     public function createLead(Request $request)
     {
+        $inProd = app()->environment() === 'production';
         $validation = ValidatorService::validateRequest($request->only([
             'mobile_phone',
             'firstname',
@@ -126,7 +130,7 @@ class ClientController extends Controller
             'product_code',
             'signature',
             'self'
-        ]), CustomerRequests::CREATELEAD_REQUEST);
+        ]), $inProd ? CustomerRequests::CREATELEAD_REQUEST : CustomerRequests::CREATELEAD_REQUEST_TEST);
         if ($validation !== true) {
             return $validation;
         }
@@ -170,6 +174,7 @@ class ClientController extends Controller
             $result = json_decode($result, true);
             if (!$result['result'])
             {
+                LogService::logInfo($result);
                 return response()->json([
                     'status' => 'error',
                     'message' => 'already_filled'

@@ -75,4 +75,11 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::get('get', 'Front\RewardsController@createReward');
     });
 
+    /**
+     * Ноости
+     */
+    Route::group(['prefix' => 'news', 'middleware' => 'partnerMiddleware'], function () {
+        Route::get('/', 'Front\NewsController@getNews');
+    });
+
 });

@@ -83,7 +83,7 @@ $(document).ready(function () {
         if ($(this).hasClass('ajax')) {
             e.preventDefault();
 
-            var blockElement = $(this).attr('data-ui-block-element');
+            var blockElement = $(this).data('ui-block-element');
 
             if (!blockElement) {
                 app.functions.blockPage();

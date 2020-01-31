@@ -25,6 +25,16 @@ return [
                         'admin'
                     ]
                 ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Новости',
+                    'route_name' => 'admin.news.index',
+                    'item_active_on' => 'news*',
+                    'icon' => 'la la-newspaper-o',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
             ],
             'roles' => [
                 'admin'
@@ -43,7 +53,17 @@ return [
                     'roles' => [
                         'admin'
                     ]
-                ]
+                ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Зарегистрированные продавцы',
+                    'route_name' => 'admin.reports.partners.index',
+                    'item_active_on' => 'reports/partners*',
+                    'icon' => 'la la-users',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
             ],
             'roles' => [
                 'admin'

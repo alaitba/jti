@@ -26,7 +26,7 @@ class RewardsController extends Controller
         try {
             $result = JtiApiProvider::getBalance(auth('partners')->user()->current_uid)->getBody();
             $result = json_decode($result, true);
-            if (!$result['result'] || !isset($result['resultObject']['points']))
+            if (!$result['result'])
             {
                 return response()->json([
                     'status' => 'error',
@@ -35,7 +35,7 @@ class RewardsController extends Controller
             }
             return response()->json([
                 'status' => 'ok',
-                'balance' => $result['resultObject']['points']
+                'balance' => $result['resultObject']['points'] ?? 0
             ]);
         } catch (Exception $e) {
             LogService::logException($e);
@@ -74,7 +74,7 @@ class RewardsController extends Controller
                     {
                         unset($result['resultObject'][$key]);
                     } else {
-                        $result['resultObject'][$key]['price'] = $dbReward->price;
+                        $result['resultObject'][$key]['price'] = $result['resultObject'][$key]['priceInPoints'];
                         $result['resultObject'][$key]['totalQty'] = $dbReward->qty;
                         $result['resultObject'][$key]['name'] = $dbReward->getTranslation('name', $locale);
                         $result['resultObject'][$key]['description'] = $dbReward->getTranslation('description', $locale);
@@ -91,7 +91,7 @@ class RewardsController extends Controller
             }
             return response()->json([
                 'status' => 'ok',
-                'rewards' => $result['resultObject']
+                'rewards' => array_values($result['resultObject'])
             ]);
         } catch (Exception $e) {
             LogService::logException($e);

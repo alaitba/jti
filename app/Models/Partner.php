@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -38,6 +39,14 @@ class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
     public function contacts()
     {
         return $this->hasMany(Contact::class, 'mobile_phone', 'mobile_phone');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function current_contact()
+    {
+        return $this->hasOne(Contact::class, 'contact_uid', 'current_uid');
     }
 
     /**

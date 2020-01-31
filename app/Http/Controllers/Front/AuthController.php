@@ -255,7 +255,7 @@ class AuthController extends Controller
             $partner->failed_auth++;
             if ($partner->failed_auth >= 5)
             {
-                $partner->auth_blocked_till = Carbon::now()->addMinutes(30);
+                $partner->auth_blocked_till = Carbon::now()->addMinutes(config('project.failed_auth_block_time', 10));
             }
             $partner->save();
             return response()->json([
@@ -341,7 +341,8 @@ class AuthController extends Controller
         $partner = auth('partners')->user();
         $accountCode = $request->input('account_code');
         $tradePointContact = TradePointContact::withoutTrashed()->where('account_code', $accountCode)->first();
-        if (!$tradePointContact || !in_array($accountCode, array_keys($partner->tradepointsArray())))
+        $tradePoints = $partner->tradepointsArray();
+        if (!$tradePointContact || !in_array($accountCode, array_keys($tradePoints)))
         {
             return response()->json([
                 'status' => 'error',
@@ -356,7 +357,10 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'ok',
-            'message' => 'tradepoint_set'
+            'message' => 'tradepoint_set',
+            'tradepoint' => $tradePoints[$accountCode],
+            'account' => $partner->current_contact->only(['first_name', 'last_name', 'middle_name', 'mobile_phone']) ?? [],
+            'tradeagent' => $partner->current_contact->tradepoint->trade_agent->only(['employee_name', 'phone']) ?? [],
         ]);
     }
 
@@ -429,6 +433,9 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'ok',
             'message' => 'authorized',
+            'tradepoint' => array_pop($tradepoints),
+            'account' => $partner->current_contact->only(['first_name', 'last_name', 'middle_name', 'mobile_phone']) ?? [],
+            'tradeagent' => $partner->current_contact->tradepoint->trade_agent->only(['employee_name', 'phone']) ?? [],
             'token' => $token,
             'token_ttl' => auth('partners')->factory()->getTTL() * 60
         ]);
