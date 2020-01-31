@@ -171,7 +171,8 @@ class ClientController extends Controller
                 LogService::logInfo($result);
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'already_filled'
+                    'message' => 'already_filled',
+                    'crm_message' => $result['message']['messageText'] ?? ''
                 ], 403);
             }
             return response()->json([
