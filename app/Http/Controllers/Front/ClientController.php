@@ -132,13 +132,13 @@ class ClientController extends Controller
         /**
          * Check if mobile verified
          */
-        $verified = CustomerPhoneVerification::query()->where(['mobile_phone' => $request->input('mobile_phone'), 'status' => true])->first();
+        $verified = CustomerPhoneVerification::query()->where(['mobile_phone' => trim($request->input('mobile_phone'), '+'), 'status' => true])->first();
         if (!$verified)
         {
             return response()->json([
                 'status' => 'error',
                 'message' => 'mobile_phone_not_verified'
-            ]);
+            ], 403);
         }
 
         /**
