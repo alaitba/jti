@@ -11,8 +11,8 @@ return [
             'admin_header_nav' => 'common.header_nav'
         ]
     ],
-    'sms_code_lifetime' => 2,
-    'sms_code_resend_time' => 2,
-    'create_password_lifetime' => 2,
+    'sms_code_lifetime' => 3,
+    'sms_code_resend_time' => 3,
+    'create_password_lifetime' => 3,
     'failed_auth_block_time' => 10
 ];

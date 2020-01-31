@@ -90,7 +90,7 @@ class ClientController extends Controller
         $customerPhoneVerification = CustomerPhoneVerification::query()->where([
             ['mobile_phone', trim($request->input('mobile_phone')), '+'],
             ['sms_code', $request->input('sms_code')],
-            ['sms_code_sent_at', '>=', Carbon::now()->subMinutes(config('project.sms_code_lifetime', 2))]
+            //['sms_code_sent_at', '>=', Carbon::now()->subMinutes(config('project.sms_code_lifetime', 2))]
         ])->first();
 
         if (!$customerPhoneVerification) {
