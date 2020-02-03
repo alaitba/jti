@@ -82,4 +82,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::get('/', 'Front\NewsController@getNews');
     });
 
+    /**
+     * План-факт
+     */
+    Route::group(['prefix' => 'plan-fact', 'middleware' => 'partnerMiddleware'], function() {
+        Route::get('/', 'Front\PlanFactController@current');
+        Route::get('history', 'Front\PlanFactController@history');
+    });
+
 });

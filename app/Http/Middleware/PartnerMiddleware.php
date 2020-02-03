@@ -35,7 +35,7 @@ class PartnerMiddleware
                 'tradepoints' => $tradepoints
             ], 403);
         }
-
+        $request->merge(['me' => $partner]);
         return $next($request);
     }
 }
