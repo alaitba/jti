@@ -32,6 +32,7 @@ class SmsService
     private $codeType = self::DIGITS;
     private $code;
     private $userType = self::SELLER;
+    private $userData = null;
 
     /**
      * SmsService constructor.
@@ -143,6 +144,15 @@ class SmsService
             'mobile_phone' => $this->smsableItem->mobile_phone,
             'sms_code_sent_at' => $this->smsableItem->sms_code_sent_at
         ];
+
+        /**
+         * Return customer data
+         */
+        if ($this->userType == self::CUSTOMER)
+        {
+            $responseData['client_data'] = $this->userData;
+        }
+
         /**
          * Return OTP if not in prod
          */
@@ -158,5 +168,13 @@ class SmsService
     public function setUserType(int $userType): void
     {
         $this->userType = $userType;
+    }
+
+    /**
+     * @param null $userData
+     */
+    public function setUserData($userData): void
+    {
+        $this->userData = $userData;
     }
 }

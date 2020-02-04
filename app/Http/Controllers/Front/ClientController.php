@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Models\CustomerPhoneVerification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\CustomerRequests;
+use App\Models\TobaccoProduct;
 use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
 use App\Services\SmsService\SmsService;
@@ -58,7 +59,6 @@ class ClientController extends Controller
             ], 500);
         }
 
-
         $customerPhoneVerification = CustomerPhoneVerification::query()->firstOrCreate(['mobile_phone' => trim($mobilePhone, '+')]);
 
         $smsService = new SmsService($customerPhoneVerification);
@@ -74,7 +74,16 @@ class ClientController extends Controller
         }
 
         $smsService->setUserType(SmsService::CUSTOMER);
-
+        if ($result['resultObject'])
+        {
+            $result['resultObject']['birthDate'] = Carbon::parse($result['resultObject']['birthDate'])->format('d.m.Y');
+            $result['resultObject']['brand'] = TobaccoProduct::withoutTrashed()
+                ->where('product_code', $result['resultObject']['regularProductCode'])
+                ->first()->brand ?? '';
+            unset($result['resultObject']['regularProductCode']);
+            unset($result['resultObject']['mobilePhone']);
+            $smsService->setUserData($result['resultObject']);
+        }
         return $smsService->sendSms();
     }
 
