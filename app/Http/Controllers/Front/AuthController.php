@@ -339,16 +339,25 @@ class AuthController extends Controller
      */
     public function postSetTradepoint(Request $request)
     {
+        $invalidPoint = response()->json([
+            'status' => 'error',
+            'message' => 'tradepoint_not_found_or_invalid'
+        ], 403);
+
         $partner = auth('partners')->user();
         $accountCode = $request->input('account_code');
-        $tradePointContact = TradePointContact::withoutTrashed()->where('account_code', $accountCode)->first();
         $tradePoints = $partner->tradepointsArray();
-        if (!$tradePointContact || !in_array($accountCode, array_keys($tradePoints)))
+        if (!isset($tradePoints[$accountCode]))
         {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'tradepoint_not_found_or_invalid'
-            ], 403);
+            return $invalidPoint;
+        }
+        $tradePointContact = TradePointContact::withoutTrashed()
+            ->where('account_code', $accountCode)
+            ->where('contact_uid', $tradePoints[$accountCode]['contact_uid'])
+            ->first();
+        if (!$tradePointContact)
+        {
+            return $invalidPoint;
         }
 
         $user = auth('partners')->user();

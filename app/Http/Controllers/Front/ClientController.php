@@ -14,7 +14,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -48,7 +47,8 @@ class ClientController extends Controller
                 LogService::logInfo($result);
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'already_filled'
+                    'message' => 'already_filled',
+                    'crm_message' => $result['message']['messageText'] ?? ''
                 ], 403);
             }
         } catch (Exception $e) {
@@ -142,10 +142,12 @@ class ClientController extends Controller
             return $validation;
         }
 
+        $mobilePhone = $request->input('mobile_phone');
+
         /**
          * Check if mobile verified
          */
-        $verified = CustomerPhoneVerification::query()->where(['mobile_phone' => trim($request->input('mobile_phone'), '+'), 'status' => true])->first();
+        $verified = CustomerPhoneVerification::query()->where(['mobile_phone' => trim($mobilePhone, '+'), 'status' => true])->first();
         if (!$verified)
         {
             return response()->json([
@@ -163,11 +165,11 @@ class ClientController extends Controller
                 'verificationCode' => $verified->sms_code,
                 'confirmationCode' => $verified->sms_code,
                 'sellerId' =>  auth('partners')->user()->current_uid,
-                'mobilePhone' => $request->input('mobile_phone'),
+                'mobilePhone' => $mobilePhone,
                 'fillingDate' => Carbon::now()->toISOString(),
                 'internalId' => Str::random()
             ];
-            if (!$request->input('self', 0))
+            if (!$request->input('self', 0) && $mobilePhone != '+77777777771')
             {
                 $data = array_merge($data, [
                     'birthDate' => Carbon::parse($request->input('birthdate'))->toISOString(),
