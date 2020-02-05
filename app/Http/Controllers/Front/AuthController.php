@@ -434,7 +434,7 @@ class AuthController extends Controller
                 'token' => $token,
                 'token_ttl' => auth('partners')->factory()->getTTL() * 60,
                 'message' => 'need_tradepoint',
-                'tradepoints' => $tradepoints
+                'tradepoints' => array_values($tradepoints)
             ]);
         }
         $tpAcc = array_key_first($tradepoints);
