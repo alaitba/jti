@@ -45,14 +45,45 @@ class ClientController extends Controller
             if (!$result['result'])
             {
                 LogService::logInfo($result);
+                switch ($result['message']['code'])
+                {
+                    case 2:
+                        $message = 'is_seller';
+                        break;
+                    case 3:
+                    case 5:
+                        $message = 'already_filled';
+                        break;
+                    case 4:
+                        $message = 'paper';
+                        break;
+                    case 6:
+                        $message = 'seller_not_registered';
+                        break;
+                    case 7:
+                        $message = 'wrong_mobile_format';
+                        break;
+                    case 8:
+                        $message = 'leads_limit_exceeded';
+                        break;
+                    case 9:
+                        $message = 'wrong_seller_id';
+                        break;
+                    case 10:
+                        $message = 'blacklisted';
+                        break;
+                    default:
+                        $message = 'unknown_error';
+                }
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'already_filled',
+                    'message' => $message,
                     'crm_message' => $result['message']['messageText'] ?? ''
                 ], 403);
             }
         } catch (Exception $e) {
             LogService::logException($e);
+            LogService::logInfo($e->getCode());
             return response()->json([
                 'status' => 'error',
                 'message' => 'phone_not_checked'
