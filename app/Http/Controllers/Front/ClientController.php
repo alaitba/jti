@@ -145,7 +145,7 @@ class ClientController extends Controller
             ], 403);
         }
 
-        $customerPhoneVerification->status = true;
+        $customerPhoneVerification->status = 1;
         $customerPhoneVerification->save();
 
         return response()->json([
@@ -186,6 +186,16 @@ class ClientController extends Controller
                 'message' => 'mobile_phone_not_verified'
             ], 403);
         }
+        /**
+         * avoid duplicate queries
+         */
+
+        if ($verified->status == 2) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'lead_already_sent_to_crm'
+            ], 403);
+        }
 
         /**
          * Post to JTI
@@ -210,6 +220,8 @@ class ClientController extends Controller
                     'lastName' => $request->input('lastname'),
                 ]);
             }
+            $verified->status = 2;
+            $verified->save();
             $result = JtiApiProvider::createLead($data)->getBody();
             $result = json_decode($result, true);
             if (!$result['result'])
@@ -231,6 +243,9 @@ class ClientController extends Controller
                 'status' => 'error',
                 'message' => 'not_created'
             ], 500);
+        } finally {
+            $verified->status = 1;
+            $verified->save();
         }
     }
 
