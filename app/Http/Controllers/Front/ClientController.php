@@ -52,6 +52,7 @@ class ClientController extends Controller
                 ], 403);
             }
         } catch (Exception $e) {
+            LogService::logInfo('Seller: ' . auth('partners')->user()->current_uid);
             LogService::logException($e);
             return response()->json([
                 'status' => 'error',
@@ -183,6 +184,7 @@ class ClientController extends Controller
             $result = json_decode($result, true);
             if (!$result['result'])
             {
+                LogService::logInfo('Seller: ' . auth('partners')->user()->current_uid);
                 LogService::logInfo($result);
                 return response()->json([
                     'status' => 'error',
@@ -195,6 +197,7 @@ class ClientController extends Controller
                 'message' => 'created'
             ]);
         } catch (Exception $e) {
+            LogService::logInfo('Seller: ' . auth('partners')->user()->current_uid);
             LogService::logException($e);
             return response()->json([
                 'status' => 'error',
@@ -229,6 +232,7 @@ class ClientController extends Controller
                 'data' => $result['resultObject']
             ]);
         } catch (Exception $e) {
+            LogService::logInfo('Seller: ' . auth('partners')->user()->current_uid);
             LogService::logException($e);
             return response()->json([
                 'status' => 'error',

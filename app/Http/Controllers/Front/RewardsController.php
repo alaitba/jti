@@ -38,6 +38,7 @@ class RewardsController extends Controller
                 'balance' => $result['resultObject']['points'] ?? 0
             ]);
         } catch (Exception $e) {
+            LogService::logInfo('Seller: ' . auth('partners')->user()->current_uid);
             LogService::logException($e);
             return response()->json([
                 'status' => 'error',
@@ -94,6 +95,7 @@ class RewardsController extends Controller
                 'rewards' => array_values($result['resultObject'])
             ]);
         } catch (Exception $e) {
+            LogService::logInfo('Seller: ' . auth('partners')->user()->current_uid);
             LogService::logException($e);
             return response()->json([
                 'status' => 'error',
@@ -128,6 +130,7 @@ class RewardsController extends Controller
                 'status' => 'ok'
             ]);
         } catch (Exception $e) {
+            LogService::logInfo('Seller: ' . auth('partners')->user()->current_uid);
             LogService::logException($e);
             return response()->json([
                 'status' => 'error',
