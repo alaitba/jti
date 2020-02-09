@@ -50,7 +50,6 @@ class JtiApiProvider
      */
     private static function executeQuery(string $url, $body = null, $method = 'POST')
     {
-        LogService::logInfo($body);
         return (new Client())->request(
             $method,
             $url,
