@@ -122,6 +122,7 @@ class SmsService
                 $result = json_decode($result, true);
                 if (!$result['result'])
                 {
+                    LogService::logInfo($result);
                     return response()->json([
                         'status' => 'error',
                         'message' => 'sms_not_sent',
