@@ -72,6 +72,9 @@ class ClientController extends Controller
                     case 10:
                         $message = 'blacklisted';
                         break;
+                    case 11:
+                        $message = 'seller_not_active';
+                        break;
                     default:
                         $message = 'unknown_error';
                 }
