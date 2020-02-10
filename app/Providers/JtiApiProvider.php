@@ -4,6 +4,7 @@
 namespace App\Providers;
 
 
+use App\Services\LogService\LogService;
 use App\Services\SmsService\SmsService;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
