@@ -45,7 +45,7 @@ class ClientController extends Controller
             if (!$result['result'])
             {
                 LogService::logInfo($result);
-                switch ($result['message']['code'])
+                switch ((int) $result['message']['code'])
                 {
                     case 2:
                         $message = 'is_seller';
