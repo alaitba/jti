@@ -45,14 +45,48 @@ class ClientController extends Controller
             if (!$result['result'])
             {
                 LogService::logInfo($result);
+                switch ($result['message']['code'])
+                {
+                    case 2:
+                        $message = 'is_seller';
+                        break;
+                    case 3:
+                    case 5:
+                        $message = 'already_filled';
+                        break;
+                    case 4:
+                        $message = 'paper';
+                        break;
+                    case 6:
+                        $message = 'seller_not_registered';
+                        break;
+                    case 7:
+                        $message = 'wrong_mobile_format';
+                        break;
+                    case 8:
+                        $message = 'leads_limit_exceeded';
+                        break;
+                    case 9:
+                        $message = 'wrong_seller_id';
+                        break;
+                    case 10:
+                        $message = 'blacklisted';
+                        break;
+                    case 11:
+                        $message = 'seller_not_active';
+                        break;
+                    default:
+                        $message = 'unknown_error';
+                }
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'already_filled',
+                    'message' => $message,
                     'crm_message' => $result['message']['messageText'] ?? ''
                 ], 403);
             }
         } catch (Exception $e) {
             LogService::logException($e);
+            LogService::logInfo($e->getCode());
             return response()->json([
                 'status' => 'error',
                 'message' => 'phone_not_checked'
@@ -114,7 +148,7 @@ class ClientController extends Controller
             ], 403);
         }
 
-        $customerPhoneVerification->status = true;
+        $customerPhoneVerification->status = 1;
         $customerPhoneVerification->save();
 
         return response()->json([
@@ -155,6 +189,16 @@ class ClientController extends Controller
                 'message' => 'mobile_phone_not_verified'
             ], 403);
         }
+        /**
+         * avoid duplicate queries
+         */
+
+        if ($verified->status == 2) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'lead_already_sent_to_crm'
+            ], 403);
+        }
 
         /**
          * Post to JTI
@@ -179,6 +223,8 @@ class ClientController extends Controller
                     'lastName' => $request->input('lastname'),
                 ]);
             }
+            $verified->status = 2;
+            $verified->save();
             $result = JtiApiProvider::createLead($data)->getBody();
             $result = json_decode($result, true);
             if (!$result['result'])
@@ -200,6 +246,9 @@ class ClientController extends Controller
                 'status' => 'error',
                 'message' => 'not_created'
             ], 500);
+        } finally {
+            $verified->status = 1;
+            $verified->save();
         }
     }
 
