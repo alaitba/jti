@@ -5,6 +5,7 @@ namespace App\Jobs;
 
 use App\Models\Contact;
 use App\Models\Partner;
+use App\Notifications\LeadQualified;
 use \Spatie\WebhookClient\ProcessWebhookJob as SpatieProcessWebhookJob;
 
 class ProcessWebhookJob extends SpatieProcessWebhookJob
@@ -17,7 +18,7 @@ class ProcessWebhookJob extends SpatieProcessWebhookJob
      */
     public function handle()
     {
-        $sellerId = $this->webhookCall->payload->data->sellerId ?? null;
+        $sellerId = $this->webhookCall->payload['data']['sellerId'] ?? null;
         if (!$sellerId)
         {
             return;
@@ -27,6 +28,7 @@ class ProcessWebhookJob extends SpatieProcessWebhookJob
         {
             return;
         }
-        $partner = Partner::withoutTrashed()->where('mobile_phone', $contact->mobile_phone)->first();
+
+        $contact->partner->notify(new LeadQualified());
     }
 }
