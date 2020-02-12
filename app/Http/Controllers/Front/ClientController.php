@@ -264,7 +264,7 @@ class ClientController extends Controller
         try {
             $result = JtiApiProvider::getLeadHistory(
                 auth('partners')->user()->current_uid,
-                $request->input('perpage', 100),
+                $request->input('perpage', 200),
                 $request->input('page', 1)
             )->getBody();
             $result = json_decode($result, true);
