@@ -170,7 +170,6 @@ class ClientController extends Controller
             'lastname',
             'birthdate',
             'product_code',
-            'signature',
             'self'
         ]), CustomerRequests::CREATELEAD_REQUEST);
         if ($validation !== true) {
@@ -219,7 +218,7 @@ class ClientController extends Controller
                 $data = array_merge($data, [
                     'birthDate' => Carbon::parse($request->input('birthdate'))->toISOString(),
                     'regularProductCode' => $request->input('product_code'),
-                    'annotation' => $request->input('signature'),
+                    'annotation' => $request->input('signature', ''),
                     'firstName' => $request->input('firstname'),
                     'lastName' => $request->input('lastname'),
                 ]);
