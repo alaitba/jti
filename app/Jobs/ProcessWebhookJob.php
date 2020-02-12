@@ -17,7 +17,6 @@ class ProcessWebhookJob extends SpatieProcessWebhookJob
      */
     public function handle()
     {
-        \Log::info($this->webhookCall);
         $sellerId = $this->webhookCall->payload->data->sellerId ?? null;
         if (!$sellerId)
         {

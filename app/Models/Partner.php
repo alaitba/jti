@@ -91,4 +91,12 @@ class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
     {
         return [];
     }
+
+    /**
+     * @return string
+     */
+    public function routeNotificationForOneSignal()
+    {
+        return $this->onesignal_token;
+    }
 }
