@@ -27,7 +27,6 @@ class CustomerRequests
         'lastname' => 'required_unless:self,1|string',
         'birthdate' => 'required_unless:self,1|date',
         'product_code' => 'required_unless:self,1|string',
-        'signature' => 'required_unless:self,1|base64image'
     ];
 
 }
