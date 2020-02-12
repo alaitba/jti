@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -18,6 +19,7 @@ class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
     use Authorizable;
     use Authenticatable;
     use SoftDeletes;
+    use Notifiable;
 
     protected $hidden = ['password'];
     protected $guarded = [];

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -40,4 +41,11 @@ class Contact extends Model
         );
     }
 
+    /**
+     * @return BelongsTo
+     */
+    public function partner()
+    {
+        return $this->belongsTo(Partner::class, 'mobile_phone', 'mobile_phone');
+    }
 }
