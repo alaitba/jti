@@ -31,7 +31,7 @@ class LeadQualified extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [OneSignalChannel::class];
+        return [OneSignalChannel::class, 'database'];
     }
 
     public function toOneSignal($notifiable)
@@ -50,7 +50,7 @@ class LeadQualified extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            //
+            'message' => 'Анкета заполнена'
         ];
     }
 }
