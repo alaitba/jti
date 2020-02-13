@@ -450,4 +450,16 @@ class AuthController extends Controller
             'token_ttl' => auth('partners')->factory()->getTTL() * 60
         ]);
     }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function setPushToken(Request $request)
+    {
+        $partner = auth('partners')->user();
+        $partner->onesignal_token = $request->input('push_token', null);
+        $partner->save();
+        return response()->json(['status' => 'ok']);
+    }
 }

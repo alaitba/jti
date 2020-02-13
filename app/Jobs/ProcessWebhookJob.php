@@ -4,7 +4,8 @@ namespace App\Jobs;
 
 
 use App\Models\Contact;
-use App\Models\Partner;
+use App\Notifications\LeadCreated;
+use App\Notifications\LeadEffective;
 use App\Notifications\LeadQualified;
 use \Spatie\WebhookClient\ProcessWebhookJob as SpatieProcessWebhookJob;
 
@@ -29,6 +30,17 @@ class ProcessWebhookJob extends SpatieProcessWebhookJob
             return;
         }
 
-        $contact->partner->notify(new LeadQualified());
+        switch ($this->webhookCall->payload['action'])
+        {
+            case 'leadQualified':
+                $notification = new LeadQualified($this->webhookCall->payload['data']);
+                break;
+            case 'leadEffective':
+                $notification = new LeadEffective($this->webhookCall->payload['data']);
+                break;
+            default:
+                return;
+        }
+        $contact->partner->notify($notification);
     }
 }

@@ -44,6 +44,11 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::post('refresh', 'Front\AuthController@refresh')->middleware('partnerMiddleware:true');
 
         /**
+         * Set push token
+         */
+        Route::post('set-push-token', 'Front\AuthController@setPushToken')->middleware('partnerMiddleware:true');
+
+        /**
          * Set tradepoint
          */
         Route::post('set-tradepoint', 'Front\AuthController@postSetTradePoint')->middleware('partnerMiddleware:true');

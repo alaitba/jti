@@ -8,9 +8,8 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\OneSignal\OneSignalChannel;
 use NotificationChannels\OneSignal\OneSignalMessage;
-use NotificationChannels\OneSignal\OneSignalWebButton;
 
-class LeadQualified extends Notification implements ShouldQueue
+class LeadEffective extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -46,7 +45,7 @@ class LeadQualified extends Notification implements ShouldQueue
         return OneSignalMessage::create()
             ->setBody(
                 sprintf(
-                    'Потребитель с номером %s завершил заполнение на realday.kz и вы получаете %s баллов',
+                    'Потребитель с номером %s отправил код с пачки и вы получаете %s баллов',
                     $this->data['mobilePhone'],
                     $this->data['amount']
                 )
