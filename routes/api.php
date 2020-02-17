@@ -81,7 +81,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
     });
 
     /**
-     * Ноости
+     * Новости
      */
     Route::group(['prefix' => 'news', 'middleware' => 'partnerMiddleware'], function () {
         Route::get('/', 'Front\NewsController@getNews');
@@ -95,4 +95,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::get('history', 'Front\PlanFactController@history');
     });
 
+    /**
+     * Уведомления
+     */
+    Route::group(['prefix' => 'notifications', 'middleware' => 'partnerMiddleware'], function () {
+        Route::get('/', 'Front\NotificationsController@getNotifications');
+    });
 });

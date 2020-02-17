@@ -99,4 +99,5 @@ class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
     {
         return $this->onesignal_token;
     }
+
 }
