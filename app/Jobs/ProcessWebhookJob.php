@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 
 use App\Models\Contact;
+use App\Notifications\BalanceReplenished;
 use App\Notifications\LeadCreated;
 use App\Notifications\LeadEffective;
 use App\Notifications\LeadQualified;
@@ -37,6 +38,9 @@ class ProcessWebhookJob extends SpatieProcessWebhookJob
                 break;
             case 'leadEffective':
                 $notification = new LeadEffective($this->webhookCall->payload['data']);
+                break;
+            case 'balanceReplenished':
+                $notification = new BalanceReplenished($this->webhookCall->payload['data']);
                 break;
             default:
                 return;

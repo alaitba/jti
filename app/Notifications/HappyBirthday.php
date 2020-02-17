@@ -5,8 +5,10 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\OneSignal\OneSignalChannel;
+use NotificationChannels\OneSignal\OneSignalMessage;
 
-class LeadCreated extends Notification implements ShouldQueue
+class HappyBirthday extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -30,7 +32,17 @@ class LeadCreated extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return [OneSignalChannel::class, 'database'];
+    }
+
+    /**
+     * @param $notifiable
+     * @return OneSignalMessage
+     */
+    public function toOneSignal($notifiable)
+    {
+        return OneSignalMessage::create()
+            ->setBody('С днем рождения!')->setIcon(config('project.push_logo', ''))->setUrl('/notifications');
     }
 
     /**

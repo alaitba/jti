@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('jti:import-from-sftp')->dailyAt('7:30');
         $schedule->command('jti:update-rewards')->hourly();
+        $schedule->command('jti:happy-birthday')->dailyAt('14:00');
     }
 
     /**

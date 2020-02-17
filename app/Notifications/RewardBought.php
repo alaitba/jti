@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-class LeadCreated extends Notification implements ShouldQueue
+class RewardBought extends Notification implements ShouldQueue
 {
     use Queueable;
 
