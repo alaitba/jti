@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Reward;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,6 +21,13 @@ class NotificationsController extends Controller
         $fromDateTime = $request->input('from_date', now()->subYear());
         $notifications = auth('partners')->user()->notifications()
             ->where('created_at', '>', $fromDateTime)->get(['type', 'data', 'created_at'])->map(function (DatabaseNotification $notification) {
+                if ($notification->type == 'App\\Notifications\\RewardBought')
+                {
+                    $data = $notification->getAttribute('data');
+                    $data['rewardTitle'] = Reward::withTrashed()->where('crm_id', $data['rewardId'])->first()->name ?? 'Unknown';
+                    unset($data['rewardId']);
+                    $notification->setAttribute('data', $data);
+                }
                 $notification->setAttribute('type', str_replace('App\\Notifications\\', '', $notification->type));
                 if (isset($notification->data['sellerId']))
                 {
