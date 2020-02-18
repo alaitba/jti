@@ -242,7 +242,6 @@ class ClientController extends Controller
             //Save notification
             auth('partners')->user()->notify(new LeadCreated([
                 'mobilePhone' => $mobilePhone,
-                'amount' => $result['amount'] ?? 0,
                 'self' => $request->input('self', 0)
             ]));
 

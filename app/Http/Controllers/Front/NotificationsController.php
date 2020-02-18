@@ -17,11 +17,7 @@ class NotificationsController extends Controller
      */
     public function getNotifications(Request $request)
     {
-        try {
-            $fromDateTime = Carbon::parse($request->input('from_date'));
-        } catch (\Exception $e) {
-            $fromDateTime = now()->subYear();
-        }
+        $fromDateTime = $request->input('from_date', now()->subYear());
         $notifications = auth('partners')->user()->notifications()
             ->where('created_at', '>', $fromDateTime)->get(['type', 'data', 'created_at'])->map(function (DatabaseNotification $notification) {
                 $notification->setAttribute('type', str_replace('App\\Notifications\\', '', $notification->type));
