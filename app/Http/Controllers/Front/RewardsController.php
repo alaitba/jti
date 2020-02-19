@@ -128,13 +128,11 @@ class RewardsController extends Controller
                 ], 403);
             }
 
-            //Get reward price
-            //FIXME: get price and points from CRM answer
-            $reward = Reward::withoutTrashed()->where('crm_id', $rewardId)->first();
             //Save notification
             auth('partners')->user()->notify(new RewardBought([
                 'rewardId' => $rewardId,
-                'price' => $reward->price ?? 0
+                'price' => $result['resultObject']['rewardPriceInPoints'] ?? null,
+                'amountLeft' => $result['resultObject']['availableSellerPointQty'] ?? null
             ]));
             return response()->json([
                 'status' => 'ok'
