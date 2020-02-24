@@ -46,6 +46,9 @@ class ProcessWebhookJob extends SpatieProcessWebhookJob
             default:
                 return;
         }
-        $contact->partner->notify($notification);
+        if ($contact->partner)
+        {
+            $contact->partner->notify($notification);
+        }
     }
 }
