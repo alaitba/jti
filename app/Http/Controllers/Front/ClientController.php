@@ -243,7 +243,7 @@ class ClientController extends Controller
             $self = (int) $request->input('self', 0);
 
             //Store CRM id and 'self' flag
-            Lead::query()->create([
+            Lead::query()->insert([
                 'crm_id' => $result['resultObject'],
                 'self' => $self
             ]);
