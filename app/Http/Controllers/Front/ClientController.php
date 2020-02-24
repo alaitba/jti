@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Front;
 use App\Models\CustomerPhoneVerification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\CustomerRequests;
+use App\Models\Lead;
 use App\Models\TobaccoProduct;
+use App\Notifications\LeadCreated;
 use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
 use App\Services\SmsService\SmsService;
@@ -237,6 +239,21 @@ class ClientController extends Controller
                     'crm_message' => $result['message']['messageText'] ?? ''
                 ], 403);
             }
+
+            $self = (int) $request->input('self', 0);
+
+            //Store CRM id and 'self' flag
+            Lead::query()->insert([
+                'crm_id' => $result['resultObject'],
+                'self' => $self
+            ]);
+
+            //Save notification
+            auth('partners')->user()->notify(new LeadCreated([
+                'mobilePhone' => $mobilePhone,
+                'self' => $self
+            ]));
+
             return response()->json([
                 'status' => 'ok',
                 'message' => 'created'

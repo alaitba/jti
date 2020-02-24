@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\Reward;
+use App\Notifications\RewardBought;
 use App\Providers\JtiApiProvider;
 use App\Services\LogService\LogService;
 use App\Services\ValidatorService\ValidatorService;
@@ -126,6 +127,13 @@ class RewardsController extends Controller
                     'message' => 'unavailable'
                 ], 403);
             }
+
+            //Save notification
+            auth('partners')->user()->notify(new RewardBought([
+                'rewardId' => $rewardId,
+                'price' => $result['resultObject']['rewardPriceInPoints'] ?? null,
+                'amountLeft' => $result['resultObject']['availableSellerPointQty'] ?? null
+            ]));
             return response()->json([
                 'status' => 'ok'
             ]);

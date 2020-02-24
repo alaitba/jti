@@ -107,3 +107,6 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
     });
 });
 
+
+//Webhook
+Route::webhooks('webhook');
