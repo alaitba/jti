@@ -5,9 +5,9 @@ namespace App\Jobs;
 
 use App\Models\Contact;
 use App\Notifications\BalanceReplenished;
-use App\Notifications\LeadCreated;
 use App\Notifications\LeadEffective;
 use App\Notifications\LeadQualified;
+use App\Services\LogService\LogService;
 use \Spatie\WebhookClient\ProcessWebhookJob as SpatieProcessWebhookJob;
 
 class ProcessWebhookJob extends SpatieProcessWebhookJob
@@ -20,6 +20,7 @@ class ProcessWebhookJob extends SpatieProcessWebhookJob
      */
     public function handle()
     {
+        LogService::logInfo($this->webhookCall->payload);
         $sellerId = $this->webhookCall->payload['data']['sellerId'] ?? null;
         if (!$sellerId)
         {
