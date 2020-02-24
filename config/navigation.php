@@ -75,19 +75,9 @@ return [
             'items' => [
                 [
                     'is_tree' => false,
-                    'title' => 'Уведомление для всех пользователей ВП',
-                    'route_name' => 'admin.notifications.all.index',
-                    'item_active_on' => 'notifications/all*',
-                    'icon' => 'la la-bell',
-                    'roles' => [
-                        'admin'
-                    ]
-                ],
-                [
-                    'is_tree' => false,
-                    'title' => 'Уведомление для пользователей ВП по списку',
-                    'route_name' => 'admin.notifications.bylist.index',
-                    'item_active_on' => 'notifications/bylist*',
+                    'title' => 'Уведомления для пользователей ВП',
+                    'route_name' => 'admin.notifications.index',
+                    'item_active_on' => 'notifications/*',
                     'icon' => 'la la-bell',
                     'roles' => [
                         'admin'

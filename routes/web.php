@@ -100,12 +100,10 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
      * Пуши из админки
      */
     Route::group(['prefix' => 'notifications', 'as' => 'admin.notifications'], function () {
-        Route::group(['prefix' => 'all', 'as' => '.all'], function () {
-            Route::get('/', 'NotificationsController@indexAll')->name('.index');
-        });
-        Route::group(['prefix' => 'bylist', 'as' => '.bylist'], function () {
-            Route::get('/', 'NotificationsController@indexByList')->name('.index');
-        });
+        Route::get('/', 'NotificationsController@index')->name('.index');
+        Route::get('get-list', 'NotificationsController@getList')->name('.list');
+        Route::get('create', 'NotificationsController@create')->name('.create');
+        Route::post('store', 'NotificationsController@store')->name('.store');
     });
 });
 
