@@ -6,6 +6,7 @@ use App\Http\Requests\AdminNotificationRequest;
 use App\Http\Utils\ResponseBuilder;
 use App\Models\AdminNotification;
 use App\Models\Partner;
+use App\Notifications\NotificationFromAdmin;
 use App\Ui\Attributes\Align;
 use App\Ui\Attributes\LineAwesomeIcon;
 use App\Ui\Attributes\Modal;
@@ -56,7 +57,7 @@ class NotificationsController extends Controller
      */
     public function getList(Request $request)
     {
-        $items = AdminNotification::with('admin')->paginate(30);
+        $items = AdminNotification::with('admin')->orderBy('created_at', 'desc')->paginate(30);
 
         $itemsHtml = '';
         foreach ($items as $item) {
@@ -90,11 +91,36 @@ class NotificationsController extends Controller
         ]);
     }
 
+    /**
+     * @param AdminNotificationRequest $request
+     * @return JsonResponse
+     * @throws Throwable
+     */
     public function store(AdminNotificationRequest $request)
     {
         $adminNotification = new AdminNotification($request->only(['type', 'title', 'message']));
         $adminNotification->admin_id = auth('admins')->id();
         $adminNotification->save();
-        Notification::send(Partner::withoutTrashed()->get(), new NotificationFromAdmin($adminNotification));
+        Notification::send(
+            Partner::withoutTrashed()->whereNotNull('onesignal_token')->get(),
+            new NotificationFromAdmin($adminNotification)
+        );
+
+        return response()->json([
+            'functions' => [
+                'closeModal' => [
+                    'params' => [
+                        'modal' => 'regularModal',
+                    ]
+                ],
+                'prependTableRow' => [
+                    'params' => [
+                        'selector' => '.ajax-content',
+                        'content' => view('notifications.table_row', ['item' => $adminNotification])->render()
+                    ]
+                ]
+            ]
+        ]);
+
     }
 }
