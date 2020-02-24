@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 
 use App\Models\Contact;
+use App\Models\Lead;
 use App\Notifications\BalanceReplenished;
 use App\Notifications\LeadEffective;
 use App\Notifications\LeadQualified;

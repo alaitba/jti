@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Lead;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -34,7 +35,15 @@ class LeadQualified extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [OneSignalChannel::class, 'database'];
+        $leadId = $this->data['leadid'] ?? '';
+        $lead = Lead::query()->where('crm_id', $leadId)->first();
+        if ($lead && $lead->self)
+        {
+            $this->data['self'] = 1;
+            return [OneSignalChannel::class, 'database'];
+        }
+        $this->data['self'] = 0;
+        return ['database'];
     }
 
     /**
