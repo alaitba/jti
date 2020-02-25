@@ -69,5 +69,24 @@ return [
                 'admin'
             ]
         ],
+/*
+        'notifications' => [
+            'title' => 'Уведомления',
+            'items' => [
+                [
+                    'is_tree' => false,
+                    'title' => 'Уведомления для пользователей ВП',
+                    'route_name' => 'admin.notifications.index',
+                    'item_active_on' => 'notifications/*',
+                    'icon' => 'la la-bell',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
+            ],
+            'roles' => [
+                'admin'
+            ]
+        ],*/
     ],
 ];

@@ -96,5 +96,17 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('{newsId}/media-delete', 'NewsController@deleteMedia')->name('.media.delete');
     });
 
+    /**
+     * Пуши из админки
+     */
+    Route::group(['prefix' => 'notifications', 'as' => 'admin.notifications'], function () {
+        Route::get('/', 'NotificationsController@index')->name('.index');
+        Route::get('get-list', 'NotificationsController@getList')->name('.list');
+        Route::get('create', 'NotificationsController@create')->name('.create');
+        Route::post('store', 'NotificationsController@store')->name('.store');
+    });
 });
 
+
+//Webhook
+Route::webhooks('webhook');

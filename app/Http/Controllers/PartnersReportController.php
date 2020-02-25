@@ -27,6 +27,7 @@ class PartnersReportController extends Controller
         $sql = <<<SQL
                 current_tradepoint,
                 mobile_phone,
+                platform,
                 created_at,
                 updated_at,
                 CASE

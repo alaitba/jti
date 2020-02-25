@@ -13,7 +13,7 @@ use App\Services\ValidatorService\ValidatorService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
+use Browser;
 /**
  * Class AuthController
  * @package App\Http\Controllers\Front
@@ -207,6 +207,7 @@ class AuthController extends Controller
          */
         $partner->update([
             'password' => $request->input('password'),
+            'platform' => Browser::platformFamily()
         ]);
         $token = auth('partners')->login($partner);
 
@@ -266,7 +267,11 @@ class AuthController extends Controller
             ], 403);
         }
 
-        $partner->update(['failed_auth' => 0, 'auth_blocked_till' => null]);
+        $partner->update([
+            'failed_auth' => 0,
+            'auth_blocked_till' => null,
+            'platform' => Browser::platformFamily()
+        ]);
 
         return $this->setTradePoint($partner, $token);
     }
@@ -449,5 +454,17 @@ class AuthController extends Controller
             'token' => $token,
             'token_ttl' => auth('partners')->factory()->getTTL() * 60
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function setPushToken(Request $request)
+    {
+        $partner = auth('partners')->user();
+        $partner->onesignal_token = $request->input('push_token', null);
+        $partner->save();
+        return response()->json(['status' => 'ok']);
     }
 }

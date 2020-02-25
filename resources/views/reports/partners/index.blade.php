@@ -16,6 +16,7 @@
             <tr class="nowrap">
                 <th>Код ТТ</th>
                 <th>Телефон</th>
+                <th>OS</th>
                 <th>Первый вход</th>
                 <th>Последний вход</th>
                 <th>Статус</th>
@@ -37,6 +38,7 @@
                 columns: [
                     { data: 'current_tradepoint' },
                     { data: 'mobile_phone' },
+                    { data: 'platform' },
                     { data: 'created_at' },
                     { data: 'updated_at' },
                     { data: 'status' }
