@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SubscribedPartners;
 use App\Http\Requests\AdminNotificationRequest;
 use App\Http\Utils\ResponseBuilder;
 use App\Models\AdminNotification;
@@ -30,7 +31,7 @@ class NotificationsController extends Controller
     {
         $portlet = new Portlet('Уведомления для пользователей ВП', LineAwesomeIcon::BELL);
         $portlet->addModalableIconButton(Modal::REGULAR, route('admin.notifications.create'), LineAwesomeIcon::PLUS, 'Отправить уведомление');
-
+        $portlet->addUrlableIconButoon(route('admin.notifications.users'), LineAwesomeIcon::DOWNLOAD, 'Скачать список пользователей');
         $table = new AjaxLoadableTable(route('admin.notifications.list'), 'notificationsTable');
         $table->addColumn('#', Align::CENTER, '50');
         $table->addColumn('Админ', Align::LEFT);
@@ -121,6 +122,10 @@ class NotificationsController extends Controller
                 ]
             ]
         ]);
+    }
 
+    public function getUsers()
+    {
+        return (new SubscribedPartners())->download('SubscribedUsers-' . now()->format('Y-m-d') . '.xlsx');
     }
 }
