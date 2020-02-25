@@ -16,5 +16,6 @@ return [
     'create_password_lifetime' => 3,
     'failed_auth_block_time' => 10,
 
-    'push_logo' => 'http://jti-frontend.ibec.systems/icons/logo.png'
+    'push_logo' => config('FRONT_URL', 'https://partner360.kz') . '/icons/logo.png',
+    'front_url' => config('FRONT_URL', 'https://partner360.kz'),
 ];

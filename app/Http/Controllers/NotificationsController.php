@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\SubscribedPartners;
 use App\Http\Requests\AdminNotificationRequest;
 use App\Http\Utils\ResponseBuilder;
+use App\Imports\CustomSubscribers;
 use App\Models\AdminNotification;
 use App\Models\Partner;
 use App\Notifications\NotificationFromAdmin;
@@ -17,8 +18,10 @@ use App\Ui\LayoutBuilder;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class NotificationsController extends Controller
@@ -99,14 +102,30 @@ class NotificationsController extends Controller
      */
     public function store(AdminNotificationRequest $request)
     {
-        $adminNotification = new AdminNotification($request->only(['type', 'title', 'message']));
-        $adminNotification->admin_id = auth('admins')->id();
-        $adminNotification->save();
-        Notification::send(
-            Partner::withoutTrashed()->whereNotNull('onesignal_token')->get(),
-            new NotificationFromAdmin($adminNotification)
-        );
-
+        DB::beginTransaction();;
+        try {
+            $adminNotification = new AdminNotification($request->only(['type', 'title', 'message']));
+            $adminNotification->admin_id = auth('admins')->id();
+            $adminNotification->save();
+            if ($adminNotification->type == 'list') {
+                $file = $request->file('user_list');
+                $fileName = $file->storePubliclyAs('public/subscribers', 'Subscribers-' . $adminNotification->id . '.' . $file->getClientOriginalExtension());
+                $adminNotification->user_list_file = $fileName;
+                $adminNotification->save();
+                Excel::import(new CustomSubscribers($adminNotification), $fileName);
+            } else {
+                Notification::send(
+                    Partner::withoutTrashed()->whereNotNull('onesignal_token')->get(),
+                    new NotificationFromAdmin($adminNotification)
+                );
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $response = new ResponseBuilder();
+            $response->showAlert('Ошибка!', 'Не удалось загрузить файл.');
+            return $response->makeJson();
+        }
         return response()->json([
             'functions' => [
                 'closeModal' => [
