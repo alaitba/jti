@@ -17,7 +17,7 @@ class SubscribedPartners implements FromCollection, ShouldAutoSize, WithHeadings
      */
     public function collection()
     {
-        return Partner::withoutTrashed()->whereNotNull('onesignal_token')->get(['mobile_phone', 'current_uid', 'platform']);
+        return Partner::withoutTrashed()->whereNotNull('onesignal_token')->get(['mobile_phone', 'current_uid', 'current_tradepoint', 'platform']);
     }
 
     /**
@@ -25,6 +25,6 @@ class SubscribedPartners implements FromCollection, ShouldAutoSize, WithHeadings
      */
     public function headings(): array
     {
-        return ['Mobile', 'Seller ID', 'OS'];
+        return ['Mobile', 'Seller ID', 'Account Code', 'OS'];
     }
 }
