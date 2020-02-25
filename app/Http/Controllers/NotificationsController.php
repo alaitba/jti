@@ -20,6 +20,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
@@ -109,7 +110,7 @@ class NotificationsController extends Controller
             $adminNotification->save();
             if ($adminNotification->type == 'list') {
                 $file = $request->file('user_list');
-                $fileName = $file->storePubliclyAs('public/subscribers', 'Subscribers-' . $adminNotification->id . '.' . $file->getClientOriginalExtension());
+                $fileName = $file->store('subscribers');
                 $adminNotification->user_list_file = $fileName;
                 $adminNotification->save();
                 Excel::import(new CustomSubscribers($adminNotification), $fileName);
@@ -143,8 +144,25 @@ class NotificationsController extends Controller
         ]);
     }
 
+    /**
+     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
     public function getUsers()
     {
         return (new SubscribedPartners())->download('SubscribedUsers-' . now()->format('Y-m-d') . '.xlsx');
+    }
+
+    public function getFile($id)
+    {
+        $notification = AdminNotification::query()->find($id);
+        if (!$notification || $notification->type == 'all')
+        {
+            abort(404);
+        }
+        return Storage::disk('local')
+            ->download(
+                $notification->user_list_file,
+                'Subscribers-' . $id . '.' . pathinfo($notification->user_list_file, PATHINFO_EXTENSION)
+            );
     }
 }

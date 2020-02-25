@@ -5,7 +5,7 @@
     <td>{{ $item->title }}</td>
     <td>{{ $item->message }}</td>
     <td>{!! $item->user_list_file
-            ? '<a href="' . \Illuminate\Support\Facades\Storage::disk('local')->url($item->user_list_file) . '">Скачать</a>'
+            ? '<a href="' . route('admin.notifications.custom-file', ['id' => $item->id]) . '">Скачать</a>'
             : ''  !!}</td>
     <td>{{ $item->created_at->format('d.m.Y H:i') }}</td>
 </tr>
