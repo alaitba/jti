@@ -104,6 +104,7 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('get-list', 'NotificationsController@getList')->name('.list');
         Route::get('create', 'NotificationsController@create')->name('.create');
         Route::post('store', 'NotificationsController@store')->name('.store');
+        Route::get('get-users', 'NotificationsController@getUsers')->name('.users');
     });
 });
 
