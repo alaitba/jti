@@ -50,7 +50,7 @@ class HappyBirthday extends Command
             ->get();
         foreach ($birthdayContacts as $contact)
         {
-            if ($contact->partner)
+            if ($contact->partner && $contact->partner->onesignal_token)
             {
                 $contact->partner->notify(new HappyBirthdayNotification([]));
             }

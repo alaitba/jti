@@ -20,7 +20,9 @@ class NotificationsController extends Controller
     {
         $fromDateTime = $request->input('from_date', now()->subYear());
         $notifications = auth('partners')->user()->notifications()
-            ->where('created_at', '>', $fromDateTime)->get(['type', 'data', 'created_at'])->map(function (DatabaseNotification $notification) {
+            ->where('created_at', '>', $fromDateTime)
+            ->where('type', '!=', 'App\\Notifications\\NotificationFromAdmin')
+            ->get(['type', 'data', 'created_at'])->map(function (DatabaseNotification $notification) {
                 if ($notification->type == 'App\\Notifications\\RewardBought')
                 {
                     $data = $notification->getAttribute('data');
