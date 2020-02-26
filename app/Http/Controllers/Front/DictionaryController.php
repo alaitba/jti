@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\TobaccoProduct;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class DictionaryController
@@ -21,6 +24,26 @@ class DictionaryController extends Controller
         return response()->json([
             'status' => 'ok',
             'data' => $items
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws FileNotFoundException
+     */
+    public function getHolidays(Request $request)
+    {
+        $year = $request->input('year', date('Y'));
+        if (!Storage::disk('local')->exists('data/holidays' . $year)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'no_data'
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'ok',
+            'holidays' => json_decode(Storage::disk('local')->get('data/holidays' . $year))
         ]);
     }
 }
