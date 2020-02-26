@@ -69,7 +69,7 @@ return [
                 'admin'
             ]
         ],
-/*
+
         'notifications' => [
             'title' => 'Уведомления',
             'items' => [
@@ -87,6 +87,6 @@ return [
             'roles' => [
                 'admin'
             ]
-        ],*/
+        ],
     ],
 ];
