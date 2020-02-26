@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
 class NotificationsController extends Controller
@@ -145,13 +146,17 @@ class NotificationsController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return BinaryFileResponse
      */
     public function getUsers()
     {
         return (new SubscribedPartners())->download('SubscribedUsers-' . now()->format('Y-m-d') . '.xlsx');
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getFile($id)
     {
         $notification = AdminNotification::query()->find($id);
