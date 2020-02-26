@@ -35,6 +35,16 @@ return [
                         'admin'
                     ]
                 ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Выходные и праздники',
+                    'route_name' => 'admin.holidays.index',
+                    'item_active_on' => 'holidays*',
+                    'icon' => 'la la-calendar',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
             ],
             'roles' => [
                 'admin'
