@@ -32,6 +32,7 @@ class JtiApiProvider
     private const GET_BALANCE_URI = 'Seller/GetSellerPointAmount';
     private const GET_AVAILABLE_REWARDS_URI = 'Seller/GetSellerAvailableRewards';
     private const CREATE_REWARD_URI = 'Seller/CreateReward';
+    private const REWARDS_HISTORY_URI = 'Seller/GetSellerRewardsHistory';
 
     /**
      * @param string $uri
@@ -199,4 +200,24 @@ class JtiApiProvider
         return self::executeQuery(self::makeUrl(self::CREATE_REWARD_URI), $body);
     }
 
+    /**
+     * @param string $sellerId
+     * @param int $perPage
+     * @param int $page
+     * @return ResponseInterface
+     */
+    public static function getRewardsHistory(string $sellerId, int $perPage, int $page)
+    {
+        $body = [
+            'data' => [
+                'key' => $sellerId,
+                'recordsPerPage' => $perPage,
+                'pageNumber' => $page
+            ],
+            'identity' => [
+                'locale' => 'ru-RU'
+            ]
+        ];
+        return self::executeQuery(self::makeUrl(self::REWARDS_HISTORY_URI), $body);
+    }
 }

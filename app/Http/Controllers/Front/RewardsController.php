@@ -146,4 +146,48 @@ class RewardsController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getRewardsHistory(Request $request)
+    {
+        try {
+            $result = JtiApiProvider::getRewardsHistory(
+                auth('partners')->user()->current_uid,
+                $request->input('perpage', 200),
+                $request->input('page', 1)
+            )->getBody();
+            $result = json_decode($result, true);
+            if (!$result['result'])
+            {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'no_data'
+                ], 404);
+            }
+            $rewards = [];
+            foreach ($result['resultObject'] as $reward)
+            {
+                $rewards []= [
+                    'name' => $reward['reward']['name'],
+                    'amount' => $reward['amount'],
+                    'date' => $reward['reward']['date'] ?? null
+                ];
+            }
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'got_rewards',
+                'data' => $rewards
+            ]);
+        } catch (Exception $e) {
+            LogService::logInfo('Seller: ' . auth('partners')->user()->current_uid);
+            LogService::logException($e);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'api_failed'
+            ], 500);
+        }
+    }
 }
