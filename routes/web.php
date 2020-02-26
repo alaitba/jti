@@ -107,6 +107,14 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('get-users', 'NotificationsController@getUsers')->name('.users');
         Route::get('get-file/{id}', 'NotificationsController@getFile')->name('.custom-file');
     });
+
+    /**
+     * Календарь праздников
+     */
+    Route::group(['prefix' => 'holidays', 'as' => 'admin.holidays'], function () {
+        Route::get('/', 'HolidaysController@index')->name('.index');
+        Route::post('update', 'HolidaysController@update')->name('.update');
+    });
 });
 
 
