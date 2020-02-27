@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 
-use App\Models\PurchaseWeekDay;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -29,7 +28,7 @@ class PurchaseController extends Controller
         $partner->purchase_weekdays()->updateOrCreate([
             'tradepoint' => $tradePoint
         ], [
-            'weekdays' => explode(',', $request->input('weekdays', ''))
+            'weekdays' => $request->input('weekdays', [])
         ]);
         return response()->json([
             'status' => 'ok',
