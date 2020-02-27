@@ -63,11 +63,15 @@ class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
             {
                 continue;
             }
+            $purchaseDays = $this->purchase_weekdays()
+                    ->where('tradepoint', $contact->tradepoint->account_code)
+                    ->first()
+                    ->weekdays ?? [];
             $tradepoints[$contact->tradepoint->account_code] = array_merge($contact->tradepoint->only([
                 'account_code',
                 'account_name',
                 'street_address',
-                'city']), ['contact_uid' => $contact->contact_uid]);
+                'city']), ['contact_uid' => $contact->contact_uid, 'purchase_days' => $purchaseDays]);
         }
         return $tradepoints;
     }
@@ -98,6 +102,14 @@ class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
     public function routeNotificationForOneSignal()
     {
         return $this->onesignal_token;
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function purchase_weekdays()
+    {
+        return $this->hasMany(PurchaseWeekDay::class);
     }
 
 }

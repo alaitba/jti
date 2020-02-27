@@ -115,6 +115,18 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('/', 'HolidaysController@index')->name('.index');
         Route::post('update', 'HolidaysController@update')->name('.update');
     });
+
+    /**
+     * Табачная продукция
+     */
+    Route::group(['prefix' => 'tobacco-products', 'as' => 'admin.tobacco_products'], function () {
+        Route::get('/', 'TobaccoProductsController@index')->name('.index');
+        Route::match(['get', 'post'], 'get-list', 'TobaccoProductsController@getList')->name('.list');
+        Route::get('{id}/edit', 'TobaccoProductsController@edit')->name('.edit');
+        Route::post('{rewardId}/media', 'TobaccoProductsController@media')->name('.media');
+        Route::get('{rewardId}/media-delete', 'TobaccoProductsController@deleteMedia')->name('.media.delete');
+    });
+
 });
 
 

@@ -104,4 +104,11 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::get('/', 'Front\NotificationsController@getNotifications');
     });
 
+    /**
+     * Закупки
+     */
+    Route::group(['prefix' => 'purchase', 'middleware' => 'partnerMiddleware'], function() {
+        Route::post('save-days', 'Front\PurchaseController@saveDays');
+    });
+
 });

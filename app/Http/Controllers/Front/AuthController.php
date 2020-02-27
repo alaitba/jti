@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Browser;
+
 /**
  * Class AuthController
  * @package App\Http\Controllers\Front
