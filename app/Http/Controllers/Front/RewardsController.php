@@ -173,7 +173,7 @@ class RewardsController extends Controller
                 $rewards []= [
                     'name' => $reward['reward']['name'],
                     'amount' => $reward['amount'],
-                    'date' => $reward['reward']['date'] ?? null
+                    'date' => $reward['reward']['rewardDate'] ?? null
                 ];
             }
             return response()->json([
