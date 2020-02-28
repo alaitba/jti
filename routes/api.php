@@ -108,6 +108,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
      * Закупки
      */
     Route::group(['prefix' => 'purchase', 'middleware' => 'partnerMiddleware'], function() {
+        Route::get('plan-fact', 'Front\PurchaseController@getPlanFact');
         Route::post('save-days', 'Front\PurchaseController@saveDays');
     });
 
