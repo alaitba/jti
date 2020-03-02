@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\SalesPlan2;
+use App\Models\TobaccoBrand;
 use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -27,6 +28,7 @@ class SalesPlan2Import implements ToModel, WithProgressBar, WithChunkReading, Wi
     */
     public function model(array $row)
     {
+        TobaccoBrand::query()->updateOrCreate(['brand' => $row['Brand']]);
         return new SalesPlan2([
             'account_code' => $row['Account code'],
             'dsd_till_date' => $row['DSD till Date'],

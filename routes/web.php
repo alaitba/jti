@@ -127,6 +127,17 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('{rewardId}/media-delete', 'TobaccoProductsController@deleteMedia')->name('.media.delete');
     });
 
+    /**
+     * Бренды (картинки)
+     */
+    Route::group(['prefix' => 'brands', 'as' => 'admin.brands'], function () {
+        Route::get('/', 'BrandsController@index')->name('.index');
+        Route::match(['get', 'post'], 'get-list', 'BrandsController@getList')->name('.list');
+        Route::get('{id}/edit', 'BrandsController@edit')->name('.edit');
+        Route::post('{brandId}/media', 'BrandsController@media')->name('.media');
+        Route::get('{brandId}/media-delete', 'BrandsController@deleteMedia')->name('.media.delete');
+    });
+
 });
 
 

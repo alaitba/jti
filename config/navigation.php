@@ -27,6 +27,16 @@ return [
                 ],
                 [
                     'is_tree' => false,
+                    'title' => 'Бренды',
+                    'route_name' => 'admin.brands.index',
+                    'item_active_on' => 'brands*',
+                    'icon' => 'la la-trademark',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
+                [
+                    'is_tree' => false,
                     'title' => 'Новости',
                     'route_name' => 'admin.news.index',
                     'item_active_on' => 'news*',
