@@ -46,7 +46,7 @@ class ImportFromSftp extends Command
     ];
 
     private $force = 0;
-    
+
     /**
      * Create a new command instance.
      *

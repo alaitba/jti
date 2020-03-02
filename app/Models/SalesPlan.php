@@ -28,4 +28,9 @@ class SalesPlan extends Model
     {
         return $this->hasOne(SalesPlan2::class, 'account_code', 'account_code');
     }
+
+    public function tobacco_brand()
+    {
+        return $this->hasOneThrough(TobaccoBrand::class, SalesPlan2::class, 'account_code', 'brand', 'account_code', 'brand');
+    }
 }
