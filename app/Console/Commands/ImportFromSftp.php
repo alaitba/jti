@@ -25,7 +25,7 @@ class ImportFromSftp extends Command
      *
      * @var string
      */
-    protected $signature = 'jti:import-from-sftp {type?} {--date=?}';
+    protected $signature = 'jti:import-from-sftp {type?} {--date=?} {--force=0}';
 
     /**
      * The console command description.
@@ -45,6 +45,8 @@ class ImportFromSftp extends Command
         'TobaccoProduct'
     ];
 
+    private $force = 0;
+    
     /**
      * Create a new command instance.
      *
@@ -63,6 +65,7 @@ class ImportFromSftp extends Command
     public function handle()
     {
         $type = $this->argument('type');
+        $this->force = $this->option('force');
         if ($type)
         {
             if (!in_array($type, $this->fileTypes))
@@ -97,7 +100,7 @@ class ImportFromSftp extends Command
         } else {
             $importHistory->whereDate('created_at', date('Y-m-d'));
         }
-        if ($importHistory->count())
+        if ($importHistory->count() && !$this->force)
         {
             $this->warn($type . ($type == 'SalesPlanHistory' ? ' в этом месяце' : ' сегодня') . ' уже импортировали');
             return false;
