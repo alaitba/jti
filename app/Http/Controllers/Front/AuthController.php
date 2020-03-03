@@ -350,6 +350,7 @@ class AuthController extends Controller
             'message' => 'tradepoint_not_found_or_invalid'
         ], 403);
 
+        /** @var Partner $partner */
         $partner = auth('partners')->user();
         $accountCode = $request->input('account_code');
         $tradePoints = $partner->tradepointsArray();
@@ -366,10 +367,9 @@ class AuthController extends Controller
             return $invalidPoint;
         }
 
-        $user = auth('partners')->user();
-        $user->current_tradepoint = $accountCode;
-        $user->current_uid = $tradePointContact->contact_uid;
-        $user->save();
+        $partner->current_tradepoint = $accountCode;
+        $partner->current_uid = $tradePointContact->contact_uid;
+        $partner->save();
 
         return response()->json([
             'status' => 'ok',
@@ -463,6 +463,7 @@ class AuthController extends Controller
      */
     public function setPushToken(Request $request)
     {
+        /** @var Partner $partner */
         $partner = auth('partners')->user();
         $partner->onesignal_token = $request->input('push_token', null);
         $partner->save();

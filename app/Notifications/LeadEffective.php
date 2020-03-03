@@ -4,11 +4,14 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\OneSignal\OneSignalChannel;
 use NotificationChannels\OneSignal\OneSignalMessage;
 
+/**
+ * Class LeadEffective
+ * @package App\Notifications
+ */
 class LeadEffective extends Notification implements ShouldQueue
 {
     use Queueable;

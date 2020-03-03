@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Http\Utils\ResponseBuilder;
 use App\Services\LogService\LogService;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -64,7 +65,7 @@ class HolidaysController extends Controller
                 $holidays []= $curDate->format(self::JS_FORMAT);
             }
             $curDate->addDay();
-        };
+        }
         Storage::disk('local')->put('data/holidays' . $curYear, json_encode($holidays));
     }
 
@@ -91,7 +92,7 @@ class HolidaysController extends Controller
             Storage::disk('local')->put('data/holidays' . $curYear, json_encode($currentDays));
             Storage::disk('local')->put('data/holidays' . ($curYear + 1), json_encode($nextDays));
             $response->showAlert('Выполнено.', 'Выходные и праздники успешно сохранены', 'success');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $response->showAlert('Ошибка.', 'Не удалось сохранить выходные и праздники', 'error');
             LogService::logException($e);
         }

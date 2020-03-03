@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Partner;
 use App\Models\Reward;
 use App\Notifications\RewardBought;
 use App\Providers\JtiApiProvider;
@@ -129,7 +130,9 @@ class RewardsController extends Controller
             }
 
             //Save notification
-            auth('partners')->user()->notify(new RewardBought([
+            /** @var Partner $user */
+            $user = auth('partners')->user();
+            $user->notify(new RewardBought([
                 'rewardId' => $rewardId,
                 'price' => $result['resultObject']['rewardPriceInPoints'] ?? null,
                 'amountLeft' => $result['resultObject']['availableSellerPointQty'] ?? null

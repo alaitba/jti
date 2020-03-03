@@ -6,6 +6,10 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
+/**
+ * Class RewardBought
+ * @package App\Notifications
+ */
 class RewardBought extends Notification implements ShouldQueue
 {
     use Queueable;

@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Media
+ * @property array conversions
+ * @property bool main_image
+ * @property mixed imageable_type
+ * @property int imageable_id
+ * @property int id
+ * @property string original_file_name
  * @package App\Models
  */
 class Media extends Model

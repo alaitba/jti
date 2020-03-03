@@ -6,6 +6,7 @@ use App\Models\CustomerPhoneVerification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\CustomerRequests;
 use App\Models\Lead;
+use App\Models\Partner;
 use App\Models\TobaccoProduct;
 use App\Notifications\LeadCreated;
 use App\Providers\JtiApiProvider;
@@ -249,7 +250,9 @@ class ClientController extends Controller
             ]);
 
             //Save notification
-            auth('partners')->user()->notify(new LeadCreated([
+            /** @var Partner $user */
+            $user = auth('partners')->user();
+            $user->notify(new LeadCreated([
                 'mobilePhone' => $mobilePhone,
                 'self' => $self
             ]));

@@ -7,12 +7,13 @@ use App\Models\Media;
 use App\Models\SalesPlan;
 use App\Models\SalesPlanHistory;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use function foo\func;
 
+/**
+ * Class PlanFactController
+ * @package App\Http\Controllers\Front
+ */
 class PlanFactController extends Controller
 {
     /**
@@ -57,6 +58,10 @@ class PlanFactController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function history(Request $request)
     {
         $accounts = array_keys($request->input('me')->tradepointsArray());

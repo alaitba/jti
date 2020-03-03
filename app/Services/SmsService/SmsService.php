@@ -27,6 +27,7 @@ class SmsService
     const SELLER = 0;
     const CUSTOMER = 1;
 
+    /** @var CustomerPhoneVerification|Partner $smsableItem */
     private $smsableItem;
     private $codeLength = 4;
     private $codeType = self::DIGITS;

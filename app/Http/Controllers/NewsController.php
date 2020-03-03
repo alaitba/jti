@@ -5,14 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\NewsRequest;
 use App\Http\Utils\ResponseBuilder;
 use App\Models\News;
-use App\Services\LogService\LogService;
 use App\Services\MediaService\MediaService;
 use App\Ui\Attributes\Modal;
+use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Throwable;
 
+/**
+ * Class NewsController
+ * @package App\Http\Controllers
+ */
 class NewsController extends Controller
 {
     private $mediaService;
@@ -37,7 +42,7 @@ class NewsController extends Controller
      * @param Request $request
      *
      * @return JsonResponse
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function getList(Request $request)
     {
@@ -63,7 +68,7 @@ class NewsController extends Controller
 
     /**
      * @return JsonResponse
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function create()
     {
@@ -86,7 +91,7 @@ class NewsController extends Controller
     /**
      * @param NewsRequest $request
      * @return JsonResponse
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function store(NewsRequest $request)
     {
@@ -117,7 +122,7 @@ class NewsController extends Controller
     /**
      * @param $newsId
      * @return JsonResponse
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function edit($newsId)
     {
@@ -149,6 +154,12 @@ class NewsController extends Controller
         ]);
     }
 
+    /**
+     * @param NewsRequest $request
+     * @param $newsId
+     * @return JsonResponse
+     * @throws Throwable
+     */
     public function update(NewsRequest $request, $newsId)
     {
         $news = News::query()->find($newsId);
@@ -175,7 +186,7 @@ class NewsController extends Controller
     /**
      * @param $id
      * @return JsonResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function delete($id)
     {
@@ -202,7 +213,7 @@ class NewsController extends Controller
      * @param Request $request
      * @param int $itemId
      * @return JsonResponse
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function media(Request $request, int $itemId)
     {
@@ -210,7 +221,7 @@ class NewsController extends Controller
             $this->mediaService->upload($image, News::class, $itemId);
         }
 
-        $items = News::find($itemId);
+        $items = News::query()->find($itemId);
 
         return response()->json(([
             'media' => view('news.media_list', ['items' => $items])->render(), // DO NOT FORGET MAYBE WRONG
@@ -219,7 +230,7 @@ class NewsController extends Controller
 
     /**
      * @param $mediaId
-     * @throws \Exception
+     * @throws Exception
      */
     public function deleteMedia($mediaId)
     {

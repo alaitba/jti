@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Front;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Partner;
 use App\Models\Reward;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 
+/**
+ * Class NotificationsController
+ * @package App\Http\Controllers\Front
+ */
 class NotificationsController extends Controller
 {
     /**
@@ -19,7 +23,9 @@ class NotificationsController extends Controller
     public function getNotifications(Request $request)
     {
         $fromDateTime = $request->input('from_date', now()->subYear());
-        $notifications = auth('partners')->user()->notifications()
+        /** @var Partner $user */
+        $user = auth('partners')->user();
+        $notifications = $user->notifications()
             ->where('created_at', '>', $fromDateTime)
             ->where('type', '!=', 'App\\Notifications\\NotificationFromAdmin')
             ->get(['type', 'data', 'created_at'])->map(function (DatabaseNotification $notification) {

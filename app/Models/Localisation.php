@@ -9,6 +9,7 @@ use App\Contracts\Localisation as LocalisationContract;
 
 /**
  * Class Localisation
+ * @property string slug
  * @package App\Models
  */
 class Localisation extends Model implements LocalisationContract

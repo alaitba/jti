@@ -216,7 +216,7 @@ class MediaService
          * то найдем первое попавшееся не главное и сделаем его главным
          */
         if ($media->main_image) {
-            $mainMedia = Media::where('imageable_type', $media->imageable_type)
+            $mainMedia = Media::query()->where('imageable_type', $media->imageable_type)
                 ->where('imageable_id', $media->imageable_id)
                 ->where('id', '!=', $media->id)
                 ->where('main_image', 0)->first();

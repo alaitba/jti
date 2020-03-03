@@ -5,12 +5,14 @@ namespace App\Notifications;
 use App\Models\Lead;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\OneSignal\OneSignalChannel;
 use NotificationChannels\OneSignal\OneSignalMessage;
-use NotificationChannels\OneSignal\OneSignalWebButton;
 
+/**
+ * Class LeadQualified
+ * @package App\Notifications
+ */
 class LeadQualified extends Notification implements ShouldQueue
 {
     use Queueable;

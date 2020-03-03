@@ -9,6 +9,10 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
+/**
+ * Class SubscribedPartners
+ * @package App\Exports
+ */
 class SubscribedPartners implements FromCollection, ShouldAutoSize, WithHeadings
 {
     use Exportable;

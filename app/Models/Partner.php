@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -12,7 +14,12 @@ use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
- * @property mixed contacts
+ * @property Collection contacts
+ * @property Contact current_contact
+ * @property string sms_code
+ * @property Carbon sms_code_sent_at
+ * @property string mobile_phone
+ * @property string onesignal_token
  */
 class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatable, JWTSubject
 {

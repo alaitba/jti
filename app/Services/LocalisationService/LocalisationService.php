@@ -1,11 +1,11 @@
 <?php namespace App\Services\LocalisationService;
 
 use Exception;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 // models
 use App\Models\Localisation;
 use App\Models\LocalisationGroup;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class LocalisationService

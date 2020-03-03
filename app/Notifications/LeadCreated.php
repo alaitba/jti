@@ -6,6 +6,10 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
+/**
+ * Class LeadCreated
+ * @package App\Notifications
+ */
 class LeadCreated extends Notification implements ShouldQueue
 {
     use Queueable;

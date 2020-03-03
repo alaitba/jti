@@ -87,6 +87,7 @@ abstract class Content
 
 
         }
+        return '';
     }
 
     /**
