@@ -11,10 +11,18 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
+/**
+ * Class CustomSubscribers
+ * @package App\Imports
+ */
 class CustomSubscribers implements ToCollection, WithHeadingRow, WithChunkReading
 {
     private $adminNotification;
 
+    /**
+     * CustomSubscribers constructor.
+     * @param AdminNotification $adminNotification
+     */
     public function __construct(AdminNotification $adminNotification)
     {
         $this->adminNotification = $adminNotification;

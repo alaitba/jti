@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Partner;
 use App\Models\Reward;
 use App\Notifications\RewardBought;
 use App\Providers\JtiApiProvider;
@@ -129,13 +130,60 @@ class RewardsController extends Controller
             }
 
             //Save notification
-            auth('partners')->user()->notify(new RewardBought([
+            /** @var Partner $user */
+            $user = auth('partners')->user();
+            $user->notify(new RewardBought([
                 'rewardId' => $rewardId,
                 'price' => $result['resultObject']['rewardPriceInPoints'] ?? null,
                 'amountLeft' => $result['resultObject']['availableSellerPointQty'] ?? null
             ]));
             return response()->json([
                 'status' => 'ok'
+            ]);
+        } catch (Exception $e) {
+            LogService::logInfo('Seller: ' . auth('partners')->user()->current_uid);
+            LogService::logException($e);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'api_failed'
+            ], 500);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getRewardsHistory(Request $request)
+    {
+        try {
+            $result = JtiApiProvider::getRewardsHistory(
+                auth('partners')->user()->current_uid,
+                $request->input('perpage', 200),
+                $request->input('page', 1)
+            )->getBody();
+            $result = json_decode($result, true);
+            if (!$result['result'])
+            {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'no_data'
+                ], 404);
+            }
+            $rewards = [];
+            foreach ($result['resultObject'] as $reward)
+            {
+                $rewards []= [
+                    'name' => $reward['reward']['name'],
+                    'amount' => $reward['amount'],
+                    'date' => $reward['reward']['rewardDate'] ?? null
+                ];
+            }
+            $rewards = collect($rewards)->sortByDesc('date')->values();
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'got_rewards',
+                'data' => $rewards
             ]);
         } catch (Exception $e) {
             LogService::logInfo('Seller: ' . auth('partners')->user()->current_uid);

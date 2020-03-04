@@ -8,6 +8,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
+/**
+ * Class PartnersReportController
+ * @package App\Http\Controllers
+ */
 class PartnersReportController extends Controller
 {
 

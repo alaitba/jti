@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Contact
+ * @property TradePoint tradepoint
  * @package App\Models
  */
 class Contact extends Model

@@ -107,6 +107,37 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('get-users', 'NotificationsController@getUsers')->name('.users');
         Route::get('get-file/{id}', 'NotificationsController@getFile')->name('.custom-file');
     });
+
+    /**
+     * Календарь праздников
+     */
+    Route::group(['prefix' => 'holidays', 'as' => 'admin.holidays'], function () {
+        Route::get('/', 'HolidaysController@index')->name('.index');
+        Route::post('update', 'HolidaysController@update')->name('.update');
+    });
+
+    /**
+     * Табачная продукция
+     */
+    Route::group(['prefix' => 'tobacco-products', 'as' => 'admin.tobacco_products'], function () {
+        Route::get('/', 'TobaccoProductsController@index')->name('.index');
+        Route::match(['get', 'post'], 'get-list', 'TobaccoProductsController@getList')->name('.list');
+        Route::get('{id}/edit', 'TobaccoProductsController@edit')->name('.edit');
+        Route::post('{rewardId}/media', 'TobaccoProductsController@media')->name('.media');
+        Route::get('{rewardId}/media-delete', 'TobaccoProductsController@deleteMedia')->name('.media.delete');
+    });
+
+    /**
+     * Бренды (картинки)
+     */
+    Route::group(['prefix' => 'brands', 'as' => 'admin.brands'], function () {
+        Route::get('/', 'BrandsController@index')->name('.index');
+        Route::match(['get', 'post'], 'get-list', 'BrandsController@getList')->name('.list');
+        Route::get('{id}/edit', 'BrandsController@edit')->name('.edit');
+        Route::post('{brandId}/media', 'BrandsController@media')->name('.media');
+        Route::get('{brandId}/media-delete', 'BrandsController@deleteMedia')->name('.media.delete');
+    });
+
 });
 
 

@@ -4,13 +4,16 @@ namespace App\Jobs;
 
 
 use App\Models\Contact;
-use App\Models\Lead;
 use App\Notifications\BalanceReplenished;
 use App\Notifications\LeadEffective;
 use App\Notifications\LeadQualified;
 use App\Services\LogService\LogService;
 use \Spatie\WebhookClient\ProcessWebhookJob as SpatieProcessWebhookJob;
 
+/**
+ * Class ProcessWebhookJob
+ * @package App\Jobs
+ */
 class ProcessWebhookJob extends SpatieProcessWebhookJob
 {
 

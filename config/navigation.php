@@ -27,10 +27,30 @@ return [
                 ],
                 [
                     'is_tree' => false,
+                    'title' => 'Бренды',
+                    'route_name' => 'admin.brands.index',
+                    'item_active_on' => 'brands*',
+                    'icon' => 'la la-trademark',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
+                [
+                    'is_tree' => false,
                     'title' => 'Новости',
                     'route_name' => 'admin.news.index',
                     'item_active_on' => 'news*',
                     'icon' => 'la la-newspaper-o',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Выходные и праздники',
+                    'route_name' => 'admin.holidays.index',
+                    'item_active_on' => 'holidays*',
+                    'icon' => 'la la-calendar',
                     'roles' => [
                         'admin'
                     ]

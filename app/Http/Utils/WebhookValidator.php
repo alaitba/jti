@@ -9,6 +9,10 @@ use Spatie\WebhookClient\Exceptions\WebhookFailed;
 use Spatie\WebhookClient\SignatureValidator\SignatureValidator;
 use Spatie\WebhookClient\WebhookConfig;
 
+/**
+ * Class WebhookValidator
+ * @package App\Http\Utils
+ */
 class WebhookValidator implements SignatureValidator
 {
     /**

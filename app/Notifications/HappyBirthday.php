@@ -8,6 +8,10 @@ use Illuminate\Notifications\Notification;
 use NotificationChannels\OneSignal\OneSignalChannel;
 use NotificationChannels\OneSignal\OneSignalMessage;
 
+/**
+ * Class HappyBirthday
+ * @package App\Notifications
+ */
 class HappyBirthday extends Notification implements ShouldQueue
 {
     use Queueable;

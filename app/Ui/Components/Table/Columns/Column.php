@@ -220,6 +220,7 @@ abstract class Column
                     }
                 }
         }
+        return '';
     }
 
 

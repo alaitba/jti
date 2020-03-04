@@ -69,6 +69,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
      */
     Route::group(['prefix' => 'dict', 'middleware' => 'partnerMiddleware'], function () {
         Route::get('tobacco-products', 'Front\DictionaryController@getTobaccoProducts');
+        Route::get('holidays', 'Front\DictionaryController@getHolidays');
     });
 
     /**
@@ -78,6 +79,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::get('balance', 'Front\RewardsController@getBalance');
         Route::get('available', 'Front\RewardsController@getAvailableRewards');
         Route::get('get', 'Front\RewardsController@createReward');
+        Route::get('history', 'Front\RewardsController@getRewardsHistory');
     });
 
     /**
@@ -101,4 +103,13 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
     Route::group(['prefix' => 'notifications', 'middleware' => 'partnerMiddleware'], function () {
         Route::get('/', 'Front\NotificationsController@getNotifications');
     });
+
+    /**
+     * Закупки
+     */
+    Route::group(['prefix' => 'purchase', 'middleware' => 'partnerMiddleware'], function() {
+        Route::get('plan-fact', 'Front\PurchaseController@getPlanFact');
+        Route::post('save-days', 'Front\PurchaseController@saveDays');
+    });
+
 });

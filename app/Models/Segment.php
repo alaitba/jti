@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Segment
+ * @property array data
  * @package App\Models
  */
 class Segment extends Model

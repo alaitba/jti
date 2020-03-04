@@ -16,6 +16,7 @@ use App\Ui\Attributes\Modal;
 use App\Ui\Components\Portlet\Portlet;
 use App\Ui\Components\Table\AjaxLoadableTable;
 use App\Ui\LayoutBuilder;
+use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -27,6 +28,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
+/**
+ * Class NotificationsController
+ * @package App\Http\Controllers
+ */
 class NotificationsController extends Controller
 {
 
@@ -105,7 +110,7 @@ class NotificationsController extends Controller
      */
     public function store(AdminNotificationRequest $request)
     {
-        DB::beginTransaction();;
+        DB::beginTransaction();
         try {
             $adminNotification = new AdminNotification($request->only(['type', 'title', 'message']));
             $adminNotification->admin_id = auth('admins')->id();
@@ -123,7 +128,7 @@ class NotificationsController extends Controller
                 );
             }
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             LogService::logException($e);
             $response = new ResponseBuilder();

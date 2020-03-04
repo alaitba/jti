@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Lead
+ * Class PurchaseWeekDay
  * @package App\Models
  */
-class Lead extends Model
+class PurchaseWeekDay extends Model
 {
     protected $guarded = [];
+    protected $casts = [
+        'weekdays' => 'json'
+    ];
 }
