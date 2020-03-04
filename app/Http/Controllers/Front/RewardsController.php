@@ -179,7 +179,7 @@ class RewardsController extends Controller
                     'date' => $reward['reward']['rewardDate'] ?? null
                 ];
             }
-            $rewards = collect($rewards)->sortByDesc('date')->toArray();
+            $rewards = collect($rewards)->sortByDesc('date')->values();
             return response()->json([
                 'status' => 'ok',
                 'message' => 'got_rewards',
