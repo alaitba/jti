@@ -169,6 +169,18 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('{brandId}/media-delete', 'BrandsController@deleteMedia')->name('.media.delete');
     });
 
+    /**
+     * Анкеты
+     */
+    Route::group(['prefix' => 'quizzes', 'as' => 'admin.quizzes'], function () {
+        Route::get('/', 'QuizController@index')->name('.index');
+        Route::match(['get', 'post'], 'get-list', 'QuizController@getList')->name('.list');
+        Route::get('create', 'QuizController@create')->name('.create');
+        Route::post('store', 'QuizController@store')->name('.store');
+        Route::get('{id}/edit', 'QuizController@edit')->name('.edit');
+        Route::post('{id}/update', 'QuizController@update')->name('.update');
+    });
+
 });
 
 
