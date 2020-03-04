@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class Quiz
@@ -42,5 +43,40 @@ class Quiz extends Model
     public function partners()
     {
         return $this->hasManyThrough(Partner::class, QuizPartner::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeStringAttribute()
+    {
+        switch ($this->type) {
+            case 'quiz':
+                return 'Викторина';
+            case 'poll':
+                return 'Опрос';
+        }
+        return '---';
+    }
+
+    /**
+     * @return string
+     */
+    public function getPeriodAttribute()
+    {
+        return $this->from_date->format('d.m.Y') . ' - ' . $this->to_date->format('d.m.Y');
+    }
+
+    /**
+     * @return string
+     */
+    public function getTargetAttribute()
+    {
+        return $this->public ? 'Все'
+            : (
+                $this->user_list_file && Storage::disk('local')->exists($this->user_list_file)
+                    ? '<a href="' . route('admin.quizzes.custom-file', ['id' => $this->id]) . '">Список</a>'
+                    : '<span class="text-danger">Список</span>'
+            );
     }
 }
