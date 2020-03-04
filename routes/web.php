@@ -47,7 +47,38 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
             Route::get('api/all', 'PermissionController@getAllPermissions')->name('admin.admins.permissions.all');
         });
     });
+/*
+    Route::group(['prefix' => 'settings/localisation'], function () {
+        Route::get('groups', 'Settings\LocalisationController@groups')->name('admin.settings.localisation');
+        Route::get('groupsGetList', 'Settings\LocalisationController@groupList')->name('admin.settings.localisation.groups.list');
+        Route::get('groups/create', 'Settings\LocalisationController@groupCreate')->name('admin.settings.localisation.groups.create');
+        Route::post('groups/store', 'Settings\LocalisationController@groupStore')->name('admin.settings.localisation.groups.store');
+        Route::get('groups/{groupId}/edit', 'Settings\LocalisationController@groupEdit')->name('admin.settings.localisation.groups.edit');
+        Route::post('groups/{groupId}/update', 'Settings\LocalisationController@groupUpdate')->name('admin.settings.localisation.groups.update');
 
+        Route::group(['prefix' => 'groups/{groupId}'], function () {
+            Route::get('items', 'Settings\LocalisationController@groupsItems')->name('admin.settings.localisation.groups.items');
+            Route::get('items/getList', 'Settings\LocalisationController@groupsItemsList')->name('admin.settings.localisation.groups.items.list');
+            Route::get('items/create', 'Settings\LocalisationController@groupsItemsCreate')->name('admin.settings.localisation.groups.items.create');
+            Route::post('items/store', 'Settings\LocalisationController@groupsItemsStore')->name('admin.settings.localisation.groups.items.store');
+            Route::get('items/{itemId}/show', 'Settings\LocalisationController@groupsItemsShow')->name('admin.settings.localisation.groups.items.show');
+            Route::get('items/{itemId}/edit', 'Settings\LocalisationController@groupsItemsEdit')->name('admin.settings.localisation.groups.items.edit');
+            Route::post('items/{itemId}/update', 'Settings\LocalisationController@groupsItemsUpdate')->name('admin.settings.localisation.groups.items.update');
+        });
+    });
+*/
+    /**
+     * Шаблоны писем
+     */
+/*    Route::group(['prefix' => 'email-templates'], function () {
+        Route::get('/', 'Settings\EmailTemplateController@index')->name('admin.email_templates.index');
+        Route::get('{id}/edit', 'Settings\EmailTemplateController@edit')->name('admin.email_templates.edit');
+        Route::post('{id}/update', 'Settings\EmailTemplateController@update')->name('admin.email_templates.update');
+
+        Route::get('create', 'Settings\EmailTemplateController@create')->name('admin.email_templates.create');
+        Route::post('store', 'Settings\EmailTemplateController@store')->name('admin.email_templates.store');
+    });
+*/
     /**
      * Отчеты
      */
