@@ -9,6 +9,7 @@ use App\Imports\CustomSubscribers;
 use App\Models\AdminNotification;
 use App\Models\Partner;
 use App\Notifications\NotificationFromAdmin;
+use App\Services\LogService\LogService;
 use App\Ui\Attributes\Align;
 use App\Ui\Attributes\LineAwesomeIcon;
 use App\Ui\Attributes\Modal;
@@ -124,6 +125,7 @@ class NotificationsController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            LogService::logException($e);
             $response = new ResponseBuilder();
             $response->showAlert('Ошибка!', 'Не удалось загрузить файл.');
             return $response->makeJson();
