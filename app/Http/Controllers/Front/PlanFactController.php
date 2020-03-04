@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Models\ImportHistory;
 use App\Models\Media;
 use App\Models\SalesPlan;
 use App\Models\SalesPlanHistory;
@@ -54,7 +55,12 @@ class PlanFactController extends Controller
             });
         return response()->json([
             'status' => 'ok',
-            'data' => $items
+            'data' => $items,
+            'lastUpdated' => ImportHistory::query()
+                ->where('failed', 0)
+                ->where('type', 'SalesPlan')
+                ->latest('id')
+                ->first()->created_at ?? null
         ]);
     }
 
