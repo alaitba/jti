@@ -73,7 +73,7 @@ class PlanFactController extends Controller
     {
         $accounts = array_keys($request->input('me')->tradepointsArray());
         $items = SalesPlanHistory::query()->whereIn('account_code', $accounts)
-            ->whereDate('year_month', '>=', $request->input('from_date', Carbon::now()->startOfYear()))
+            ->whereDate('year_month', '>=', $request->input('from_date', Carbon::now()->subYear()))
             ->orderBy('year_month', 'DESC')
             ->get(['account_code', 'year_month', 'bonus_portfolio', 'bonus_brand', 'plan_portfolio', 'plan_brand', 'fact_portfolio', 'fact_brand'])->groupBy('account_code');
         return response()->json([
