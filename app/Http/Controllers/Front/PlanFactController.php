@@ -33,12 +33,13 @@ class PlanFactController extends Controller
             ->leftJoin('sales_plan2s as sp2', 'sp2.account_code', '=', 'sales_plans.account_code')
             ->get()->groupBy('account_code');*/
         $items = [];
-        SalesPlan::with('tobacco_brand.photos')->select(['sales_plans.account_code', 'bonus_portfolio', 'bonus_brand', 'plan_portfolio', 'plan_brand', 'fact_portfolio', 'fact_brand'])
+        SalesPlan::with('tobacco_brand.photos')->select(['sales_plans.account_code', 'bonus_portfolio', 'bonus_brand', 'bonus_total', 'plan_portfolio', 'plan_brand', 'fact_portfolio', 'fact_brand'])
             ->whereIn('sales_plans.account_code', $accounts)
             ->get()->each(function (SalesPlan $plan) use (&$items){
                 $items[$plan->account_code] = $plan->only([
                     'bonus_portfolio',
                     'bonus_brand',
+                    'bonus_total',
                     'plan_portfolio',
                     'plan_brand',
                     'fact_portfolio',
