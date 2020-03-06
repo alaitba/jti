@@ -14,6 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
+ * @property int id
  * @property Collection contacts
  * @property Contact current_contact
  * @property string sms_code

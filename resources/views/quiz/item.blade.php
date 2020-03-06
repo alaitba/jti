@@ -7,18 +7,8 @@
     <td class="align-middle">{{ $item->amount }}</td>
     <td class="align-middle">{!! $item->target !!}</td>
     <td class="text-center align-middle">
-{{--        <a href="#" data-url="{{ route('admin.news.edit', ['id' => $item->id ]) }}" class="handle-click" data-type="modal" data-modal="superLargeModal">
+        <a href="#" data-url="{{ route('admin.quizzes.edit', ['id' => $item->id ]) }}" class="handle-click" data-type="modal" data-modal="regularModal">
             <i class="la la-edit"></i>
         </a>
-
-        <a href="#" class="handle-click" data-type="confirm"
-           title="Удалить новость"
-           data-title="Удаление"
-           data-message="Вы уверены, что хотите удалить новость?"
-           data-cancel-text="Нет"
-           data-confirm-text="Да, удалить" data-url="{{ route('admin.news.delete', ['id' => $item->id ]) }}">
-            <i class="la la-trash"></i>
-        </a>
-        --}}
     </td>
 </tr>

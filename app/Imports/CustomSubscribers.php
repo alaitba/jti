@@ -5,6 +5,8 @@ namespace App\Imports;
 use App\Models\AdminNotification;
 use App\Models\Partner;
 use App\Notifications\NotificationFromAdmin;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -15,8 +17,10 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
  * Class CustomSubscribers
  * @package App\Imports
  */
-class CustomSubscribers implements ToCollection, WithHeadingRow, WithChunkReading
+class CustomSubscribers implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue
 {
+    use Queueable;
+
     private $adminNotification;
 
     /**

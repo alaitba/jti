@@ -16,7 +16,7 @@ class CreateQuizzesTable extends Migration
         Schema::create('quizzes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->enum('type', ['quiz', 'poll']);
-            $table->text('title');
+            $table->json('title');
             $table->date('from_date');
             $table->date('to_date');
             $table->integer('amount');

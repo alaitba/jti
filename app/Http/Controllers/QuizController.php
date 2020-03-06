@@ -3,12 +3,21 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Requests\QuizRequest;
+use App\Http\Utils\ResponseBuilder;
+use App\Imports\QuizPartnersImport;
 use App\Models\Quiz;
+use App\Services\LogService\LogService;
 use App\Services\MediaService\MediaService;
+use App\Ui\Attributes\Modal;
+use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 /**
@@ -43,7 +52,7 @@ class QuizController extends Controller
      */
     public function getList(Request $request)
     {
-        $items = Quiz::query()->paginate(25);
+        $items = Quiz::query()->withCount('partners')->paginate(25);
 
         return response()->json([
             'functions' => [
@@ -77,7 +86,7 @@ class QuizController extends Controller
                         'title' => 'Добавление викторины',
                         'content' => view('quiz.form', [
                             'formAction' => route('admin.quizzes.store'),
-                            'buttonText' => 'Сохранить',
+                            'item' => new Quiz(['from_date' => now()->startOfMonth(), 'to_date' => now()->endOfMonth()])
                         ])->render(),
                     ]
                 ]
@@ -86,30 +95,47 @@ class QuizController extends Controller
     }
 
     /**
-     * @param NewsRequest $request
+     * @param QuizRequest $request
      * @return JsonResponse
      * @throws Throwable
      */
-    public function store(NewsRequest $request)
+    public function store(QuizRequest $request)
     {
-        $news = News::query()->create($request->only(['title', 'contents']));
-
-        if ($request->has('image')) {
-            $file = $request->file('image');
-            $this->mediaService->upload($file, News::class, $news->id);
+        DB::beginTransaction();
+        try {
+            /** @var Quiz $quiz */
+            $quiz = Quiz::query()->create($request->only(['type', 'public', 'title', 'from_date', 'to_date', 'amount']));
+            if (!$quiz->public) {
+                $file = $request->file('user_list');
+                $fileName = $file->storeAs('quizusers', $quiz->id . '.' . $file->guessClientExtension());
+                $quiz->user_list_file = $fileName;
+                $quiz->save();
+                Excel::queueImport(new QuizPartnersImport($quiz),  $fileName, 'local');
+            }
+            if ($request->has('photo')) {
+                $file = $request->file('photo');
+                $this->mediaService->upload($file, Quiz::class, $quiz->id);
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            LogService::logException($e);
+            $response = new ResponseBuilder();
+            $response->showAlert('Ошибка!', 'Не удалось создать викторину.');
+            return $response->makeJson();
         }
 
         return response()->json([
             'functions' => [
                 'closeModal' => [
                     'params' => [
-                        'modal' => 'superLargeModal',
+                        'modal' => 'regularModal',
                     ]
                 ],
                 'prependTableRow' => [
                     'params' => [
                         'selector' => '.ajax-content',
-                        'content' => view('news.item', ['item' => $news])->render()
+                        'content' => view('quiz.item', ['item' => $quiz])->render()
                     ]
                 ]
             ]
@@ -117,19 +143,17 @@ class QuizController extends Controller
     }
 
     /**
-     * @param $newsId
+     * @param $quizId
      * @return JsonResponse
      * @throws Throwable
      */
-    public function edit($newsId)
+    public function edit($quizId)
     {
-        $item = News::with('media')->find($newsId);
-        $medias = $item->media->chunk(2);
-
+        $item = Quiz::with('photo')->find($quizId);
         if (!$item) {
             $response = new ResponseBuilder();
-            $response->showAlert('Ошибка!', 'Новость не найдена');
-            $response->closeModal(Modal::SUPER_LARGE);
+            $response->showAlert('Ошибка!', 'Викторина не найдена');
+            $response->closeModal(Modal::REGULAR);
             return $response->makeJson();
         }
 
@@ -137,12 +161,12 @@ class QuizController extends Controller
             'functions' => [
                 'updateModal' => [
                     'params' => [
-                        'modal' => 'superLargeModal',
-                        'title' => 'Редактирование новости',
-                        'content' => view('news.form', [
-                            'formAction' => route('admin.news.update', $newsId),
+                        'modal' => 'regularModal',
+                        'title' => 'Редактирование викторины',
+                        'init' => 'bootstrap_select',
+                        'content' => view('quiz.form', [
+                            'formAction' => route('admin.quizzes.update', $quizId),
                             'buttonText' => 'Сохранить',
-                            'medias' => $medias,
                             'item' => $item,
                         ])->render(),
                     ]
@@ -232,5 +256,24 @@ class QuizController extends Controller
     public function deleteMedia($mediaId)
     {
         $this->mediaService->deleteById($mediaId);
+    }
+
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getFile($id)
+    {
+        $quiz = Quiz::query()->find($id);
+        if (!$quiz || $quiz->public)
+        {
+            abort(404);
+        }
+        return Storage::disk('local')
+            ->download(
+                $quiz->user_list_file,
+                'QuizPartners-' . $id . '.' . pathinfo($quiz->user_list_file, PATHINFO_EXTENSION)
+            );
     }
 }

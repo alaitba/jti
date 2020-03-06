@@ -16,7 +16,7 @@ class CreateQuizAnswersTable extends Migration
         Schema::create('quiz_answers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('quiz_question_id');
-            $table->text('answer');
+            $table->json('answer');
             $table->boolean('correct');
             $table->timestamps();
         });
