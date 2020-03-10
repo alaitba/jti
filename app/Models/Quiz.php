@@ -95,7 +95,7 @@ class Quiz extends Model
             : (
                 ($this->user_list_file && Storage::disk('local')->exists($this->user_list_file)
                     ? '<a href="' . route('admin.quizzes.custom-file', ['id' => $this->id]) . '">Список</a>'
-                    : '<span class="text-danger">Список</span>') . '[' . $this->partners_count . ']'
+                    : '<span class="text-danger">Список</span>') . '[' . ($this->partners_count ?? 0) . ']'
             );
     }
 }

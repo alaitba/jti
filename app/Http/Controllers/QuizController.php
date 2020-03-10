@@ -111,7 +111,6 @@ class QuizController extends Controller
                 $fileName = $file->storeAs('quizusers', $quiz->id . '.' . $file->guessClientExtension());
                 $quiz->user_list_file = $fileName;
                 $quiz->save();
-                //Excel::import(new QuizPartnersImport($quiz),  $fileName, 'local');
                 (new QuizPartnersImport($quiz))->queue($fileName)->chain([
                     new QuizUsersImported($quiz->id)
                 ]);
@@ -153,12 +152,19 @@ class QuizController extends Controller
      */
     public function edit($quizId)
     {
-        $item = Quiz::with('photo')->find($quizId);
+        $item = Quiz::with('photo')->withCount('questions')->find($quizId);
         if (!$item) {
             $response = new ResponseBuilder();
             $response->showAlert('Ошибка!', 'Викторина не найдена');
             $response->closeModal(Modal::REGULAR);
             return $response->makeJson();
+        }
+
+        if ($item->questions_count == 0)
+        {
+            $item->setAttribute('disabled', 'У ' . ($item->type == 'quiz' ? 'викторины' : 'опроса') . ' нет вопросов');
+        } elseif (!$item->public && !$item->user_list_imported) {
+            $item->setAttribute('disabled', 'Импорт списка пользователей еще не завершен');
         }
 
         return response()->json([
@@ -168,7 +174,7 @@ class QuizController extends Controller
                         'modal' => 'regularModal',
                         'title' => 'Редактирование викторины',
                         'init' => 'bootstrap_select',
-                        'content' => view('quiz.form', [
+                        'content' => view('quiz.edit_form', [
                             'formAction' => route('admin.quizzes.update', $quizId),
                             'buttonText' => 'Сохранить',
                             'item' => $item,
@@ -180,28 +186,35 @@ class QuizController extends Controller
     }
 
     /**
-     * @param NewsRequest $request
-     * @param $newsId
+     * @param QuizRequest $request
+     * @param $quizId
      * @return JsonResponse
      * @throws Throwable
      */
-    public function update(NewsRequest $request, $newsId)
+    public function update(QuizRequest $request, $quizId)
     {
-        $news = News::query()->find($newsId);
-        $news->update($request->all());
+        $quiz = Quiz::query()->find($quizId);
+        $params = $request->only(['title', 'from_date', 'to_date', 'amount']);
+        $params['active'] = (int) $request->input('active', 0);
+        $quiz->update($params);
+
+        if ($request->has('photo')) {
+            $file = $request->file('photo');
+            $this->mediaService->upload($file, Quiz::class, $quiz->id);
+        }
 
         return response()->json([
             'functions' => [
                 'closeModal' => [
                     'params' => [
-                        'modal' => 'superLargeModal',
+                        'modal' => 'regularModal',
                     ]
                 ],
                 'updateTableRow' => [
                     'params' => [
                         'selector' => '.ajax-content',
-                        'row' => '.row-' . $newsId,
-                        'content' => view('news.item',['item' => $news])->render()
+                        'row' => '.row-' . $quizId,
+                        'content' => view('quiz.item',['item' => $quiz])->render()
                     ]
                 ]
             ]
@@ -280,4 +293,5 @@ class QuizController extends Controller
                 'QuizPartners-' . $id . '.' . pathinfo($quiz->user_list_file, PATHINFO_EXTENSION)
             );
     }
+
 }

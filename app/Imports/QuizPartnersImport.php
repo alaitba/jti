@@ -5,9 +5,11 @@ namespace App\Imports;
 use App\Models\Partner;
 use App\Models\Quiz;
 use App\Models\QuizPartner;
+use App\Services\LogService\LogService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -35,16 +37,11 @@ class QuizPartnersImport implements ToCollection, WithHeadingRow, WithChunkReadi
      */
     public function collection(Collection $collection)
     {
-        $partnerMobiles = $collection->only('Mobile');
-        $items = [];
-        Partner::withoutTrashed()
+        $partnerMobiles = $collection->pluck('Mobile');
+        $items = Partner::withoutTrashed()
             ->whereIn('mobile_phone', $partnerMobiles)
-            ->get(['id'])->each(function (Partner $partner) use (&$items) {
-                $items []= [
-                    'quiz_id' => $this->quiz->id,
-                    'partner_id' => $partner->id
-                ];
-            });
+            ->get(DB::raw('id AS partner_id, ' . $this->quiz->id . ' AS quiz_id'))
+            ->toArray();
         QuizPartner::query()->insert($items);
     }
 

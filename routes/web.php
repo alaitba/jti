@@ -180,6 +180,7 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('{id}/edit', 'QuizController@edit')->name('.edit');
         Route::post('{id}/update', 'QuizController@update')->name('.update');
         Route::get('get-file/{id}', 'QuizController@getFile')->name('.custom-file');
+        Route::get('{mediaId}/media-delete', 'QuizController@deleteMedia')->name('.media.delete');
     });
 
 });
