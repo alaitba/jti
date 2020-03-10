@@ -78,7 +78,11 @@ class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
                 'account_code',
                 'account_name',
                 'street_address',
-                'city']), ['contact_uid' => $contact->contact_uid, 'purchase_days' => $purchaseDays]);
+                'city']), [
+                    'contact_uid' => $contact->contact_uid,
+                    'purchase_days' => $purchaseDays,
+                    'lastUpdated' => SalesPlan2::query()->where('account_code', $contact->tradepoint->account_code)->first()->dsd_till_date ?? null
+                ]);
         }
         return $tradepoints;
     }
