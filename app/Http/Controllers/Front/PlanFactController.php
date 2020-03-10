@@ -53,15 +53,11 @@ class PlanFactController extends Controller
                     $media->setAttribute('sizes', $conversions);
                     return $media->only(['url', 'mime', 'sizes']);
                 });
+                $items[$plan->account_code]['lastUpdated'] = $plan->salesplan2->dsd_till_date;
             });
         return response()->json([
             'status' => 'ok',
-            'data' => $items,
-            'lastUpdated' => ImportHistory::query()
-                ->where('failed', 0)
-                ->where('type', 'SalesPlan')
-                ->latest('id')
-                ->first()->created_at ?? null
+            'data' => $items
         ]);
     }
 
