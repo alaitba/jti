@@ -22,6 +22,7 @@ class CreateQuizzesTable extends Migration
             $table->integer('amount');
             $table->boolean('public');
             $table->string('user_list_file')->nullable();
+            $table->boolean('user_list_imported')->default(false);
             $table->boolean('active')->default(false);
             $table->timestamps();
         });

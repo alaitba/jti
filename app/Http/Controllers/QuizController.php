@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\QuizRequest;
 use App\Http\Utils\ResponseBuilder;
 use App\Imports\QuizPartnersImport;
+use App\Jobs\QuizUsersImported;
 use App\Models\Quiz;
 use App\Services\LogService\LogService;
 use App\Services\MediaService\MediaService;
@@ -110,7 +111,10 @@ class QuizController extends Controller
                 $fileName = $file->storeAs('quizusers', $quiz->id . '.' . $file->guessClientExtension());
                 $quiz->user_list_file = $fileName;
                 $quiz->save();
-                Excel::queueImport(new QuizPartnersImport($quiz),  $fileName, 'local');
+                //Excel::import(new QuizPartnersImport($quiz),  $fileName, 'local');
+                (new QuizPartnersImport($quiz))->queue($fileName)->chain([
+                    new QuizUsersImported($quiz->id)
+                ]);
             }
             if ($request->has('photo')) {
                 $file = $request->file('photo');

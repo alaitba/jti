@@ -5,17 +5,19 @@ namespace App\Imports;
 use App\Models\Partner;
 use App\Models\Quiz;
 use App\Models\QuizPartner;
-use App\Services\LogService\LogService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Events\AfterImport;
 
 class QuizPartnersImport implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue
 {
-    use Queueable;
+    use Queueable, Importable, RegistersEventListeners;
 
     private $quiz;
 
@@ -33,14 +35,11 @@ class QuizPartnersImport implements ToCollection, WithHeadingRow, WithChunkReadi
      */
     public function collection(Collection $collection)
     {
-        $partnerMobiles = [];
-        foreach ($collection as $item) {
-            $partnerMobiles []= $item['Mobile'];
-        }
+        $partnerMobiles = $collection->only('Mobile');
         $items = [];
         Partner::withoutTrashed()
             ->whereIn('mobile_phone', $partnerMobiles)
-            ->get()->each(function (Partner $partner) use (&$items) {
+            ->get(['id'])->each(function (Partner $partner) use (&$items) {
                 $items []= [
                     'quiz_id' => $this->quiz->id,
                     'partner_id' => $partner->id
