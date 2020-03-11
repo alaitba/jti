@@ -84,6 +84,16 @@ return [
                         'admin'
                     ]
                 ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Авторизация продавцов',
+                    'route_name' => 'admin.reports.partner-auth.index',
+                    'item_active_on' => 'reports/partner-auth*',
+                    'icon' => 'la la-sign-in',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
             ],
             'roles' => [
                 'admin'

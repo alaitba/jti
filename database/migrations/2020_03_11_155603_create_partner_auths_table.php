@@ -17,12 +17,13 @@ class CreatePartnerAuthsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('partner_id');
             $table->string('account_code');
+            $table->string('contact_uid');
             $table->dateTime('login');
             $table->dateTime('last_seen');
             $table->string('os');
             $table->timestamps();
 
-            $table->unique(['partner_id', 'account_code']);
+            $table->unique(['partner_id', 'account_code', 'contact_uid']);
         });
     }
 

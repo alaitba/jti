@@ -372,7 +372,7 @@ class AuthController extends Controller
         $partner->current_uid = $tradePointContact->contact_uid;
         $partner->save();
 
-        $this->storeLogin($partner->id, $accountCode);
+        $this->storeLogin($partner->id, $accountCode, $tradePointContact->contact_uid);
 
         return response()->json([
             'status' => 'ok',
@@ -449,7 +449,7 @@ class AuthController extends Controller
         $tpAcc = array_key_first($tradepoints);
         $partner->update(['current_tradepoint' => $tpAcc, 'current_uid' => $tradepoints[$tpAcc]['contact_uid']]);
 
-        $this->storeLogin($partner->id, $tpAcc);
+        $this->storeLogin($partner->id, $tpAcc, $tradepoints[$tpAcc]['contact_uid']);
 
         return response()->json([
             'status' => 'ok',
@@ -479,10 +479,10 @@ class AuthController extends Controller
      * @param $id
      * @param $tpAcc
      */
-    private function storeLogin($id, $tpAcc)
+    private function storeLogin($id, $tpAcc, $uid)
     {
         $currentTime = now();
-        PartnerAuth::query()->updateOrCreate(['partner_id' => $id, 'account_code' => $tpAcc],
+        PartnerAuth::query()->updateOrCreate(['partner_id' => $id, 'account_code' => $tpAcc, 'contact_uid' => $uid],
             ['login' => $currentTime, 'last_seen' => $currentTime, 'os' => Browser::platformFamily()]);
     }
 }

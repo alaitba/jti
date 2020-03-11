@@ -67,6 +67,14 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
             Route::get('/', 'PartnersReportController@index')->name('.index');
             Route::get('get-list', 'PartnersReportController@getList')->name('.list');
         });
+
+        /**
+         * Partners auth
+         */
+        Route::group(['prefix' => 'partner-auth', 'as' => '.partner-auth'], function () {
+            Route::get('/', 'PartnersReportController@auth')->name('.index');
+            Route::get('get-list', 'PartnersReportController@getAuthList')->name('.list');
+        });
     });
 
     /**
