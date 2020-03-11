@@ -112,4 +112,13 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::post('save-days', 'Front\PurchaseController@saveDays');
     });
 
+    /**
+     * Обратная связь
+     */
+    Route::group(['prefix' => 'feedback', 'middleware' => 'partnerMiddleware'], function() {
+        Route::get('topics', 'Front\FeedbackController@getTopics');
+        Route::get('list', 'Front\FeedbackController@getFeedbacks');
+        Route::post('question', 'Front\FeedbackController@question');
+    });
+
 });
