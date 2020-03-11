@@ -228,10 +228,10 @@ class QuizController extends Controller
      */
     public function delete($id)
     {
-        $item = News::query()->find($id);
+        $item = Quiz::query()->find($id);
 
         if($item) {
-            $this->mediaService->deleteForModel(News::class, $id);
+            $this->mediaService->deleteForModel(Quiz::class, $id);
             $item->delete();
         }
 
@@ -245,25 +245,6 @@ class QuizController extends Controller
                 ]
             ]
         ]);
-    }
-
-    /**
-     * @param Request $request
-     * @param int $itemId
-     * @return JsonResponse
-     * @throws Throwable
-     */
-    public function media(Request $request, int $itemId)
-    {
-        foreach ($request->file('image') as $image) {
-            $this->mediaService->upload($image, News::class, $itemId);
-        }
-
-        $items = News::query()->find($itemId);
-
-        return response()->json(([
-            'media' => view('news.media_list', ['items' => $items])->render(), // DO NOT FORGET MAYBE WRONG
-        ]));
     }
 
     /**
@@ -294,4 +275,29 @@ class QuizController extends Controller
             );
     }
 
+    /**
+     * @param $quizId
+     * @return JsonResponse
+     * @throws Throwable
+     */
+    public function questions($quizId)
+    {
+        $quiz = Quiz::withoutTrashed()->with('questions')->findOrFail($quizId);
+        return response()->json([
+            'functions' => [
+                'updateModal' => [
+                    'params' => [
+                        'modal' => 'largeModal',
+                        'title' => 'Вопросы для ' . ($quiz->type == 'quiz' ? 'викторины' : 'опроса') . ' "' . $quiz->title . '"',
+                        'init' => 'bootstrap_select',
+                        'content' => view('quiz.questions_form', [
+                            'formAction' => route('admin.quizzes.questions.update', $quizId),
+                            'buttonText' => 'Сохранить',
+                            'item' => $quiz,
+                        ])->render(),
+                    ]
+                ]
+            ]
+        ]);
+    }
 }

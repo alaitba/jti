@@ -25,6 +25,7 @@ class CreateQuizzesTable extends Migration
             $table->boolean('user_list_imported')->default(false);
             $table->boolean('active')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

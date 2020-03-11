@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
@@ -30,7 +31,7 @@ use Spatie\Translatable\HasTranslations;
  */
 class Quiz extends Model
 {
-    use HasTranslations, HasMedia;
+    use HasTranslations, HasMedia, SoftDeletes;
 
     protected $guarded = [];
 

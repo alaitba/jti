@@ -181,6 +181,9 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::post('{id}/update', 'QuizController@update')->name('.update');
         Route::get('get-file/{id}', 'QuizController@getFile')->name('.custom-file');
         Route::get('{mediaId}/media-delete', 'QuizController@deleteMedia')->name('.media.delete');
+        Route::get('{id}/delete', 'QuizController@delete')->name('.delete');
+        Route::get('{id}/questions', 'QuizController@questions')->name('.questions');
+        Route::post('{id}/questions-update', 'QuizController@questionsUpdate')->name('.questions.update');
     });
 
 });
