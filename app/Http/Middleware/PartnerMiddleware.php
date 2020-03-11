@@ -2,9 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\PartnerAuth;
 use Closure;
 use Illuminate\Http\Request;
-
+use Browser;
 
 /**
  * Class PartnerMiddleware
@@ -36,6 +37,13 @@ class PartnerMiddleware
             ], 403);
         }
         $request->merge(['me' => $partner]);
+        if (!$setTradePoint)
+        {
+            PartnerAuth::query()->where('partner_id', $partner->id)->where('account_code', $partner->current_tradepoint)->update([
+                'last_seen' => now(),
+                'os' => Browser::platformFamily()
+            ]);
+        }
         return $next($request);
     }
 }

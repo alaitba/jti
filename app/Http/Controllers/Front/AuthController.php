@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\AuthRequests;
 use App\Models\Contact;
 use App\Models\Partner;
+use App\Models\PartnerAuth;
 use App\Models\TradePointContact;
 use App\Services\SmsService\SmsService;
 use App\Services\ValidatorService\ValidatorService;
@@ -371,6 +372,8 @@ class AuthController extends Controller
         $partner->current_uid = $tradePointContact->contact_uid;
         $partner->save();
 
+        $this->storeLogin($partner->id, $accountCode);
+
         return response()->json([
             'status' => 'ok',
             'message' => 'tradepoint_set',
@@ -446,6 +449,8 @@ class AuthController extends Controller
         $tpAcc = array_key_first($tradepoints);
         $partner->update(['current_tradepoint' => $tpAcc, 'current_uid' => $tradepoints[$tpAcc]['contact_uid']]);
 
+        $this->storeLogin($partner->id, $tpAcc);
+
         return response()->json([
             'status' => 'ok',
             'message' => 'authorized',
@@ -468,5 +473,16 @@ class AuthController extends Controller
         $partner->onesignal_token = $request->input('push_token', null);
         $partner->save();
         return response()->json(['status' => 'ok']);
+    }
+
+    /**
+     * @param $id
+     * @param $tpAcc
+     */
+    private function storeLogin($id, $tpAcc)
+    {
+        $currentTime = now();
+        PartnerAuth::query()->updateOrCreate(['partner_id' => $id, 'account_code' => $tpAcc],
+            ['login' => $currentTime, 'last_seen' => $currentTime, 'os' => Browser::platformFamily()]);
     }
 }
