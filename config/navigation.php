@@ -55,6 +55,16 @@ return [
                         'admin'
                     ]
                 ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Обратная связь',
+                    'route_name' => 'admin.feedback.index',
+                    'item_active_on' => 'feedback*',
+                    'icon' => 'la la-comment',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
             ],
             'roles' => [
                 'admin'

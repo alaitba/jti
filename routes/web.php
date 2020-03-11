@@ -146,6 +146,26 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('{brandId}/media-delete', 'BrandsController@deleteMedia')->name('.media.delete');
     });
 
+    /**
+     * Обратная связь
+     */
+    Route::group(['prefix' => 'feedback', 'as' => 'admin.feedback'], function () {
+        Route::get('/', 'FeedbackController@index')->name('.index');
+        Route::get('get-list', 'FeedbackController@getList')->name('.list');
+        Route::get('{id}/edit', 'FeedbackController@edit')->name('.edit');
+        Route::post('{id}/update', 'FeedbackController@update')->name('.update');
+
+        Route::group(['prefix' => 'topics'], function () {
+            Route::get('/', 'FeedbackController@indexTopics')->name('.topics');
+            Route::get('get-list', 'FeedbackController@getTopicsList')->name('.topics.list');
+            Route::get('create', 'FeedbackController@createTopic')->name('.topics.create');
+            Route::post('store', 'FeedbackController@storeTopic')->name('.topics.store');
+            Route::get('{topicId}/edit', 'FeedbackController@editTopic')->name('.topics.edit');
+            Route::post('{topicId}/update', 'FeedbackController@updateTopic')->name('.topics.update');
+            Route::get('{topicId}/delete', 'FeedbackController@deleteTopic')->name('.topics.delete');
+        });
+    });
+
 });
 
 
