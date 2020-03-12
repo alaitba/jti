@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Models\Slider;
 use App\Models\TobaccoProduct;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -44,6 +45,24 @@ class DictionaryController extends Controller
         return response()->json([
             'status' => 'ok',
             'holidays' => json_decode(Storage::disk('local')->get('data/holidays' . $year))
+        ]);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getSlider()
+    {
+        $items = [];
+        Slider::with('image')->orderBy('position', 'ASC')->get()->each(function (Slider $item) use (&$items) {
+            $items [] = [
+                'image' => $item->image->url,
+                'link' => $item->link
+            ];
+        });
+        return response()->json([
+            'status' => 'ok',
+            'data' => $items
         ]);
     }
 }
