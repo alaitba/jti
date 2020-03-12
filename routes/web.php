@@ -138,6 +138,20 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('{brandId}/media-delete', 'BrandsController@deleteMedia')->name('.media.delete');
     });
 
+    /**
+     * Слайдер
+     */
+    Route::group(['prefix' => 'slider', 'as' => 'admin.slider'], function () {
+        Route::get('/', 'SliderController@index')->name('.index');
+        Route::get('get-list', 'SliderController@getList')->name('.list');
+        Route::get('create', 'SliderController@create')->name('.create');
+        Route::post('store', 'SliderController@store')->name('.store');
+        Route::get('{id}/edit', 'SliderController@edit')->name('.edit');
+        Route::post('{id}/update', 'SliderController@update')->name('.update');
+        Route::get('{id}/delete', 'SliderController@delete')->name('.delete');
+        Route::get('{id}/switchactive', 'SliderController@switchActive')->name('.switchactive');
+        Route::get('{id}/move/{direction}', 'SliderController@move')->name('.move');
+    });
 });
 
 

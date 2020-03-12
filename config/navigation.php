@@ -55,6 +55,16 @@ return [
                         'admin'
                     ]
                 ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Слайдер на главной',
+                    'route_name' => 'admin.slider.index',
+                    'item_active_on' => 'slider*',
+                    'icon' => 'la la-image',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
             ],
             'roles' => [
                 'admin'
