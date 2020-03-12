@@ -32,6 +32,14 @@ class Feedback extends Model
     /**
      * @return BelongsTo
      */
+    public function topic_all()
+    {
+        return $this->belongsTo(FeedbackTopic::class, 'feedback_topic_id', 'id')->withTrashed();
+    }
+
+    /**
+     * @return BelongsTo
+     */
     public function partner()
     {
         return $this->belongsTo(Partner::class);
