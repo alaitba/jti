@@ -70,6 +70,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
     Route::group(['prefix' => 'dict', 'middleware' => 'partnerMiddleware'], function () {
         Route::get('tobacco-products', 'Front\DictionaryController@getTobaccoProducts');
         Route::get('holidays', 'Front\DictionaryController@getHolidays');
+        Route::get('slider', 'Front\DictionaryController@getSlider');
     });
 
     /**
