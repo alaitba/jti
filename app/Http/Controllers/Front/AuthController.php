@@ -483,6 +483,6 @@ class AuthController extends Controller
     {
         $currentTime = now();
         PartnerAuth::query()->updateOrCreate(['partner_id' => $id, 'account_code' => $tpAcc, 'contact_uid' => $uid],
-            ['login' => $currentTime, 'last_seen' => $currentTime, 'os' => Browser::platformFamily()]);
+            ['login' => $currentTime, 'last_seen' => $currentTime, 'os' => Browser::platformName()]);
     }
 }

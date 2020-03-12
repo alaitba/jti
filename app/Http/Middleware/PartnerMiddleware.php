@@ -41,7 +41,7 @@ class PartnerMiddleware
         {
             PartnerAuth::query()->where('partner_id', $partner->id)->where('account_code', $partner->current_tradepoint)->update([
                 'last_seen' => now(),
-                'os' => Browser::platformFamily()
+                'os' => Browser::platformName()
             ]);
         }
         return $next($request);
