@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Feedback;
 use App\Models\FeedbackTopic;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -32,7 +33,9 @@ class FeedbackController extends Controller
      */
     public function getFeedbacks(Request $request)
     {
-        $items = Feedback::query()->where('partner_id', auth('partners')->id())
+        $items = Feedback::with(['topic_all' => function(BelongsTo $q) {
+            $q->select('id', 'title');
+        }])->where('partner_id', auth('partners')->id())
             ->where('created_at', '>=', $request->input('from_date', Carbon::now()->subYear()))
             ->orderBy('created_at', 'DESC')->get(['feedback_topic_id', 'question', 'answer', 'created_at']);
         return response()->json([
