@@ -4,9 +4,12 @@
 namespace App\Providers;
 
 
+use App\Models\Partner;
+use App\Models\TobaccoProduct;
 use App\Services\SmsService\SmsService;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Class JtiApiProvider
@@ -14,6 +17,9 @@ use Psr\Http\Message\ResponseInterface;
  */
 class JtiApiProvider
 {
+    /**
+     * crm
+     */
     private const USER = 'P360Test';
     private const PASS = '123';
     private const BASE_URI = 'http://crmservices.jti.kz:8081/api/';
@@ -32,6 +38,15 @@ class JtiApiProvider
     private const GET_AVAILABLE_REWARDS_URI = 'Seller/GetSellerAvailableRewards';
     private const CREATE_REWARD_URI = 'Seller/CreateReward';
     private const REWARDS_HISTORY_URI = 'Seller/GetSellerRewardsHistory';
+
+    /**
+     * oos
+     */
+
+    private const OOS_URI = 'https://oos.jti.kz/api/';
+    private const OOS_USER = 'partner360';
+    private const OOS_PASS = 'cddb57047b352b8372c04c2a1600923c';
+
 
     /**
      * @param string $uri
@@ -218,5 +233,61 @@ class JtiApiProvider
             ]
         ];
         return self::executeQuery(self::makeUrl(self::REWARDS_HISTORY_URI), $body);
+    }
+
+    public static function ordersOos()
+    {
+        $token = self::authOos();
+        if (!$token)
+        {
+            return false;
+        }
+
+        /** @var Partner $partner */
+        $partner = auth('partners')->user();
+        $result = self::executeOosQuery(self::OOS_URI . 'orders', [
+            'token' => $token,
+            'orders' => [
+                [
+                    'shop_code' => $partner->current_tradepoint,
+                    'seller_code' => $partner->current_uid,
+                    'products' => [
+                        [
+                            'product_code' => TobaccoProduct::withoutTrashed()->first()->product_code ?? '',
+                            'volume' => 1
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+        return $result['success'];
+    }
+
+
+    /**
+     * @param string $url
+     * @param null $body
+     * @param string $method
+     * @return StreamInterface
+     */
+    private static function executeOosQuery(string $url, $body = null, $method = 'POST')
+    {
+        $result = (new Client())->request(
+            $method,
+            $url,
+            [
+                'json' => $body
+            ]
+        )->getBody();
+        return json_decode($result, true);
+    }
+
+    /**
+     * @return string|bool
+     */
+    private static function authOos()
+    {
+        $result = self::executeOosQuery(self::OOS_URI . 'authenticate', ['login' => self::OOS_USER, 'psw' => self::OOS_PASS]);
+        return $result['token'] ?? false;
     }
 }

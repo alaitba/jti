@@ -114,6 +114,13 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
     });
 
     /**
+     * Агент+
+     */
+    Route::group(['prefix' => 'agent', 'middleware' => 'partnerMiddleware'], function() {
+        Route::get('call', 'Front\AgentController@callAgent');
+    });
+
+    /**
      * Обратная связь
      */
     Route::group(['prefix' => 'feedback', 'middleware' => 'partnerMiddleware'], function() {
