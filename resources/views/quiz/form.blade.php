@@ -59,7 +59,7 @@
                 <input type="text" class="form-control" name="amount" id="amount" value="{{ $item->amount ?? 0 }}">
                 <p class="help-block"></p>
             </div>
-            <div class="form-group" id="userListDiv">
+            <div class="form-group">
                 <label for="photo">Фотография</label>
                 <input type="file" class="form-control" name="photo" id="photo">
                 <p class="help-block"></p>

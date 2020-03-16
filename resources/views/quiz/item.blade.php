@@ -6,7 +6,7 @@
     <td class="align-middle">{{ $item->amount }}</td>
     <td class="align-middle">{!! $item->target !!}</td>
     <td class="text-center align-middle">
-        <a href="#" title="Вопросы" data-url="{{ route('admin.quizzes.questions', ['id' => $item->id ]) }}" class="handle-click" data-type="modal" data-modal="largeModal"><i class="la la-question-circle"></i></a>
+        <a href="{{ route('admin.quizzes.questions.index', ['quizId' => $item->id ]) }}" title="Вопросы"><i class="la la-question-circle"></i></a>
         <a href="#" title="Редактировать" data-url="{{ route('admin.quizzes.edit', ['id' => $item->id ]) }}" class="handle-click" data-type="modal" data-modal="regularModal"><i class="la la-edit"></i></a>
         <a href="#" class="handle-click" data-type="confirm"
            title="Удалить {{ $item->type == 'quiz' ? 'викторину' : 'опрос' }}"

@@ -42,4 +42,12 @@ class QuizQuestion extends Model
     {
         return $this->morphOne(Media::class, 'imageable');
     }
+
+    /**
+     * @return string
+     */
+    public function getTypeStringAttribute()
+    {
+        return $this->type == 'choice' ? 'Выбор' : 'Текст';
+    }
 }

@@ -8,9 +8,15 @@ use App\Http\Utils\ResponseBuilder;
 use App\Imports\QuizPartnersImport;
 use App\Jobs\QuizUsersImported;
 use App\Models\Quiz;
+use App\Models\QuizQuestion;
 use App\Services\LogService\LogService;
 use App\Services\MediaService\MediaService;
+use App\Ui\Attributes\Align;
+use App\Ui\Attributes\LineAwesomeIcon;
 use App\Ui\Attributes\Modal;
+use App\Ui\Components\Portlet\Portlet;
+use App\Ui\Components\Table\AjaxLoadableTable;
+use App\Ui\LayoutBuilder;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
@@ -18,7 +24,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 /**
@@ -277,27 +282,92 @@ class QuizController extends Controller
 
     /**
      * @param $quizId
-     * @return JsonResponse
+     * @return Factory|View
      * @throws Throwable
      */
     public function questions($quizId)
     {
         $quiz = Quiz::withoutTrashed()->with('questions')->findOrFail($quizId);
+        $portlet = new Portlet('Вопросы к ' . ($quiz->type == 'quiz' ? 'викторине' : 'опросу') . ' "' . $quiz->title . '"', LineAwesomeIcon::QUESTION_CIRCLE);
+        $portlet->addUrlableIconButoon(route('admin.quizzes.index'), LineAwesomeIcon::CIRCLE_LEFT, 'Назад к викторинам');
+        $portlet->addModalableIconButton(Modal::LARGE, route('admin.quizzes.questions.create', ['quizId' => $quizId]), LineAwesomeIcon::PLUS, 'Добавить вопрос');
+
+        $table = new AjaxLoadableTable(route('admin.quizzes.questions.list', ['quizId' => $quizId]), 'questionsTable');
+        $table->addColumn('Вопрос', Align::LEFT);
+        $table->addColumn('Тип', Align::CENTER, 150);
+        $table->addColumn(LineAwesomeIcon::EDIT, Align::CENTER, 50);
+        $table->addColumn(LineAwesomeIcon::TRASH, Align::CENTER, 50);
+
+        $portlet->setContent([$table]);
+
+        $layout = new LayoutBuilder();
+        $layout->addRow([$portlet]);
+
+        return $layout->build();
+    }
+
+    /**
+     * @param Request $request
+     * @param $quizId
+     * @return JsonResponse
+     * @throws Throwable
+     */
+    public function questionsList($quizId)
+    {
+        $quiz = Quiz::withoutTrashed()->with('questions')->findOrFail($quizId);
+        $items = $quiz->questions()->paginate(25);
+
+        $itemsHtml = '';
+        foreach ($items as $item)
+        {
+            $itemsHtml .= view('quiz.questions.item', ['question' => $item, 'quizId' => $quizId])->toHtml();
+        }
+
+        $response = new ResponseBuilder();
+        $response->updateTableContentHtml('#questionsTable', $itemsHtml, $items->appends(request()->all())->links('pagination.bootstrap-4'));
+
+        return $response->makeJson();
+
+    }
+
+    /**
+     * @param $quizId
+     * @param $id
+     * @return JsonResponse
+     * @throws Throwable
+     */
+    public function deleteQuestion($quizId, $id)
+    {
+        QuizQuestion::query()->where('id', $id)->delete();
+        return $this->questionsList($quizId);
+    }
+
+    /**
+     * @param $quizId
+     * @return JsonResponse
+     * @throws Throwable
+     */
+    public function createQuestion($quizId)
+    {
+        $quiz = Quiz::withoutTrashed()->findOrFail($quizId);
         return response()->json([
             'functions' => [
                 'updateModal' => [
                     'params' => [
                         'modal' => 'largeModal',
-                        'title' => 'Вопросы для ' . ($quiz->type == 'quiz' ? 'викторины' : 'опроса') . ' "' . $quiz->title . '"',
-                        'init' => 'bootstrap_select',
-                        'content' => view('quiz.questions_form', [
-                            'formAction' => route('admin.quizzes.questions.update', $quizId),
-                            'buttonText' => 'Сохранить',
-                            'item' => $quiz,
+                        'title' => 'Добавление вопроса',
+                        'content' => view('quiz.questions.form', [
+                            'formAction' => route('admin.quizzes.questions.store', ['quizId' => $quizId]),
+                            'quizType' => $quiz->type
                         ])->render(),
                     ]
                 ]
             ]
         ]);
+    }
+
+    public function storeQuestion(QuizQuestionRequest $request, $quizId)
+    {
+
     }
 }

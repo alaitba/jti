@@ -182,8 +182,15 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('get-file/{id}', 'QuizController@getFile')->name('.custom-file');
         Route::get('{mediaId}/media-delete', 'QuizController@deleteMedia')->name('.media.delete');
         Route::get('{id}/delete', 'QuizController@delete')->name('.delete');
-        Route::get('{id}/questions', 'QuizController@questions')->name('.questions');
-        Route::post('{id}/questions-update', 'QuizController@questionsUpdate')->name('.questions.update');
+        Route::group(['prefix' => '{quizId}/questions', 'as' => '.questions'], function () {
+            Route::get('/', 'QuizController@questions')->name('.index');
+            Route::get('list', 'QuizController@questionsList')->name('.list');
+            Route::get('create', 'QuizController@createQuestion')->name('.create');
+            Route::post('store', 'QuizController@storeQuestion')->name('.store');
+            Route::get('{id}/edit', 'QuizController@editQuestion')->name('.edit');
+            Route::post('{id}/update', 'QuizController@updateQuestion')->name('.update');
+            Route::get('{id}/delete', 'QuizController@deleteQuestion')->name('.delete');
+        });
     });
 
 });
