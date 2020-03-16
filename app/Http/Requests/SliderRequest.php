@@ -31,12 +31,12 @@ class SliderRequest extends FormRequest
         {
             return [
                 'image' => 'required|image',
-                'link' => 'required|url',
+                'link' => 'required',
             ];
 
         }
         return [
-            'link' => 'required|url',
+            'link' => 'required',
         ];
     }
 
