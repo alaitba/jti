@@ -8,7 +8,7 @@
             </div>
             <div class="form-group">
                 <label for="link">Ссылка</label>
-                <input type="url" class="form-control" id="link" name="link" value="{{ $item->link ?? '' }}">
+                <input type="text" class="form-control" id="link" name="link" value="{{ $item->link ?? '' }}">
                 <p class="help-block"></p>
             </div>
             <button type="submit" class="btn btn-sm btn-success">{{ $buttonText }}</button>
