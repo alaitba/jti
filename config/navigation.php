@@ -47,6 +47,16 @@ return [
                 ],
                 [
                     'is_tree' => false,
+                    'title' => 'Викторины и опросы',
+                    'route_name' => 'admin.quizzes.index',
+                    'item_active_on' => 'quizzes*',
+                    'icon' => 'la la-question-circle',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
+                [
+                    'is_tree' => false,
                     'title' => 'Выходные и праздники',
                     'route_name' => 'admin.holidays.index',
                     'item_active_on' => 'holidays*',

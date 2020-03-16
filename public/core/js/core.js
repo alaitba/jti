@@ -399,7 +399,6 @@ let app = {
             let formId = form.attr('id');
             let formData = new FormData(form[0]);
 
-
             $.ajax({
                 method: 'post',
                 url: url,

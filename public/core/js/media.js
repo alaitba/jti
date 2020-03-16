@@ -103,3 +103,26 @@ $(document.body).on('click', '.make-main-image', function (e) {
         }
     })
 });
+
+$(document.body).on('click', '.delete-media-data-single', function (e) {
+    e.preventDefault();
+    var url = $(this).attr('data-url');
+    var title = $(this).data('title');
+    var self = $(this);
+    Swal.fire({
+        title: 'Удаление',
+        text: 'Вы уверены, что хотите удалить фотографию?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: 'rgb(48, 133, 214)',
+        cancelButtonColor: '#aaa',
+        cancelButtonText: 'Отмена',
+        confirmButtonText: 'Подтвердить'
+    }).then((result) => {
+        if (result.value) {
+            app.functions.ajaxGet({url});
+            self.parent().fadeOut();
+            self.parent().parent().find('.no-photo').removeClass('d-none');
+        }
+    })
+});
