@@ -112,4 +112,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::post('save-days', 'Front\PurchaseController@saveDays');
     });
 
+    /**
+     * Агент+
+     */
+    Route::group(['prefix' => 'agent', 'middleware' => 'partnerMiddleware'], function() {
+        Route::get('call', 'Front\AgentController@callAgent');
+    });
 });
