@@ -190,6 +190,7 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
             Route::get('{id}/edit', 'QuizController@editQuestion')->name('.edit');
             Route::post('{id}/update', 'QuizController@updateQuestion')->name('.update');
             Route::get('{id}/delete', 'QuizController@deleteQuestion')->name('.delete');
+            Route::get('{mediaId}/media-delete', 'QuizController@deleteQuestionMedia')->name('.media.delete');
         });
     });
 

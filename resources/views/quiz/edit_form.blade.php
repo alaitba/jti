@@ -55,15 +55,15 @@
                 <p class="help-block"></p>
             </div>
             <div class="form-group">
-                <label for="photo">Фотография</label>
+                <label for="photo">Фотография</label><br />
                 @if($item->photo)
-                    <img src="{{ $item->photo->url }}" alt="Фотография" style="max-width: 100%;"><br />
-                    <a style="text-decoration:none" href="#" class="delete-media-data"
+                    <span>
+                    <img src="{{ $item->photo->url }}" alt="Фотография" style="max-width: 250px;"><br />
+                    <a style="text-decoration:none" href="#" class="delete-media-data-single"
                        data-url="{{ route('admin.quizzes.media.delete', ['mediaId' => $item->photo->id]) }}" data-type="confirm"
-                       data-title="Удаление" data-message="Вы уверены, что хотите удалить?">Удалить</a>&nbsp;|&nbsp;
-                @else
-                    <p class="text-danger">Фото не загружено</p>
+                       data-title="Удаление" data-message="Вы уверены, что хотите удалить?">Удалить</a>&nbsp;|&nbsp;</span>
                 @endif
+                <p class="no-photo text-danger @if($item->photo) d-none @endif">Фото не загружено</p>
                 <a href="#" class="photo-upload">Загрузить</a>
                 <p class="filename"></p>
                 <input type="file" class="fileinput d-none" name="photo" id="photo">

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Requests\QuizQuestionRequest;
 use App\Http\Requests\QuizRequest;
 use App\Http\Utils\ResponseBuilder;
 use App\Imports\QuizPartnersImport;
 use App\Jobs\QuizUsersImported;
 use App\Models\Quiz;
+use App\Models\QuizAnswer;
 use App\Models\QuizQuestion;
 use App\Services\LogService\LogService;
 use App\Services\MediaService\MediaService;
@@ -324,6 +326,7 @@ class QuizController extends Controller
         }
 
         $response = new ResponseBuilder();
+        $response->closeModal('largeModal');
         $response->updateTableContentHtml('#questionsTable', $itemsHtml, $items->appends(request()->all())->links('pagination.bootstrap-4'));
 
         return $response->makeJson();
@@ -339,6 +342,7 @@ class QuizController extends Controller
     public function deleteQuestion($quizId, $id)
     {
         QuizQuestion::query()->where('id', $id)->delete();
+        $this->mediaService->deleteForModel(QuizQuestion::class, $id);
         return $this->questionsList($quizId);
     }
 
@@ -366,8 +370,112 @@ class QuizController extends Controller
         ]);
     }
 
+    /**
+     * @param QuizQuestionRequest $request
+     * @param $quizId
+     * @return JsonResponse
+     * @throws Throwable
+     */
     public function storeQuestion(QuizQuestionRequest $request, $quizId)
     {
+        $quizQuestion = new QuizQuestion(['quiz_id' => $quizId]);
+        $quizQuestion->fill($request->only(['question', 'type']));
+        $quizQuestion->save();
+        if ($request->has('photo')) {
+            $file = $request->file('photo');
+            $this->mediaService->upload($file, QuizQuestion::class, $quizQuestion->id);
+        }
 
+        if ($request->input('type') == 'choice')
+        {
+            $answers = [];
+            $correct = $request->input('new-correct');
+            foreach ($request->input('new-answer', []) as $idx => $answer)
+            {
+                $answers []= new QuizAnswer([
+                    'quiz_question_id' => $quizQuestion->id,
+                    'answer' => $answer,
+                    'correct' => $correct[$idx] ?? false
+                ]);
+            }
+            $quizQuestion->answers()->saveMany($answers);
+        }
+        return $this->questionsList($quizId);
+    }
+
+    /**
+     * @param $quizId
+     * @param $id
+     * @return JsonResponse
+     * @throws Throwable
+     */
+    public function editQuestion($quizId, $id)
+    {
+        $quiz = Quiz::withoutTrashed()->findOrFail($quizId);
+        return response()->json([
+            'functions' => [
+                'updateModal' => [
+                    'params' => [
+                        'modal' => 'largeModal',
+                        'title' => 'Редактирование вопроса',
+                        'content' => view('quiz.questions.form', [
+                            'formAction' => route('admin.quizzes.questions.update', ['quizId' => $quizId, 'id' => $id]),
+                            'quizType' => $quiz->type,
+                            'question' => QuizQuestion::query()->find($id)
+                        ])->render(),
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @param QuizQuestionRequest $request
+     * @param $quizId
+     * @param $id
+     * @return JsonResponse
+     * @throws Throwable
+     */
+    public function updateQuestion(QuizQuestionRequest $request, $quizId, $id)
+    {
+        $quizQuestion = QuizQuestion::query()->find($id);
+        $quizQuestion->fill($request->only(['question', 'type']));
+        $quizQuestion->save();
+        if ($request->has('photo')) {
+            $this->mediaService->deleteForModel(QuizQuestion::class, $id);
+            $file = $request->file('photo');
+            $this->mediaService->upload($file, QuizQuestion::class, $id);
+        }
+
+        if ($request->input('type') == 'choice')
+        {
+            $ids = [];
+            $correct = $request->input('correct');
+
+            foreach ($request->input('answer', []) as $answerId => $answer)
+            {
+                $ids []= $answerId;
+                $quizAnswer = QuizAnswer::query()->find($answerId);
+                $quizAnswer->update([
+                    'answer' => $answer,
+                    'correct' => $correct[$answerId] ?? false
+                ]);
+            }
+            QuizAnswer::query()->whereNotIn('id', $ids)->where('quiz_question_id', $id)->delete();
+            $answers = [];
+            $correct = $request->input('new-correct');
+            foreach ($request->input('new-answer', []) as $idx => $answer)
+            {
+                $answers []= new QuizAnswer([
+                    'quiz_question_id' => $quizQuestion->id,
+                    'answer' => $answer,
+                    'correct' => $correct[$idx] ?? false
+                ]);
+            }
+            $quizQuestion->answers()->saveMany($answers);
+        } else {
+            QuizAnswer::query()->where('quiz_question_id', $id)->delete();
+        }
+        return $this->questionsList($quizId);
     }
 }

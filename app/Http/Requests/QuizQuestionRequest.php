@@ -27,7 +27,8 @@ class QuizQuestionRequest extends FormRequest
     {
         return [
             'question.' . config('app.locale') => 'required',
-            'answer.' . config('app.locale') .'.*' => 'required_if:type,choice'
+            'answer.*.' . config('app.locale') => 'required_if:type,choice',
+            'new-answer.*.' . config('app.locale') => 'required_if:type,choice',
         ];
     }
 }

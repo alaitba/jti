@@ -31,7 +31,9 @@ trait MessagesTrait
             'file.mimetypes' => 'Формат файла не поддерживается',
             'file.max' => 'Файл слишком большой (макс. :max kB)',
 
-            'user_list.required_if' => 'Необходимо загрузить список продавцов'
+            'user_list.required_if' => 'Необходимо загрузить список продавцов',
+            'answer.*.*.required_if' => 'Поле обязательно к заполнению',
+            'new-answer.*.*.required_if' => 'Поле обязательно к заполнению',
         ];
     }
 }
