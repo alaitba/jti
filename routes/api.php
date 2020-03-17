@@ -129,4 +129,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::post('question', 'Front\FeedbackController@question');
     });
 
+    /**
+     * Викторины
+     */
+    Route::group(['prefix' => 'quiz', 'middleware' => 'partnerMiddleware'], function() {
+        Route::get('list', 'Front\QuizController@getList');
+        Route::post('check', 'Front\QuizController@checkQuiz');
+    });
+
 });
