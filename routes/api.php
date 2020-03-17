@@ -112,4 +112,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::post('save-days', 'Front\PurchaseController@saveDays');
     });
 
+    /**
+     * Викторины
+     */
+    Route::group(['prefix' => 'quiz', 'middleware' => 'partnerMiddleware'], function() {
+        Route::get('list', 'Front\QuizController@getList');
+        Route::post('check', 'Front\QuizController@checkQuiz');
+    });
+
 });

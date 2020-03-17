@@ -27,6 +27,7 @@ use Spatie\Translatable\HasTranslations;
  * @property Collection questions
  * @property Collection partners
  * @property Media photo
+ * @property string period
  * @package App\Models
  */
 class Quiz extends Model
