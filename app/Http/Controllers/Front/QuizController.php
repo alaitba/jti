@@ -21,9 +21,10 @@ class QuizController extends Controller
 {
 
     /**
+     * @param int|null $id
      * @return JsonResponse
      */
-    public function getList()
+    public function getList($id = null)
     {
         /** @var Partner $user */
         $user = auth('partners')->user();
@@ -37,8 +38,15 @@ class QuizController extends Controller
                 $q->where('public', 1)->orWhereHas('partners', function (Builder $qq) use ($user) {
                     $qq->where('partner_id', $user->id);
                 });
-            }) //TODO whereNotHas заполненная викторина
-            ->get();
+            }); //TODO whereNotHas заполненная викторина
+        if ($id)
+        {
+            $quizzes = $quizzes->where('id', $id);
+        }
+
+        $quizzes = $quizzes->get();
+
+
         $items = [];
         foreach ($quizzes as $quiz)
         {
@@ -72,6 +80,13 @@ class QuizController extends Controller
 
             $items []= $item;
         }
+        if ($id)
+        {
+            return response()->json([
+                'status' => 'ok',
+                'quiz' => array_pop($items)
+            ]);
+        }
         return response()->json([
             'status' => 'ok',
             'quizzes' => $items
@@ -84,6 +99,33 @@ class QuizController extends Controller
      */
     public function checkQuiz(Request $request)
     {
+        /** @var Partner $user */
+        $user = auth('partners')->user();
+
+        $quiz = $request->input('quiz', []);
+        if (!$quiz['id'])
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'no_quiz_id'
+            ], 422);
+        }
+        $quizDB = Quiz::withoutTrashed()->find($quiz['id']);
+        if (!$quizDB)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'quiz_not_found'
+            ], 404);
+        }
+        if ($quizDB->type == 'quiz' && $quizDB->hasSuccess($user))
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'have_success'
+            ], 403);
+        }
+
         return response()->json([
             'status' => 'ok',
         ]);
