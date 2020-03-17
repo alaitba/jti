@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int imageable_id
  * @property int id
  * @property string original_file_name
+ * @property string url
  * @package App\Models
  */
 class Media extends Model
