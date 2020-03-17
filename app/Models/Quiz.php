@@ -58,6 +58,11 @@ class Quiz extends Model
         return $this->hasManyThrough(Partner::class, QuizPartner::class, 'quiz_id', 'id', 'id', 'partner_id');
     }
 
+    public function quiz_results()
+    {
+        return $this->hasMany(QuizResult::class);
+    }
+
     /**
      * @return MorphOne
      */
@@ -99,5 +104,14 @@ class Quiz extends Model
                     ? '<a href="' . route('admin.quizzes.custom-file', ['id' => $this->id]) . '">Список</a>'
                     : '<span class="text-danger">Список</span>') . '[' . ($this->partners_count ?? 0) . ']'
             );
+    }
+
+    /**
+     * @param $user
+     * @return int
+     */
+    public function hasSuccess($user)
+    {
+        return $this->quiz_results()->where('success', 1)->where('partner_id', $user->id)->count();
     }
 }
