@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int partner_id
  * @property int amount
  * @property array questions
+ * @property Quiz quiz
  * @property Carbon created_at
  * @property Carbon updated_at
  * @package App\Models
