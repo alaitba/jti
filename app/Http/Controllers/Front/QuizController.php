@@ -10,6 +10,10 @@ use App\Models\PollResult;
 use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizQuestion;
+use App\Models\QuizResult;
+use App\Providers\JtiApiProvider;
+use App\Services\LogService\LogService;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -131,25 +135,75 @@ class QuizController extends Controller
             ], 403);
         }
 
+        $results = [];
+        $success = false;
+
         if ($quizDB->type == 'poll')
         {
-            PollResult::query()->create([
+            $quizResult = PollResult::query()->create([
                 'quiz_id' => $quizDB->id,
                 'partner_id' => $user->id,
                 'amount' => $quizDB->amount,
                 'questions' => $quiz['questions']
             ]);
+            $results['correct'] = $results['total'] = $quizDB->questions()->count();
+            $success = true;
         } else {
-            //TODO викторина
+            $quizResult = new QuizResult([
+                'quiz_id' => $quizDB->id,
+                'partner_id' => $user->id,
+                'amount' => $quizDB->amount,
+                'questions' => $quiz['questions']
+            ]);
+            $results = $this->checkQuizAnswers($quiz, $quizDB);
+            $success = $results['correct'] == $results['total'];
+            $quizResult->success = $success;
+            $quizResult->save();
         }
 
-        if ($quizDB->amount > 0)
+        $moneyStatus = 'no';
+        if ($quizDB->amount > 0 && $success)
         {
-            //TODO запрос на пополнение
+            try {
+                $result = JtiApiProvider::createMoneyReward('zz' . auth('partners')->user()->current_uid, $quizDB->amount, $quizResult->id)->getBody();
+                $result = json_decode($result, true);
+                $moneyStatus = $result['result'] ? 'ok' : 'failed';
+            } catch (Exception $e) {
+                $moneyStatus = 'failed';
+                LogService::logInfo('Seller: ' . auth('partners')->user()->current_uid);
+                LogService::logException($e);
+            }
         }
         return response()->json([
             'status' => 'ok',
+            'correct' => $results['correct'],
+            'total' => $results['total'],
+            'success' => $success,
+            'amount' => $quizDB->amount,
+            'money_status' => $moneyStatus
         ]);
+    }
+
+    /**
+     * @param array $quiz
+     * @param Quiz $quizDB
+     * @return array
+     */
+    private function checkQuizAnswers($quiz, $quizDB)
+    {
+        $questions = collect($quiz['questions'])->keyBy('id')->toArray();
+        $correct = 0;
+        /** @var QuizQuestion $question */
+        foreach ($quizDB->questions as $question)
+        {
+            $correctAnswerIds = $question->answers()->where('correct', 1)->get('id')->pluck('id')->toArray();
+            $answer = $questions[$question->id]['answer'] ?? null;
+            if (in_array($answer, $correctAnswerIds))
+            {
+                $correct++;
+            }
+        }
+        return ['correct' => $correct, 'total' => count($quizDB->questions)];
     }
 
 }

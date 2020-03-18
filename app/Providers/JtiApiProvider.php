@@ -37,6 +37,7 @@ class JtiApiProvider
     private const GET_BALANCE_URI = 'Seller/GetSellerPointAmount';
     private const GET_AVAILABLE_REWARDS_URI = 'Seller/GetSellerAvailableRewards';
     private const CREATE_REWARD_URI = 'Seller/CreateReward';
+    private const CREATE_MONEY_REWARD_URI = 'Seller/CreateMoneyReward';
     private const REWARDS_HISTORY_URI = 'Seller/GetSellerRewardsHistory';
 
     /**
@@ -212,6 +213,27 @@ class JtiApiProvider
             ]
         ];
         return self::executeQuery(self::makeUrl(self::CREATE_REWARD_URI), $body);
+    }
+
+    /**
+     * @param string $sellerId
+     * @param int $amount
+     * @param int $quizResultId
+     * @return ResponseInterface
+     */
+    public static function createMoneyReward(string $sellerId, int $amount, int $quizResultId)
+    {
+        $body = [
+            'data' => [
+                'sellerId' => $sellerId,
+                'amount' => $amount,
+                'internalId' => $quizResultId
+            ],
+            'identity' => [
+                'locale' => 'ru-RU'
+            ]
+        ];
+        return self::executeQuery(self::makeUrl(self::CREATE_MONEY_REWARD_URI), $body);
     }
 
     /**
