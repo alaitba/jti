@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Utils\ResponseBuilder;
 use App\Models\PollResult;
+use App\Models\QuizAnswer;
+use App\Models\QuizQuestion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
@@ -53,6 +55,17 @@ class PollReportController extends Controller
     {
         $pollResult = PollResult::query()->findOrFail($id);
         $resultQuestions = collect($pollResult->questions)->keyBy('id')->toArray();
+        $items = [];
+        /** @var QuizQuestion $question */
+        foreach ($pollResult->quiz->questions as $question)
+        {
+            $items []= [
+                'question' => $question->question ?? '-',
+                'answer' => $question->type == 'text'
+                    ? ($resultQuestions[$question->id]['answer'] ?? '')
+                    : (QuizAnswer::query()->find($resultQuestions[$question->id]['answer'])->answer ?? '')
+            ];
+        }
         return response()->json([
             'functions' => [
                 'updateModal' => [
@@ -60,8 +73,7 @@ class PollReportController extends Controller
                         'modal' => 'regularModal',
                         'title' => 'Результаты опроса',
                         'content' => view('reports.polls.view', [
-                            'quizQuestions' => $pollResult->quiz->questions,
-                            'resultQuestions' => $resultQuestions
+                            'items' => $items
                         ])->render(),
                     ]
                 ]
