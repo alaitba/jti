@@ -74,14 +74,6 @@ class PollReportController extends Controller
                 'question' => $question->question ?? '-',
                 'answer' => $answer
             ];
-            $items []= [
-                'question' => $question->question ?? '-',
-                'answer' => $answer
-            ];
-            $items []= [
-                'question' => $question->question ?? '-',
-                'answer' => $answer
-            ];
         }
         return response()->json([
             'functions' => [
