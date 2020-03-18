@@ -98,6 +98,23 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
             Route::get('/', 'PartnersReportController@index')->name('.index');
             Route::get('get-list', 'PartnersReportController@getList')->name('.list');
         });
+
+        /**
+         * Опросы
+         */
+        Route::group(['prefix' => 'polls', 'as' => '.polls'], function () {
+            Route::get('/', 'PollReportController@index')->name('.index');
+            Route::match(['get', 'post'], 'get-list', 'PollReportController@getList')->name('.list');
+            Route::get('{id}/view', 'PollReportController@view')->name('.view');
+        });
+
+        /**
+         * Викторины
+         */
+        Route::group(['prefix' => 'quizzes', 'as' => '.quizzes'], function () {
+            Route::get('/', 'QuizReportController@index')->name('.index');
+            Route::match(['get', 'post'], 'get-list', 'QuizReportController@getList')->name('.list');
+        });
     });
 
     /**

@@ -94,6 +94,26 @@ return [
                         'admin'
                     ]
                 ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Опросы',
+                    'route_name' => 'admin.reports.polls.index',
+                    'item_active_on' => 'reports/polls*',
+                    'icon' => 'la la-question-circle',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
+                [
+                    'is_tree' => false,
+                    'title' => 'Викторины',
+                    'route_name' => 'admin.reports.quizzes.index',
+                    'item_active_on' => 'reports/quizzes*',
+                    'icon' => 'la la-question-circle',
+                    'roles' => [
+                        'admin'
+                    ]
+                ],
             ],
             'roles' => [
                 'admin'
