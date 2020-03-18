@@ -272,11 +272,11 @@ class JtiApiProvider
             'orders' => [
                 [
                     'shop_code' => $partner->current_tradepoint,
-                    'seller_code' => $partner->current_uid,
+                    'seller_code' => ($partner->current_contact->name ?? '') . ' +' . $partner->mobile_phone,
                     'products' => [
                         [
-                            'product_code' => TobaccoProduct::withoutTrashed()->first()->product_code ?? '',
-                            'volume' => 1
+                            'product_code' => 'Win_FSL_KS_LT_BL_Prod',
+                            'volume' => 10
                         ]
                     ]
                 ]
