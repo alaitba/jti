@@ -1,8 +1,4 @@
-@foreach($quizQuestions as $question)
-<b>{{ $question->question }}</b><br />
-<pre>{{
-    $question->type == 'text'
-        ? $resultQuestions[$question->id]['answer'] ?? ''
-        : \App\Models\QuizAnswer::query()->find($resultQuestions[$question->id]['answer'])->answer ?? ''
-    }}</pre>
+@foreach($items as $item)
+<b>{{ $item['question'] }}</b><br />
+<pre>{{ $item['answer'] }}</pre>
 @endforeach

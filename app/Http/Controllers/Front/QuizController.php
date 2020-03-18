@@ -111,8 +111,8 @@ class QuizController extends Controller
         /** @var Partner $user */
         $user = auth('partners')->user();
 
-        $quiz = $request->input('quiz', []);
-        if (!$quiz['id'])
+        $quiz = $request->input('id', []);
+        if (!isset($quiz['id']))
         {
             return response()->json([
                 'status' => 'error',
@@ -136,7 +136,6 @@ class QuizController extends Controller
         }
 
         $results = [];
-        $success = false;
 
         if ($quizDB->type == 'poll')
         {
@@ -165,7 +164,7 @@ class QuizController extends Controller
         if ($quizDB->amount > 0 && $success)
         {
             try {
-                $result = JtiApiProvider::createMoneyReward('zz' . auth('partners')->user()->current_uid, $quizDB->amount, $quizResult->id)->getBody();
+                $result = JtiApiProvider::createMoneyReward(auth('partners')->user()->current_uid, $quizDB->amount, $quizResult->id)->getBody();
                 $result = json_decode($result, true);
                 $moneyStatus = $result['result'] ? 'ok' : 'failed';
             } catch (Exception $e) {
