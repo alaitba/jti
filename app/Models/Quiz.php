@@ -58,9 +58,20 @@ class Quiz extends Model
         return $this->hasManyThrough(Partner::class, QuizPartner::class, 'quiz_id', 'id', 'id', 'partner_id');
     }
 
+    /**
+     * @return HasMany
+     */
     public function quiz_results()
     {
         return $this->hasMany(QuizResult::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function poll_results()
+    {
+        return $this->hasMany(PollResult::class);
     }
 
     /**
@@ -112,6 +123,10 @@ class Quiz extends Model
      */
     public function hasSuccess($user)
     {
-        return $this->quiz_results()->where('success', 1)->where('partner_id', $user->id)->count();
+        if ($this->type == 'quiz')
+        {
+            return $this->quiz_results()->where('success', 1)->where('partner_id', $user->id)->count();
+        }
+        return $this->poll_results()->where('partner_id', $user->id)->count();
     }
 }
