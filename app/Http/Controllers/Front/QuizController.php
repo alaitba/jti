@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\Partner;
+use App\Models\PollResult;
 use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizQuestion;
@@ -38,7 +39,7 @@ class QuizController extends Controller
                 $q->where('public', 1)->orWhereHas('partners', function (Builder $qq) use ($user) {
                     $qq->where('partner_id', $user->id);
                 });
-            }); //TODO whereNotHas заполненная викторина
+            });
         if ($id)
         {
             $quizzes = $quizzes->where('id', $id);
@@ -50,6 +51,10 @@ class QuizController extends Controller
         $items = [];
         foreach ($quizzes as $quiz)
         {
+            if ($quiz->hasSuccess($user))
+            {
+                continue;
+            }
             $item = $quiz->only(['id', 'type', 'amount']);
             $item['title'] = $quiz->getTranslations('title');
             $item['photo'] = $quiz->photo->url ?? null;
@@ -118,7 +123,7 @@ class QuizController extends Controller
                 'message' => 'quiz_not_found'
             ], 404);
         }
-        if ($quizDB->type == 'quiz' && $quizDB->hasSuccess($user))
+        if ($quizDB->hasSuccess($user))
         {
             return response()->json([
                 'status' => 'error',
@@ -126,6 +131,22 @@ class QuizController extends Controller
             ], 403);
         }
 
+        if ($quizDB->type == 'poll')
+        {
+            PollResult::query()->create([
+                'quiz_id' => $quizDB->id,
+                'partner_id' => $user->id,
+                'amount' => $quizDB->amount,
+                'questions' => $quiz['questions']
+            ]);
+        } else {
+            //TODO викторина
+        }
+
+        if ($quizDB->amount > 0)
+        {
+            //TODO запрос на пополнение
+        }
         return response()->json([
             'status' => 'ok',
         ]);
