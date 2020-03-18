@@ -111,7 +111,7 @@ class QuizController extends Controller
         /** @var Partner $user */
         $user = auth('partners')->user();
 
-        $quiz = $request->input('id', []);
+        $quiz = $request->input('quiz', []);
         if (!isset($quiz['id']))
         {
             return response()->json([

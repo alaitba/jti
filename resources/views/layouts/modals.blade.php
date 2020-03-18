@@ -20,7 +20,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
             </div>
-            <div class="modal-body" style="min-height: 150px;">
+            <div class="modal-body modal-scrollable" style="min-height: 150px">
                 Загрузка...
             </div>
         </div>

@@ -161,3 +161,13 @@ legend {
 tr.nowrap th {
     white-space: nowrap;
 }
+
+.modal-scrollable{
+    max-height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.modal-body {
+    padding: 1rem !important;
+}

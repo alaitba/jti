@@ -59,11 +59,28 @@ class PollReportController extends Controller
         /** @var QuizQuestion $question */
         foreach ($pollResult->quiz->questions as $question)
         {
+            if ($question->type == 'text')
+            {
+                $answer = $resultQuestions[$question->id]['answer'] ?? '';
+            } else {
+                $ids = is_array($resultQuestions[$question->id]['answer'])
+                    ? $resultQuestions[$question->id]['answer']
+                    : explode(',', $resultQuestions[$question->id]['answer']);
+                $answer = QuizAnswer::query()
+                    ->whereIn('id', $ids)
+                    ->get('answer');
+            }
             $items []= [
                 'question' => $question->question ?? '-',
-                'answer' => $question->type == 'text'
-                    ? ($resultQuestions[$question->id]['answer'] ?? '')
-                    : (QuizAnswer::query()->find($resultQuestions[$question->id]['answer'])->answer ?? '')
+                'answer' => $answer
+            ];
+            $items []= [
+                'question' => $question->question ?? '-',
+                'answer' => $answer
+            ];
+            $items []= [
+                'question' => $question->question ?? '-',
+                'answer' => $answer
             ];
         }
         return response()->json([
