@@ -49,4 +49,12 @@ class Contact extends Model
     {
         return $this->belongsTo(Partner::class, 'mobile_phone', 'mobile_phone');
     }
+
+    /**
+     * @return string
+     */
+    public function getNameAttribute()
+    {
+        return implode(' ', [$this->first_name, $this->middle_name, $this->last_name]);
+    }
 }
