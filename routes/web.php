@@ -114,6 +114,7 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::group(['prefix' => 'quizzes', 'as' => '.quizzes'], function () {
             Route::get('/', 'QuizReportController@index')->name('.index');
             Route::match(['get', 'post'], 'get-list', 'QuizReportController@getList')->name('.list');
+            Route::get('{id}/view', 'QuizReportController@view')->name('.view');
         });
     });
 
