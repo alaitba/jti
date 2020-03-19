@@ -119,6 +119,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
         Route::get('list', 'Front\QuizController@getList');
         Route::get('{id}/get', 'Front\QuizController@getList');
         Route::post('check', 'Front\QuizController@checkQuiz');
+        Route::get('history', 'Front\QuizController@getHistory');
     });
 
 });
