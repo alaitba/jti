@@ -205,4 +205,29 @@ class QuizController extends Controller
         return ['correct' => $correct, 'total' => count($quizDB->questions)];
     }
 
+    public function getHistory()
+    {
+        /** @var Partner $user */
+        $user = auth('partners')->user();
+
+        $quizzes = QuizResult::query()->where('partner_id', $user->id)->where('success',1)->get()
+            ->merge(PollResult::query()->where('partner_id', $user->id)->get());
+
+        $items = [];
+        /** @var QuizResult|PollResult $quizResult */
+        foreach($quizzes as $quizResult)
+        {
+            $items []= [
+                'type' => $quizResult->quiz->type,
+                'title' => $quizResult->quiz->getTranslations('title') ?? '',
+                'completed_at' => $quizResult->created_at->toDateTimeString(),
+                'amount' => $quizResult->amount,
+                'photo' => $quizResult->quiz->photo->url ?? null
+            ];
+        }
+        return response()->json([
+            'status' => 'ok',
+            'quizzes' => $items
+        ]);
+    }
 }
