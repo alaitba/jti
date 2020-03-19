@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class QuizResult
@@ -23,4 +24,20 @@ class QuizResult extends Model
     protected $casts = [
         'questions' => 'array'
     ];
+
+    /**
+     * @return BelongsTo
+     */
+    public function partner()
+    {
+        return $this->belongsTo(Partner::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function quiz()
+    {
+        return $this->belongsTo(Quiz::class);
+    }
 }
