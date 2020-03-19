@@ -2,14 +2,18 @@
     <div class="card mb-3">
         <div class="card-header">{{ $item['question'] }}</div>
         <div class="card-body">
-            @if(is_string($item['answer']) || count($item['answer']) == 1)
-                {{ $item['answer'] }}
+            @if(is_countable($item['answer']))
+                @if(count($item['answer']) == 1)
+                    {{ $item['answer'][0]->getTranslation('answer', 'ru') }}
+                @else
+                    <ul>
+                    @foreach($item['answer'] as $answer)
+                        <li>{{ $answer->getTranslation('answer', 'ru') }}</li>
+                    @endforeach
+                    </ul>
+                @endif
             @else
-                <ul>
-                @foreach($item['answer'] as $answer)
-                    <li>{{ $answer->getTranslation('answer', 'ru') }}</li>
-                @endforeach
-                </ul>
+                {{ $item['answer'] }}
             @endif
         </div>
     </div>
