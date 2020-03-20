@@ -27,9 +27,10 @@ class QuizController extends Controller
 
     /**
      * @param int|null $id
-     * @return JsonResponse
+     * @param bool $all
+     * @return array|JsonResponse
      */
-    public function getList($id = null)
+    public function getList($id = null, $all = false)
     {
         /** @var Partner $user */
         $user = auth('partners')->user();
@@ -95,6 +96,10 @@ class QuizController extends Controller
                 'status' => 'ok',
                 'quiz' => array_pop($items)
             ]);
+        }
+        if ($all)
+        {
+            return $items;
         }
         return response()->json([
             'status' => 'ok',
@@ -205,7 +210,11 @@ class QuizController extends Controller
         return ['correct' => $correct, 'total' => count($quizDB->questions)];
     }
 
-    public function getHistory()
+    /**
+     * @param bool $all
+     * @return array|JsonResponse
+     */
+    public function getHistory($all = false)
     {
         /** @var Partner $user */
         $user = auth('partners')->user();
@@ -229,9 +238,25 @@ class QuizController extends Controller
                 'photo' => $quizResult->quiz->photo->url ?? null
             ];
         }
+        if ($all)
+        {
+            return $items;
+        }
         return response()->json([
             'status' => 'ok',
             'quizzes' => $items
+        ]);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getAll()
+    {
+        return response()->json([
+            'status' => 'ok',
+            'current' => $this->getList(null, true),
+            'history' => $this->getHistory(true)
         ]);
     }
 }
