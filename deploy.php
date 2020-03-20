@@ -136,14 +136,17 @@ task('opcache:clear', function () {
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
 
-// Cache clear
-after('deploy:symlink', 'cachetool:clear:opcache');
-
 // Migrate database before symlink new release.
 before('deploy:symlink', 'artisan:migrate');
 
-// Delete because use routes with Closure route:cache - error;
-after('artisan:config:cache', 'artisan:optimize');
+// Cache clear
+after('success', 'cachetool:clear:opcache');
 
-// Clean up after unlock
-after('deploy:unlock', 'cleanup');
+// View clear because Redis.
+after('success','artisan:view:clear');
+
+// Cache clear because Redis.
+after('success','artisan:cache:clear');
+
+// Config Cache clear because Redis.
+after('success','artisan:config:cache');
