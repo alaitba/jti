@@ -217,6 +217,10 @@ class QuizController extends Controller
         /** @var QuizResult|PollResult $quizResult */
         foreach($quizzes as $quizResult)
         {
+            if (!$quizResult->quiz)
+            {
+                continue;
+            }
             $items []= [
                 'type' => $quizResult->quiz->type,
                 'title' => $quizResult->quiz->getTranslations('title') ?? '',
