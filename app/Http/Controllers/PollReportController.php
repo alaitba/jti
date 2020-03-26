@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 
+use App\Exports\PollResults;
 use App\Http\Utils\ResponseBuilder;
 use App\Models\PollResult;
+use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizQuestion;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
 /**
@@ -24,18 +29,53 @@ class PollReportController extends Controller
      */
     public function index()
     {
-        return view('reports.polls.index')->render();
+        return view('reports.polls.index', [
+            'polls' => Quiz::withTrashed()->where('type', 'poll')->get(),
+            'from_date' => now()->subMonth(),
+            'to_date' => now(),
+        ])->render();
     }
-
 
     /**
      * @param Request $request
-     * @return JsonResponse
+     * @return JsonResponse|BinaryFileResponse
      * @throws Throwable
      */
     public function getList(Request $request)
     {
-        $items = PollResult::query()->orderBy('created_at', 'DESC')->paginate(30);
+        $items = PollResult::query()->orderBy('created_at', 'DESC');
+        $name = $request->input('name', '');
+        if ($name != '')
+        {
+            $items->whereHas('partner.current_contact', function(Builder $q) use ($name) {
+                $q->whereRaw('CONCAT(first_name, " ", middle_name, " ", last_name) LIKE "%' . $name . '%"');
+            });
+        }
+
+        $phone = $request->input('mobile_phone', '');
+        if ($phone != '')
+        {
+            $items->whereHas('partner', function(Builder $q) use ($phone) {
+                $q->where('mobile_phone', 'like', '%' . $phone . '%');
+            });
+        }
+
+        $pollId = $request->input('poll_id', 0);
+        if ($pollId > 0)
+        {
+            $items->where('quiz_id', $pollId);
+        }
+
+        $fromDate = $request->input('from_date', now()->subMonth()->format('Y-m-d'));
+        $toDate = $request->input('to_date', now()->format('Y-m-d'));
+
+        $items->whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
+        if ($request->input('export', 0))
+        {
+            return Excel::download(new PollResults($items->get()), 'PollResults.xlsx');
+        }
+
+        $items = $items->paginate(30);
         $itemsHtml = '';
         foreach ($items as $item) {
             $itemsHtml .= view('reports.polls.table_row', ['item' => $item])->render();
