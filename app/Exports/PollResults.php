@@ -29,12 +29,12 @@ class PollResults implements FromCollection, ShouldAutoSize, WithHeadings
         {
             $name = $pollResult->partner->current_contact->name ?? '-';
             $phone = $pollResult->partner->mobile_phone ?? '-';
-            $poll = $pollResult->quiz->title ?? '-';
+            $poll = $pollResult->quiz_with_trash->title ?? '-';
             $pollDate = $pollResult->created_at->format('d.m.Y H:i');
 
             $resultQuestions = collect($pollResult->questions)->keyBy('id')->toArray();
 
-            foreach ($pollResult->quiz->questions as $question)
+            foreach ($pollResult->quiz_with_trash->questions as $question)
             {
                 if ($question->type == 'text')
                 {

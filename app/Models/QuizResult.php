@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int amount
  * @property array questions
  * @property bool success
+ * @property Quiz quiz
+ * @property Quiz quiz_with_trash
  * @property Carbon created_at
  * @property Carbon updated_at
  * @package App\Models
@@ -39,5 +41,13 @@ class QuizResult extends Model
     public function quiz()
     {
         return $this->belongsTo(Quiz::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function quiz_with_trash()
+    {
+        return $this->belongsTo(Quiz::class, 'quiz_id', 'id')->withTrashed();
     }
 }

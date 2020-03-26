@@ -28,12 +28,12 @@ class QuizResults implements FromCollection, ShouldAutoSize, WithHeadings
         foreach ($this->quizResults as $quizResult) {
             $name = $quizResult->partner->current_contact->name ?? '-';
             $phone = $quizResult->partner->mobile_phone ?? '-';
-            $quiz = $quizResult->quiz->title ?? '-';
+            $quiz = $quizResult->quiz_with_trash->title ?? '-';
             $quizDate = $quizResult->created_at->format('d.m.Y H:i');
 
             $resultQuestions = collect($quizResult->questions)->keyBy('id')->toArray();
 
-            foreach ($quizResult->quiz->questions as $question)
+            foreach ($quizResult->quiz_with_trash->questions as $question)
             {
                 /** @var QuizAnswer $answer */
                 $answer = QuizAnswer::query()->find($resultQuestions[$question->id]['answer']);

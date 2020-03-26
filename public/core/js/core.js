@@ -182,7 +182,7 @@ let app = {
 
         updateTableContent: function (params) {
             $(params.selector).find('tbody').html(params.content);
-            if (params.pagination) {
+            if (params.hasOwnProperty('pagination')) {
                 $('.pagination_placeholder').html(params.pagination)
             }
         },
