@@ -185,7 +185,7 @@
     </ul>
     <div class="tab-content">
         @foreach(config('project.locales') as $locale)
-            <div role="tabpanel" class="tab-pane{{ $loop->first ? ' active' : '' }}" id="tab-answer-%num%-{{ $loop->index }}">
+            <div role="tabpanel" class="tab-pane{{ $loop->first ? ' active' : '' }}" id="tab-new-answer-%num%-{{ $loop->index }}">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
