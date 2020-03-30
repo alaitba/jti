@@ -13,6 +13,7 @@
         "buzz/laravel-google-captcha": "^2.2",
         "crazybooot/base64-validation": "^1.0",
         "cviebrock/eloquent-sluggable": "^6.0",
+        "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.0",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.5",
