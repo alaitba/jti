@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Contact;
+use App\Models\Partner;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -27,6 +28,7 @@ class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, Wi
     public function collection(Collection $rows)
     {
         $add = [];
+        $addPartners = [];
         foreach ($rows as $row) {
             $contact = Contact::withTrashed()->where(['contact_code' => $row['Contact code'], 'contact_uid' => $row['Contact ID']])->first();
             if ($contact)
@@ -58,8 +60,11 @@ class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, Wi
                 ];
                 $this->added++;
             }
+            $now = now();
+            $addPartners []= ['mobile_phone' => $row['Mobile phone #'], 'created_at' => $now, 'updated_at' => $now];
         }
         Contact::query()->insert($add);
+        Partner::query()->insertOrIgnore($addPartners);
     }
 
     /**
