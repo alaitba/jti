@@ -173,8 +173,9 @@ class RewardsController extends Controller
             $rewards = [];
             foreach ($result['resultObject'] as $reward)
             {
+                $dbReward = Reward::withTrashed()->where('crm_id', $reward['reward']['rewardId'])->orderByDesc('created_at')->first();
                 $rewards []= [
-                    'name' => $reward['reward']['name'],
+                    'name' => $dbReward ? $dbReward->getTranslations('name') : ['ru' => $reward['reward']['name'], 'kz' => $reward['reward']['name']],
                     'amount' => $reward['amount'],
                     'date' => $reward['reward']['rewardDate'] ?? null
                 ];
