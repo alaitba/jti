@@ -79,8 +79,8 @@ class RewardsController extends Controller
                     } else {
                         $result['resultObject'][$key]['price'] = $result['resultObject'][$key]['priceInPoints'];
                         $result['resultObject'][$key]['totalQty'] = $dbReward->qty;
-                        $result['resultObject'][$key]['name'] = $dbReward->getTranslation('name', $locale);
-                        $result['resultObject'][$key]['description'] = $dbReward->getTranslation('description', $locale);
+                        $result['resultObject'][$key]['name'] = $dbReward->getTranslations('name');
+                        $result['resultObject'][$key]['description'] = $dbReward->getTranslations('description');
                         $result['resultObject'][$key]['images'] = $dbReward->photos->map(function ($image) {
                             return [
                                 'origin_url' => $image->url,
