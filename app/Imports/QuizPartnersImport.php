@@ -42,7 +42,7 @@ class QuizPartnersImport implements ToCollection, WithHeadingRow, WithChunkReadi
             ->whereIn('mobile_phone', $partnerMobiles)
             ->get(DB::raw('id AS partner_id, ' . $this->quiz->id . ' AS quiz_id'))
             ->toArray();
-        QuizPartner::query()->insert($items);
+        QuizPartner::query()->insertOrIgnore($items);
     }
 
     /**
