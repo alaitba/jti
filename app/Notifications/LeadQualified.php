@@ -54,7 +54,7 @@ class LeadQualified extends Notification implements ShouldQueue
      */
     public function toOneSignal($notifiable)
     {
-        $message = $notifiable->locale == 'kz' ? '' : 'Потребитель с номером %s завершил заполнение на realday.kz и вы получаете %s баллов';
+        $message = $notifiable->locale == 'kz' ? '%s нөміріндегі тұтынушы realday.kz сайтындағы толтыруды аяқтады және сіз %s балл аласыз.' : 'Потребитель с номером %s завершил заполнение на realday.kz и вы получаете %s баллов';
         return OneSignalMessage::create()
             ->setBody(
                 sprintf(
