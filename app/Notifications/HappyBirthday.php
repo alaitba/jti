@@ -45,8 +45,9 @@ class HappyBirthday extends Notification implements ShouldQueue
      */
     public function toOneSignal($notifiable)
     {
+        $message = $notifiable->locale == 'kz' ? 'Туған күніңізбен!' : 'С днем рождения!';
         return OneSignalMessage::create()
-            ->setBody('С днем рождения!')->setIcon(config('project.push_logo', ''))->setUrl('/notifications');
+            ->setBody($message)->setIcon(config('project.push_logo', ''))->setUrl('/notifications');
     }
 
     /**

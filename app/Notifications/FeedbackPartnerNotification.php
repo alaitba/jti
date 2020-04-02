@@ -40,7 +40,8 @@ class FeedbackPartnerNotification extends Notification implements ShouldQueue
      */
     public function toOneSignal($notifiable)
     {
+        $message = $notifiable->locale == 'kz' ? 'Сұрағыңызға жауап алынды.' : 'Получен ответ на Ваш вопрос.';
         return OneSignalMessage::create()
-            ->setBody('Получен ответ на Ваш вопрос.')->setIcon(config('project.push_logo', ''));
+            ->setBody($message)->setIcon(config('project.push_logo', ''));
     }
 }

@@ -45,10 +45,11 @@ class BalanceReplenished extends Notification implements ShouldQueue
      */
     public function toOneSignal($notifiable)
     {
+        $message = $notifiable->locale == 'kz' ? 'Сіздің нөміріңізге %s тг қосылды.' : 'На Ваш номер было начислено %s тг.';
         return OneSignalMessage::create()
             ->setBody(
                 sprintf(
-                    'На Ваш номер было начислено %s тг.',
+                    $message,
                     $this->data['amount']
                 )
             )->setIcon(config('project.push_logo', ''))->setUrl('/notifications');
