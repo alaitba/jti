@@ -68,7 +68,7 @@
             <label>Ответы</label> <a class="ml-3 add-answer" href="#">Добавить ответ</a>
             @if(isset($question) && count($question->answers))
                 @foreach($question->answers as $answer)
-                    <div class="answer answer-{{ $answer->id }}">
+                    <div class="answer old-answer old-answer-{{ $answer->id }}">
                         <ul class="nav nav-tabs" role="tablist">
                             @foreach(config('project.locales') as $locale)
                                 <li role="presentation" class="nav-item">
@@ -129,7 +129,7 @@
                     </ul>
                     <div class="tab-content">
                         @foreach(config('project.locales') as $locale)
-                            <div role="tabpanel" class="tab-pane{{ $loop->first ? ' active' : '' }}" id="tab-answer-0-{{ $loop->index }}">
+                            <div role="tabpanel" class="tab-pane{{ $loop->first ? ' active' : '' }}" id="tab-new-answer-0-{{ $loop->index }}">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
@@ -232,8 +232,8 @@
     $('#type').on('change', e => {
         $('#answers').toggleClass('d-none');
     });
-    $('.del-answer').on('click', e => {
-        if ($('.answer').length === 1) {
+    $(document).on('click', '.del-answer', e => {
+        if ($('.old-answer').length + $('.new-answer').length <= 1) {
             Swal.fire({
                 title: 'Ошибка!',
                 text: 'Необходим хотя бы один ответ!',
@@ -242,9 +242,11 @@
             return;
         }
         const id = $(e.currentTarget).data('id');
+        const toDel = $(`.${$(e.currentTarget).data('type') === 'new' ? 'new' : 'old'}-answer-${id}`);
+
         Swal.fire({
             title: 'Удаление',
-            text: 'Вы уверены, что хотите удалить вопрос?',
+            text: 'Вы уверены, что хотите удалить ответ?',
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: 'rgb(48, 133, 214)',
@@ -253,7 +255,7 @@
             confirmButtonText: 'Подтвердить'
         }).then((result) => {
             if (result.value) {
-                $(`.${$(e.currentTarget).data('type') === 'new' ? 'new-' : ''}answer-${id}`).remove();
+                toDel.remove();
             }
         })
     });
