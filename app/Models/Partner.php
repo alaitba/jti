@@ -21,6 +21,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property Carbon sms_code_sent_at
  * @property string mobile_phone
  * @property string onesignal_token
+ * @property string locale
  */
 class Partner extends Model implements \Illuminate\Contracts\Auth\Authenticatable, JWTSubject
 {

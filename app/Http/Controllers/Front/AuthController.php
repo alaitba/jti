@@ -485,4 +485,30 @@ class AuthController extends Controller
         PartnerAuth::query()->updateOrCreate(['partner_id' => $id, 'account_code' => $tpAcc, 'contact_uid' => $uid],
             ['login' => $currentTime, 'last_seen' => $currentTime, 'os' => Browser::platformName()]);
     }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function setLocale(Request $request)
+    {
+        $locale = $request->input('locale', 'ru');
+        if ($locale == 'kk')
+        {
+            $locale = 'kz';
+        }
+        if (!in_array($locale, config('project.locales', ['ru', 'kz'])))
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'invalid_locale',
+            ], 403);
+        }
+        /** @var Partner $partner */
+        $partner = auth('partners')->user();
+        $partner->locale = $locale;
+        $partner->save();
+        return response()->json(['status' => 'ok']);
+    }
+
 }
