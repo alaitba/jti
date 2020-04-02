@@ -45,10 +45,11 @@ class LeadEffective extends Notification implements ShouldQueue
      */
     public function toOneSignal($notifiable)
     {
+        $message = $notifiable->locale == 'kz' ? '' : 'Потребитель с номером %s отправил код с пачки и вы получаете %s баллов';
         return OneSignalMessage::create()
             ->setBody(
                 sprintf(
-                    'Потребитель с номером %s отправил код с пачки и вы получаете %s баллов',
+                    $message,
                     $this->data['mobilePhone'],
                     $this->data['amount']
                 )

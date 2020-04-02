@@ -47,8 +47,8 @@ class NotificationFromAdmin extends Notification implements ShouldQueue
     public function toOneSignal($notifiable)
     {
         return OneSignalMessage::create()
-            ->setSubject($this->data->getTranslation('title', 'ru'))
-            ->setBody($this->data->getTranslation('message', 'ru'))
+            ->setSubject($this->data->getTranslationWithFallback('title', $notifiable->locale))
+            ->setBody($this->data->getTranslationWithFallback('message', $notifiable->locale))
             ->setUrl(config('project.front_url'))
             ->setIcon(config('project.push_logo', ''));
     }
