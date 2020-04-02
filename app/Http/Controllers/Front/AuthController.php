@@ -204,12 +204,22 @@ class AuthController extends Controller
             ], 403);
         }
 
+        $locale = $request->input('locale', 'ru');
+        if ($locale == 'kk')
+        {
+            $locale = 'kz';
+        }
+        if (!in_array($locale, config('project.locales', ['ru', 'kz'])))
+        {
+            $locale = 'ru';
+        }
         /**
          * Set password and authorize
          */
         $partner->update([
             'password' => $request->input('password'),
-            'platform' => Browser::platformFamily()
+            'platform' => Browser::platformFamily(),
+            'locale' => $locale
         ]);
         $token = auth('partners')->login($partner);
 
@@ -269,10 +279,20 @@ class AuthController extends Controller
             ], 403);
         }
 
+        $locale = $request->input('locale', 'ru');
+        if ($locale == 'kk')
+        {
+            $locale = 'kz';
+        }
+        if (!in_array($locale, config('project.locales', ['ru', 'kz'])))
+        {
+            $locale = 'ru';
+        }
         $partner->update([
             'failed_auth' => 0,
             'auth_blocked_till' => null,
-            'platform' => Browser::platformFamily()
+            'platform' => Browser::platformFamily(),
+            'locale' => $locale
         ]);
 
         return $this->setTradePoint($partner, $token);
