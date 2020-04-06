@@ -27,7 +27,7 @@ class NotificationsController extends Controller
         $user = auth('partners')->user();
         $notifications = $user->notifications()
             ->where('created_at', '>', $fromDateTime)
-            ->where('type', '!=', 'App\\Notifications\\NotificationFromAdmin')
+            //->where('type', '!=', 'App\\Notifications\\NotificationFromAdmin')
             ->get(['type', 'data', 'created_at'])->map(function (DatabaseNotification $notification) {
                 if ($notification->type == 'App\\Notifications\\RewardBought')
                 {
@@ -41,6 +41,17 @@ class NotificationsController extends Controller
                 {
                     $data = $notification->getAttribute('data');
                     unset($data['sellerId']);
+                    $notification->setAttribute('data', $data);
+                }
+                if ($notification->type == 'NotificationFromAdmin')
+                {
+                    $data = $notification->getAttribute('data');
+                    unset($data['id']);
+                    unset($data['admin_id']);
+                    unset($data['type']);
+                    unset($data['user_list_file']);
+                    unset($data['created_at']);
+                    unset($data['updated_at']);
                     $notification->setAttribute('data', $data);
                 }
                 return $notification;
