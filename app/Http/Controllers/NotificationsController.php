@@ -6,6 +6,7 @@ use App\Exports\SubscribedPartners;
 use App\Http\Requests\AdminNotificationRequest;
 use App\Http\Utils\ResponseBuilder;
 use App\Imports\CustomSubscribers;
+use App\Jobs\AdminNotifications;
 use App\Models\AdminNotification;
 use App\Models\Partner;
 use App\Notifications\NotificationFromAdmin;
@@ -122,10 +123,7 @@ class NotificationsController extends Controller
                 $adminNotification->save();
                 Excel::import(new CustomSubscribers($adminNotification), $fileName);
             } else {
-                Notification::send(
-                    Partner::withoutTrashed()->get(),
-                    new NotificationFromAdmin($adminNotification)
-                );
+                AdminNotifications::dispatch(Partner::withoutTrashed()->get(), new NotificationFromAdmin($adminNotification));
             }
             DB::commit();
         } catch (Exception $e) {

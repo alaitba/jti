@@ -42,7 +42,7 @@ class CustomSubscribers implements ToCollection, WithHeadingRow, WithChunkReadin
             $partnerMobiles []= $item['Mobile'];
         }
         $partners = Partner::withoutTrashed()
-            ->whereNotNull('onesignal_token')
+            //->whereNotNull('onesignal_token')
             ->whereIn('mobile_phone', $partnerMobiles)
             ->get();
         Notification::send($partners, new NotificationFromAdmin($this->adminNotification));
