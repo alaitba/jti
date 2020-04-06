@@ -37,7 +37,11 @@ class NotificationFromAdmin extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [OneSignalChannel::class, 'database'];
+        if ($notifiable->onesignal_token)
+        {
+            return [OneSignalChannel::class, 'database'];
+        }
+        return ['database'];
     }
 
     /**

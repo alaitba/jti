@@ -123,7 +123,7 @@ class NotificationsController extends Controller
                 Excel::import(new CustomSubscribers($adminNotification), $fileName);
             } else {
                 Notification::send(
-                    Partner::withoutTrashed()->whereNotNull('onesignal_token')->get(),
+                    Partner::withoutTrashed()->get(),
                     new NotificationFromAdmin($adminNotification)
                 );
             }
