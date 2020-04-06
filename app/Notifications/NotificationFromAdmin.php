@@ -65,6 +65,6 @@ class NotificationFromAdmin extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        return $this->data->only(['title', 'message']);
+        return $this->data->only(['id']);
     }
 }

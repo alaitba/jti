@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Front;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
+use App\Models\AdminNotification;
 use App\Models\Partner;
 use App\Models\Reward;
 use Illuminate\Http\JsonResponse;
@@ -46,13 +48,45 @@ class NotificationsController extends Controller
                 if ($notification->type == 'NotificationFromAdmin')
                 {
                     $data = $notification->getAttribute('data');
-                    unset($data['id']);
-                    unset($data['admin_id']);
-                    unset($data['type']);
-                    unset($data['user_list_file']);
-                    unset($data['created_at']);
-                    unset($data['updated_at']);
-                    $notification->setAttribute('data', $data);
+                    if (isset($data['id']))
+                    {
+                        /** @var AdminNotification $adminNotification */
+                        $adminNotification = AdminNotification::query()->find($data['id']);
+                        $ruTitle = $adminNotification->getTranslation('title', 'ru');
+                        $kzTitle = $adminNotification->getTranslationWithFallback('title', 'kz');
+                        if (!$kzTitle)
+                        {
+                            $kzTitle = $ruTitle;
+                        }
+                        $ruMessage = $adminNotification->getTranslation('message', 'ru');
+                        $kzMessage = $adminNotification->getTranslationWithFallback('message', 'kz');
+                        if (!$kzMessage)
+                        {
+                            $kzMessage = $ruMessage;
+                        }
+                        $newData = [
+                            'title' => [
+                                'ru' => $ruTitle,
+                                'kz' => $kzTitle,
+                            ],
+                            'message' => [
+                                'ru' => $ruMessage,
+                                'kz' => $kzMessage,
+                            ],
+                        ];
+                    } else {
+                        $newData = [
+                            'title' => [
+                                'ru' => $data['title'],
+                                'kz' => $data['title'],
+                            ],
+                            'message' => [
+                                'ru' => $data['message'],
+                                'kz' => $data['message'],
+                            ]
+                        ];
+                    }
+                    $notification->setAttribute('data', $newData);
                 }
                 return $notification;
             });
