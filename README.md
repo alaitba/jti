@@ -11,7 +11,7 @@
 [![Technical Debt](https://sonarqube.ibecsystems.kz:9001/api/project_badges/measure?project=jti&metric=sqale_index)](https://sonarqube.ibecsystems.kz:9001/dashboard?id=jti)
 [![Vulnerabilities](https://sonarqube.ibecsystems.kz:9001/api/project_badges/measure?project=jti&metric=vulnerabilities)](https://sonarqube.ibecsystems.kz:9001/dashboard?id=jti)
 
-# [jti](https://jti.kz)
+# [jti](https://jti.ibec.systems)
 
 
 ### Application
@@ -50,12 +50,27 @@ composer install && php artisan key:generate
 php artisan migrate
 ```
 
-#### 5. Запускаем сиды если нужны демо данные.
+#### 5. Делаем импорт данных из Siebel
 ```code
-php artisan db:seed
+php artisan jti:import-from-sftp
+```
+
+#### 6. Делаем импорт призов из CRM
+```code
+php artisan jti:update-rewards
+```
+
+#### 7. Создаем права и роли
+```code
+php artisan core:create-roles-and-permissions
+```
+
+#### 8. Создаем супер-админа
+```code
+php artisan core:add-super-user
 ```
 
 #### P.S
-[Документация к проекту](docs)
+# [Документация по API](https://gitlab.ibecsystems.kz/skritku/jti/wikis)
 
 *DevOps last audit [24.11.2019][13:00] - Rishat Sultanov*
