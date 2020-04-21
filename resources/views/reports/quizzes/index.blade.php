@@ -33,7 +33,7 @@
                         <span class="input-group-text"><i class="fa fa-question"></i></span>
                     </div>
                     <label>
-                        <select class="selectpicker" data-live-search="true" name="quiz_id" data-style="btn-light btn-sm" data-width="200">
+                        <select multiple class="selectpicker" data-live-search="true" name="quiz_id" data-style="btn-light btn-sm" data-width="200">
                             <option value="0">Все викторины</option>
                             @foreach($quizzes as $quiz)
                                 <option value="{{ $quiz->id }}" @if($quiz->trashed()) data-subtext="удалена" @endif>{{ $quiz->title }}</option>

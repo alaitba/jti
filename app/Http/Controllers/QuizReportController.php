@@ -31,7 +31,7 @@ class QuizReportController extends Controller
     public function index()
     {
         return view('reports.quizzes.index', [
-            'quizzes' => Quiz::withTrashed()->where('type', 'quiz')->get(),
+            'quizzes' => Quiz::where('type', 'quiz')->get(),
             'from_date' => now()->subMonth(),
             'to_date' => now(),
         ])->render();
