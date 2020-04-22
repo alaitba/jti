@@ -63,7 +63,7 @@ class QuizReportController extends Controller
         }
 
         $quizId = $request->input('quiz_id', 0);
-        if ($quizId > 0)
+        if ($quizId > 0 && $quizId[0] > 0)
         {
             $items->whereIn('quiz_id', $quizId);
         }
