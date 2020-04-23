@@ -46,6 +46,11 @@ class QuizReportController extends Controller
     public function getList(Request $request)
     {
         $items = QuizResult::query()->orderBy('created_at', 'DESC');
+
+        $items->whereHas('quiz', function(Builder $q) {
+            $q->where('deleted_at', NULL);
+        });
+
         $name = $request->input('name', '');
         if ($name != '')
         {
