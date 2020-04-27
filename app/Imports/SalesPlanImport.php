@@ -32,13 +32,13 @@ class SalesPlanImport implements ToModel, WithProgressBar, WithChunkReading, Wit
         ++$this->rows;
         return new SalesPlan([
             'account_code' => $row['Account code'],
-            'bonus_portfolio' => $row['Bonus Portfolio'],
-            'bonus_brand' => $row['Bonus Brand'],
-            'bonus_total' => $row['Bonus Total'],
-            'plan_portfolio' => $row['Plan Portfolio'],
-            'plan_brand' => $row['Plan Brand'],
-            'fact_portfolio' => $row['Fact Portfolio'],
-            'fact_brand' => $row['Fact Brand'],
+            'bonus_portfolio' => $row['Bonus Portfolio'] ?? 0,
+            'bonus_brand' => $row['Bonus Brand'] ?? 0,
+            'bonus_total' => $row['Bonus Total'] ?? 0,
+            'plan_portfolio' => $row['Plan Portfolio'] ?? 0,
+            'plan_brand' => $row['Plan Brand'] ?? 0,
+            'fact_portfolio' => $row['Fact Portfolio'] ?? 0,
+            'fact_brand' => $row['Fact Brand'] ?? 0,
         ]);
     }
 
