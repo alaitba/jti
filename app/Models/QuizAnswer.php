@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Translatable\HasTranslations;
 
 /**
@@ -15,9 +17,17 @@ use Spatie\Translatable\HasTranslations;
  */
 class QuizAnswer extends Model
 {
-    use HasTranslations;
+    use HasTranslations, HasMedia;
 
     protected $guarded = [];
 
     public $translatable = ['answer'];
+
+    /**
+     * @return MorphOne
+     */
+    public function photo()
+    {
+        return $this->morphOne(Media::class, 'imageable');
+    }
 }

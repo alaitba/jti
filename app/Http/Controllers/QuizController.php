@@ -399,6 +399,12 @@ class QuizController extends Controller
                 ]);
             }
             $quizQuestion->answers()->saveMany($answers);
+
+            for ($i = 0; $i < count($answers); $i++) {
+                if (isset($request['new-answer'][$i]['file'])) {
+                    $this->mediaService->upload($request['new-answer'][$i]['file'], QuizAnswer::class, $answers[$i]->id);
+                }
+            }
         }
         return $this->questionsList($quizId);
     }
@@ -464,15 +470,29 @@ class QuizController extends Controller
             QuizAnswer::query()->whereNotIn('id', $ids)->where('quiz_question_id', $id)->delete();
             $answers = [];
             $correct = $request->input('new-correct');
-            foreach ($request->input('new-answer', []) as $idx => $answer)
-            {
-                $answers []= new QuizAnswer([
-                    'quiz_question_id' => $quizQuestion->id,
-                    'answer' => $answer,
-                    'correct' => $correct[$idx] ?? false
-                ]);
+            for ($i = 0; $i < count($ids); $i++) {
+                if (isset($request['answer'][$ids[$i]]['file'])) {
+                    $this->mediaService->deleteForModel(QuizAnswer::class, $ids[$i]);
+                    $this->mediaService->upload($request['answer'][$ids[$i]]['file'], QuizAnswer::class, $ids[$i]);
+                }
             }
-            $quizQuestion->answers()->saveMany($answers);
+            if ($request->input('new-answer')) {
+                foreach ($request->input('new-answer', []) as $idx => $answer)
+                {
+                    $answers []= new QuizAnswer([
+                        'quiz_question_id' => $quizQuestion->id,
+                        'answer' => $answer,
+                        'correct' => $correct[$idx] ?? false
+                    ]);
+                }
+                $quizQuestion->answers()->saveMany($answers);
+                for ($i = 0; $i < count($answers); $i++) {
+                    if (isset($request['new-answer'][$i]['file'])) {
+
+                        $this->mediaService->upload($request['new-answer'][$i]['file'], QuizAnswer::class, $answers[$i]->id);
+                    }
+                }
+            }
         } else {
             QuizAnswer::query()->where('quiz_question_id', $id)->delete();
         }

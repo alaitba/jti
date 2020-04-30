@@ -1,6 +1,9 @@
 <form action="{{ $formAction }}" method="post" class="ajax" id="quizQuestionForm">
+
+
     <div class="row">
         <div class="col-12">
+
             <ul class="nav nav-tabs" role="tablist">
                 @foreach(config('project.locales') as $locale)
                     <li role="presentation" class="nav-item">
@@ -16,7 +19,8 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="question.{{ $locale }}">Вопрос *</label>
+                                    <label for="question.{{ $locale }}">Вопрос Test*</label>
+
                                     <input type="text" class="form-control"
                                            id="question.{{ $locale }}"
                                            name="question[{{ $locale }}]"
@@ -31,9 +35,12 @@
                     </div>
                 @endforeach
             </div>
+
         </div>
     </div>
+
     @if($quizType == 'poll')
+
         <div class="row">
             <div class="col-12 form-group">
                 <label for="type">Тип вопроса</label>
@@ -43,12 +50,16 @@
                 </select>
             </div>
         </div>
+
     @else
         <input type="hidden" name="type" value="choice">
     @endif
+
     <div class="row">
         <div class="col-12 form-group">
-            <label for="photo">Фотография</label><br/>
+
+            <label for="photo">Фотография TEST</label><br/>
+
             @if(isset($question) && $question->photo)
                 <span>
                 <img src="{{ $question->photo->url }}" alt="Фотография" style="max-width: 250px;"><br/>
@@ -56,16 +67,24 @@
                    data-url="{{ route('admin.quizzes.media.delete', ['mediaId' => $question->photo->id]) }}" data-type="confirm"
                    data-title="Удаление" data-message="Вы уверены, что хотите удалить?">Удалить</a>&nbsp;|&nbsp;</span>
             @endif
-            <p class="no-photo text-danger @if(isset($question) && $question->photo) d-none @endif">Фото не загружено</p>
-            <a href="#" class="photo-upload">Загрузить</a>
+
+            <p class="no-photo text-danger @if(isset($question) && $question->photo) d-none @endif">Test Фото не загружено</p>
+
+            <a href="#" class="photo-upload">TEST Загрузить</a>
+
             <p class="filename"></p>
+
             <input type="file" class="fileinput d-none" name="photo" id="photo">
+
             <p class="help-block"></p>
+
         </div>
     </div>
+
     <div class="row @if(isset($question) && $question->type === 'text') d-none @endif" id="answers">
         <div class="col-12">
-            <label>Ответы</label> <a class="ml-3 add-answer" href="#">Добавить ответ</a>
+            <label>Ответы test</label>
+            <a class="ml-3 add-answer" href="#">Добавить ответ test</a>
             @if(isset($question) && count($question->answers))
                 @foreach($question->answers as $answer)
                     <div class="answer old-answer old-answer-{{ $answer->id }}">
@@ -78,6 +97,7 @@
                                 </li>
                             @endforeach
                         </ul>
+
                         <div class="tab-content">
                             @foreach(config('project.locales') as $locale)
                                 <div role="tabpanel" class="tab-pane{{ $loop->first ? ' active' : '' }}"
@@ -85,12 +105,14 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label for="answer.{{ $answer->id }}.{{ $locale }}">Ответ *</label>
+                                                <label for="answer.{{ $answer->id }}.{{ $locale }}">Ответ Main Edit*</label>
+
                                                 <div class="input-group">
                                                     <input type="text" class="form-control"
                                                            id="answer.{{ $answer->id }}.{{ $locale }}"
                                                            name="answer[{{ $answer->id }}][{{ $locale }}]"
                                                            value="{{ $answer->getTranslation('answer', $locale) }}">
+
                                                     <div class="input-group-append">
                                                         <button type="button" class="btn del-answer" data-id="{{ $answer->id }}" data-type="existing">
                                                             <i class="la la-trash-o"></i></button>
@@ -100,9 +122,26 @@
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
                             @endforeach
                         </div>
+                        <br>
+                        <label for="photo">Фотография Ответа</label><br/>
+                        @if($answer->photo)
+                            <span>
+                                <img src="{{ $answer->photo->url }}" alt="Фотография" style="max-width: 250px;"><br/>
+                                <a style="text-decoration:none" href="#" class="delete-media-data-single"
+                                   data-url="{{ route('admin.quizzes.media.delete', ['mediaId' => $answer->photo->id]) }}" data-type="confirm"
+                                   data-title="Удаление" data-message="Вы уверены, что хотите удалить?">Удалить</a>&nbsp;|&nbsp;</span>
+                        @endif
+                        <p class="no-photo text-danger @if($answer->photo) d-none @endif">Test Фото не загружено</p>
+                        <a href="#" class="photo-upload">TEST Загрузить</a>
+                        <p class="filename"></p>
+                        <input type="file" class="fileinput d-none" name="answer[{{ $answer->id }}][file]">
+                        <br>
+
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -133,12 +172,12 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="new-answer.0.{{ $locale }}">Ответ *</label>
+                                            <label for="new-answer.0.{{ $locale }}">Ответ Main New Answer*</label>
                                             <div class="input-group">
-                                            <input type="text" class="form-control"
-                                                   id="new-answer.0.{{ $locale }}"
-                                                   name="new-answer[0][{{ $locale }}]"
-                                                   value="">
+                                                <input type="text" class="form-control"
+                                                       id="new-answer.0.{{ $locale }}"
+                                                       name="new-answer[0][{{ $locale }}]"
+                                                       value="">
                                                 <div class="input-group-append">
                                                     <button type="button" class="btn del-answer" data-id="0" data-type="new">
                                                         <i class="la la-trash-o"></i></button>
@@ -151,6 +190,15 @@
                             </div>
                         @endforeach
                     </div>
+
+                    <br>
+                    <label for="photo">Фотография Ответа</label><br/>
+                    <p class="no-photo text-danger @if(isset($answer->photo)) d-none @endif">Test Фото не загружено</p>
+                    <a href="#" class="photo-upload">TEST Загрузить</a>
+                    <p class="filename"></p>
+                    <input type="file" class="fileinput d-none" name="new-answer[0][file]">
+                    <br>
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -168,7 +216,7 @@
     </div>
     <div class="row text-center">
         <div class="col-12">
-            <button type="submit" class="btn btn-sm btn-success">Сохранить</button>
+            <button type="submit" class="btn btn-sm btn-success">Сохранить TEST</button>
         </div>
     </div>
 </form>
@@ -189,7 +237,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="new-answer.%num%.{{ $locale }}">Ответ *</label>
+                            <label for="new-answer.%num%.{{ $locale }}">Ответ Added *</label>
                             <div class="input-group">
                                 <input type="text" class="form-control"
                                        id="new-answer.%num%.{{ $locale }}"
@@ -207,6 +255,15 @@
             </div>
         @endforeach
     </div>
+
+    <br>
+    <label for="photo">Фотография Ответа</label><br/>
+    <p class="no-photo text-danger @if(isset($answer->photo)) d-none @endif">Test Фото не загружено</p>
+    <input type="file"
+           name="new-answer[%num%][file]"
+    >
+    <br>
+
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
