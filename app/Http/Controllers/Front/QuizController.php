@@ -81,7 +81,8 @@ class QuizController extends Controller
                     {
                         $itemQuestion['answers'] []= [
                             'id' => $answer->id,
-                            'answer' => $answer->getTranslations('answer')
+                            'answer' => $answer->getTranslations('answer'),
+                            'photo' => $answer->photo->url ?? null,
                         ];
                     }
                 }
