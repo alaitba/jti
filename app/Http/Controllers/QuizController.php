@@ -498,4 +498,30 @@ class QuizController extends Controller
         }
         return $this->questionsList($quizId);
     }
+
+    /**
+     * @param $id
+     */
+    public function copy($id)
+    {
+        $item = Quiz::withoutTrashed()->findOrFail($id);
+        $clone = $item->replicate();
+        $clone->push();
+        $clone->photo()->save($item->photo->replicate());
+        foreach($item->questions as $question)
+        {
+            $clone->questions()->save($question->replicate());
+            $clone->questions->first()->photo()->save($question->photo->replicate());
+        }
+        $answersModel = $item->questions->first()->answers;
+        foreach($answersModel as $answer)
+        {
+            $clone->questions->first()->answers()->save($answer->replicate());
+        }
+        for ($i = 0; $i < count($answersModel); $i++) {
+            if (isset($answersModel[$i]->photo)) {
+                $clone->questions->first()->answers[$i]->photo()->save($answersModel[$i]->photo->replicate());
+            }
+        }
+    }
 }

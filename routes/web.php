@@ -243,6 +243,7 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('get-file/{id}', 'QuizController@getFile')->name('.custom-file');
         Route::get('{mediaId}/media-delete', 'QuizController@deleteMedia')->name('.media.delete');
         Route::get('{id}/delete', 'QuizController@delete')->name('.delete');
+        Route::get('{id}/copy', 'QuizController@copy')->name('.copy');
         Route::group(['prefix' => '{quizId}/questions', 'as' => '.questions'], function () {
             Route::get('/', 'QuizController@questions')->name('.index');
             Route::get('list', 'QuizController@questionsList')->name('.list');

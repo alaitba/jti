@@ -14,5 +14,11 @@
            data-message="Вы уверены, что хотите удалить {{ $item->type == 'quiz' ? 'викторину' : 'опрос' }}?"
            data-cancel-text="Нет"
            data-confirm-text="Да, удалить" data-url="{{ route('admin.quizzes.delete', ['id' => $item->id ]) }}"><i class="la la-trash"></i></a>
+        <a href="#" class="handle-click" data-type="confirm"
+           title="Скопировать {{ $item->type == 'quiz' ? 'викторину' : 'опрос' }}"
+           data-title="Копирование"
+           data-message="Вы уверены, что хотите скопировать {{ $item->type == 'quiz' ? 'викторину' : 'опрос' }}?"
+           data-cancel-text="Нет"
+           data-confirm-text="Да, скопировать" data-url="{{ route('admin.quizzes.copy', ['id' => $item->id ]) }}"><i class="la la-plus-circle"></i></a>
     </td>
 </tr>
