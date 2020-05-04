@@ -511,7 +511,9 @@ class QuizController extends Controller
         foreach($item->questions as $question)
         {
             $clone->questions()->save($question->replicate());
-            $clone->questions->first()->photo()->save($question->photo->replicate());
+            if (isset($item->questions->photo)){
+                $clone->questions->first()->photo()->save($question->photo->replicate());
+            }
         }
         $answersModel = $item->questions->first()->answers;
         foreach($answersModel as $answer)
