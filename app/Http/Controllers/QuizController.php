@@ -200,11 +200,20 @@ class QuizController extends Controller
      */
     public function update(QuizRequest $request, $quizId)
     {
+        /** @var Quiz $quiz */
         $quiz = Quiz::query()->find($quizId);
-        $params = $request->only(['title', 'from_date', 'to_date', 'amount']);
+        $params = $request->only(['title', 'from_date', 'to_date', 'amount', 'public']);
         $params['active'] = (int) $request->input('active', 0);
         $quiz->update($params);
-
+        if (!$quiz->public) {
+            $file = $request->file('user_list');
+            $fileName = $file->storeAs('quizusers', $quiz->id . '.' . $file->guessClientExtension());
+            $quiz->user_list_file = $fileName;
+            $quiz->save();
+            (new QuizPartnersImport($quiz))->queue($fileName)->chain([
+                new QuizUsersImported($quiz->id)
+            ]);
+        }
         if ($request->has('photo')) {
             $file = $request->file('photo');
             $this->mediaService->upload($file, Quiz::class, $quiz->id);

@@ -10,10 +10,15 @@
             </div>
             <div class="form-group">
                 <label for="public">Целевая аудитория</label>
-                <select class="form-control selectpicker" name="public" id="public" disabled>
+                <select class="form-control selectpicker" name="public" id="public">
                     <option value="1"{{ $item->public ? ' selected' : '' }}>Все пользователи</option>
                     <option value="0"{{ $item->public ? '' : ' selected' }}>Пользователи из списка</option>
                 </select>
+            </div>
+            <div class="form-group" id="userListDiv">
+                <label for="user_list">Список пользователей</label>
+                <input type="file" class="form-control" name="user_list" id="user_list">
+                <p class="help-block"></p>
             </div>
             <ul class="nav nav-tabs" role="tablist">
                 @foreach(config('project.locales') as $count => $locale)
