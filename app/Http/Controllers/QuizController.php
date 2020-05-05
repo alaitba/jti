@@ -516,7 +516,11 @@ class QuizController extends Controller
         $item = Quiz::withoutTrashed()->findOrFail($id);
         $clone = $item->replicate();
         $clone->push();
-        $clone->photo()->save($item->photo->replicate());
+        if (isset($item->photo)){
+            $clone->photo()->save($item->photo->replicate());
+        }
+        $clone->active = 0;
+        $clone->save();
         foreach($item->questions as $question)
         {
             $clone->questions()->save($question->replicate());

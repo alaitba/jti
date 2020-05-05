@@ -15,9 +15,9 @@
                     <option value="0"{{ $item->public ? '' : ' selected' }}>Пользователи из списка</option>
                 </select>
             </div>
-            <div class="form-group" id="userListDiv">
+            <div class="form-group  {{ $item->public ? 'd-none' : ' ' }}" id="userListDiv">
                 <label for="user_list">Список пользователей</label>
-                <input type="file" class="form-control" name="user_list" id="user_list">
+                <input type="file" class="form-control" name="user_list" id="user_list"  {{ $item->public ? ' disabled' : ' ' }}>
                 <p class="help-block"></p>
             </div>
             <ul class="nav nav-tabs" role="tablist">
