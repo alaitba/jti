@@ -521,21 +521,24 @@ class QuizController extends Controller
         }
         $clone->active = 0;
         $clone->save();
-        foreach($item->questions as $question)
-        {
+        foreach ($item->questions as $question) {
             $clone->questions()->save($question->replicate());
-            if (isset($item->questions->photo)){
-                $clone->questions->first()->photo()->save($question->photo->replicate());
+        }
+        for ($i = 0; $i < count($item->questions); $i++) {
+            if (isset($item->questions[$i]->photo)){
+                $clone->questions[$i]->photo()->save($item->questions[$i]->photo->replicate());
             }
         }
-        $answersModel = $item->questions->first()->answers;
-        foreach($answersModel as $answer)
-        {
-            $clone->questions->first()->answers()->save($answer->replicate());
+        for ($i = 0; $i < count($item->questions); $i++) {
+            for ($j = 0; $j < count($item->questions[$i]->answers); $j++) {
+                $clone->questions[$i]->answers()->save($item->questions[$i]->answers[$j]->replicate());
+            }
         }
-        for ($i = 0; $i < count($answersModel); $i++) {
-            if (isset($answersModel[$i]->photo)) {
-                $clone->questions->first()->answers[$i]->photo()->save($answersModel[$i]->photo->replicate());
+        for ($i = 0; $i < count($item->questions); $i++) {
+            for ($j = 0; $j < count($item->questions[$i]->answers); $j++) {
+                if (isset($item->questions[$i]->answers[$j]->photo)) {
+                    $clone->questions[$i]->answers[$j]->photo()->save($item->questions[$i]->answers[$j]->photo->replicate());
+                }
             }
         }
     }
