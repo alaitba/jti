@@ -215,6 +215,7 @@ class QuizController extends Controller
             ]);
         }
         if ($request->has('photo')) {
+            $this->mediaService->deleteForModel(Quiz::class, $quiz->id);
             $file = $request->file('photo');
             $this->mediaService->upload($file, Quiz::class, $quiz->id);
         }
@@ -497,7 +498,7 @@ class QuizController extends Controller
                 $quizQuestion->answers()->saveMany($answers);
                 for ($i = 0; $i < count($answers); $i++) {
                     if (isset($request['new-answer'][$i]['file'])) {
-
+                        $this->mediaService->deleteForModel(QuizAnswer::class, $answers[$i]->id);
                         $this->mediaService->upload($request['new-answer'][$i]['file'], QuizAnswer::class, $answers[$i]->id);
                     }
                 }
