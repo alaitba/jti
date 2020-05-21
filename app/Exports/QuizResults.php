@@ -45,8 +45,8 @@ class QuizResults implements FromCollection, ShouldAutoSize, WithHeadings
                     'date' => $quizDate,
                     'bonus' => $quizResult->amount,
                     'question' => $question->question ?? '-',
-                    'answer' => $answer->getTranslation('answer', 'ru'),
-                    'correct' => $answer->correct ? 'Да' : 'Нет'
+                    'answer' => optional($answer)->getTranslation('answer', 'ru'),
+                    'correct' => optional($answer)->correct ? 'Да' : 'Нет'
                 ];
             }
         }
