@@ -272,6 +272,7 @@ class AuthController extends Controller
                 $partner->auth_blocked_till = Carbon::now()->addMinutes(config('project.failed_auth_block_time', 10));
             }
             $partner->save();
+            \Sentry\captureMessage('Неверный пароль. Количество попыток: ' . $partner->failed_auth);
             return response()->json([
                 'status' => 'error',
                 'message' => 'wrong_password',
