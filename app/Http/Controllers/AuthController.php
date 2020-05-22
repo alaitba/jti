@@ -50,6 +50,8 @@ class AuthController extends Controller
 
         if (!$this->adminCase->auth($authData))
         {
+            \Sentry\captureMessage('Логин или пароль неверны или админ не активирован');
+
             return response()->json([
                 'functions' => [
                     'showAlert' => [
