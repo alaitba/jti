@@ -11,7 +11,8 @@ namespace App\Http\Requests\Front;
 class AuthRequests
 {
     public const PHONE_REQUEST = [
-        'mobile_phone' => 'required|regex:/77[0-9]{9}/'
+        'mobile_phone' => 'required|regex:/77[0-9]{9}/',
+        'captcha' => 'required|captcha',
     ];
 
     public const SMSCODE_REQUEST = [
@@ -29,7 +30,6 @@ class AuthRequests
     public const LOGIN_REQUEST = [
         'mobile_phone' => 'required|regex:/77[0-9]{9}/',
         'password' => 'required',
-        'captcha' => 'required|captcha',
     ];
 
 }
