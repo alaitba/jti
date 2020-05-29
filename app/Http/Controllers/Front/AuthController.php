@@ -49,11 +49,18 @@ class AuthController extends Controller
         /**
          * Mobile number validation
          */
-        $validation = ValidatorService::validateRequest($request->only('mobile_phone', 'captcha'), AuthRequests::PHONE_REQUEST);
+        $validation = ValidatorService::validateRequest($request->only('mobile_phone'), AuthRequests::PHONE_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
 
+        if (!$request->only(['captcha']))
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'captcha_does_not_exist'
+            ], 403);
+        }
         /**
          * Check phone number in Partners
          */
