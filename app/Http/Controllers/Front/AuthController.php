@@ -232,15 +232,7 @@ class AuthController extends Controller
      */
     public function postLogin(Request $request)
     {
-        $credentials = $request->only(['mobile_phone', 'password']);
-
-        if (!$request->only(['captcha']))
-        {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'captcha_does_not_exist'
-            ], 403);
-        }
+        $credentials = $request->only(['mobile_phone', 'password', 'captcha']);
 
         $credentials['mobile_phone'] = trim($credentials['mobile_phone'], '+');
         /**

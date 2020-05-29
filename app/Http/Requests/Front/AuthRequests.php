@@ -29,6 +29,7 @@ class AuthRequests
     public const LOGIN_REQUEST = [
         'mobile_phone' => 'required|regex:/77[0-9]{9}/',
         'password' => 'required',
+        'captcha' => 'required|captcha',
     ];
 
 }
