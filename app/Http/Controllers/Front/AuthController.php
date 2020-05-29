@@ -234,6 +234,14 @@ class AuthController extends Controller
     {
         $credentials = $request->only(['mobile_phone', 'password', 'captcha']);
 
+        if (!$request->only(['captcha']))
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'captcha_does_not_exist'
+            ], 403);
+        }
+
         $credentials['mobile_phone'] = trim($credentials['mobile_phone'], '+');
         /**
          * Auth validation
