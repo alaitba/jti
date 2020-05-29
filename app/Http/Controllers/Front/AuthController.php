@@ -49,7 +49,7 @@ class AuthController extends Controller
         /**
          * Mobile number validation
          */
-        $validation = ValidatorService::validateRequest($request->only('mobile_phone'), AuthRequests::PHONE_REQUEST);
+        $validation = ValidatorService::validateRequest($request->only('mobile_phone', 'captcha'), AuthRequests::PHONE_REQUEST);
         if ($validation !== true) {
             return $validation;
         }
@@ -233,14 +233,6 @@ class AuthController extends Controller
     public function postLogin(Request $request)
     {
         $credentials = $request->only(['mobile_phone', 'password', 'captcha']);
-
-        if (!$request->only(['captcha']))
-        {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'captcha_does_not_exist'
-            ], 403);
-        }
 
         $credentials['mobile_phone'] = trim($credentials['mobile_phone'], '+');
         /**
