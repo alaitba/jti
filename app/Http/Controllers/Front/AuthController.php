@@ -182,7 +182,7 @@ class AuthController extends Controller
      * @param bool $reset
      * @return array|bool|JsonResponse
      */
-    public function postCreatePassword(Request $request, bool $reset = false)
+    public function postCreatePassword(Request $request, bool $reset = true)
     {
         /**
          * Passwords validation
