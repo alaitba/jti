@@ -200,7 +200,7 @@ class AuthController extends Controller
             ['phone_verified_at', '!=', null]
         ] : [
             ['mobile_phone', trim($request->input('mobile_phone'), '+')],
-            ['phone_verified_at', '>=', Carbon::now()->subMinutes(config('project.create_password_lifetime', 2))],
+            ['phone_verified_at', '>=', Carbon::now()->subMinutes(config('project.create_password_lifetime', 10))],
             ['password', null]
         ];
         $partner = Partner::withoutTrashed()->where($where)->first();
