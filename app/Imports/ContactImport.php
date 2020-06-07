@@ -30,11 +30,12 @@ class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, Wi
         $add = [];
         $addPartners = [];
         foreach ($rows as $row) {
-            $contact = Contact::withTrashed()->where(['contact_code' => $row['Contact code'], 'contact_uid' => $row['Contact ID']])->first();
+            $contact = Contact::withTrashed()->where('contact_uid', $row['Contact ID'])->first();
             if ($contact)
             {
                 $contact->restore();
                 $contact->fill([
+                    'contact_code' => $row['Contact code'],
                     'contact_type' => $row['Contact type'],
                     'mobile_phone' => $row['Mobile phone #'],
                     'first_name' => $row['Contact first name'],
@@ -63,7 +64,9 @@ class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, Wi
             $now = now();
             $addPartners []= ['mobile_phone' => $row['Mobile phone #'], 'created_at' => $now, 'updated_at' => $now];
         }
-        Contact::query()->insert($add);
+        foreach ($add as $value) {
+            Contact::query()->insert($value);
+        }
         Partner::query()->insertOrIgnore($addPartners);
     }
 
