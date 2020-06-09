@@ -66,7 +66,8 @@ SELECT
     ta.employee_name AS trade_agent,
     pa.login,
     pa.last_seen,
-    pa.os
+    pa.os,
+    pa.ip
 FROM `partner_auths` AS pa, `contacts` AS c, `partners` AS p, `trade_points` AS tp, `trade_agents` AS ta
 WHERE pa.partner_id=p.id AND c.contact_uid=pa.contact_uid AND tp.account_code=pa.account_code AND tp.employee_code=ta.employee_code
 SQL;

@@ -20,6 +20,7 @@
                 <th>Последний вход</th>
                 <th>Последнее действие</th>
                 <th>OS</th>
+                <th>IP</th>
             </tr>
             </thead>
             <tbody>
@@ -42,7 +43,8 @@
                     { data: 'trade_agent' },
                     { data: 'login' },
                     { data: 'last_seen' },
-                    { data: 'os' }
+                    { data: 'os' },
+                    { data: 'ip' }
                 ],
                 pageLength: 25,
                 orderCellsTop: true,

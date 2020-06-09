@@ -400,8 +400,9 @@ class AuthController extends Controller
         $partner->current_tradepoint = $accountCode;
         $partner->current_uid = $tradePointContact->contact_uid;
         $partner->save();
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
 
-        $this->storeLogin($partner->id, $accountCode, $tradePointContact->contact_uid);
+        $this->storeLogin($partner->id, $accountCode, $tradePointContact->contact_uid, $ipAddress);
 
         return response()->json([
             'status' => 'ok',
@@ -409,6 +410,7 @@ class AuthController extends Controller
             'tradepoint' => $tradePoints[$accountCode],
             'account' => $partner->current_contact->only(['first_name', 'last_name', 'middle_name', 'mobile_phone']) ?? [],
             'tradeagent' => $partner->current_contact->tradepoint->trade_agent->only(['employee_name', 'phone']) ?? [],
+            'ip' => $ipAddress,
         ]);
     }
 
@@ -476,9 +478,10 @@ class AuthController extends Controller
             ]);
         }
         $tpAcc = array_key_first($tradepoints);
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
         $partner->update(['current_tradepoint' => $tpAcc, 'current_uid' => $tradepoints[$tpAcc]['contact_uid']]);
 
-        $this->storeLogin($partner->id, $tpAcc, $tradepoints[$tpAcc]['contact_uid']);
+        $this->storeLogin($partner->id, $tpAcc, $tradepoints[$tpAcc]['contact_uid'], $ipAddress);
 
         return response()->json([
             'status' => 'ok',
@@ -508,11 +511,11 @@ class AuthController extends Controller
      * @param $id
      * @param $tpAcc
      */
-    private function storeLogin($id, $tpAcc, $uid)
+    private function storeLogin($id, $tpAcc, $uid, $ipAddress)
     {
         $currentTime = now();
         PartnerAuth::query()->updateOrCreate(['partner_id' => $id, 'account_code' => $tpAcc, 'contact_uid' => $uid],
-            ['login' => $currentTime, 'last_seen' => $currentTime, 'os' => Browser::platformName()]);
+            ['login' => $currentTime, 'last_seen' => $currentTime, 'os' => Browser::platformName(), 'ip' => $ipAddress]);
     }
 
     /**
