@@ -116,7 +116,8 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => 'ok',
-                'message' => 'need_password'
+                'message' => 'need_password',
+                'mobile_phone' => $partner->mobile_phone
             ]);
         }
 
