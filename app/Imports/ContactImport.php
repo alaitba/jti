@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Contact;
 use App\Models\Partner;
+use App\Services\LogService\LogService;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -11,6 +12,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
+use Exception;
 
 /**
  * Class ContactImport
@@ -30,12 +32,11 @@ class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, Wi
         $add = [];
         $addPartners = [];
         foreach ($rows as $row) {
-            $contact = Contact::withTrashed()->where('contact_uid', $row['Contact ID'])->first();
+            $contact = Contact::withTrashed()->where(['contact_code' => $row['Contact code'], 'contact_uid' => $row['Contact ID']])->first();
             if ($contact)
             {
                 $contact->restore();
                 $contact->fill([
-                    'contact_code' => $row['Contact code'],
                     'contact_type' => $row['Contact type'],
                     'mobile_phone' => $row['Mobile phone #'],
                     'first_name' => $row['Contact first name'],
@@ -65,7 +66,14 @@ class ContactImport implements ToCollection, WithHeadingRow, WithProgressBar, Wi
             $addPartners []= ['mobile_phone' => $row['Mobile phone #'], 'created_at' => $now, 'updated_at' => $now];
         }
         foreach ($add as $value) {
-            Contact::query()->insert($value);
+            try {
+                Contact::query()->insert($value);
+            } catch (Exception $e) {
+                \Sentry\captureMessage('Ошибка данных: ' . implode(', ', $value));
+                LogService::logInfo(implode(', ', $value));
+                LogService::logException($e);
+                LogService::logInfo($e->getCode());
+            }
         }
         Partner::query()->insertOrIgnore($addPartners);
     }
