@@ -35,14 +35,14 @@ class ImportFromSftp extends Command
     protected $description = 'Import files from sftp';
 
     private $fileTypes = [
-//        'SalesPlan',
-        'Contact'
-//        'Supervisor',
-//        'TradeAgent',
-//        'TradePoint',
-//        'TradePointContact',
-//        'SalesPlanHistory',
-//        'TobaccoProduct'
+        'SalesPlan',
+        'Contact',
+        'Supervisor',
+        'TradeAgent',
+        'TradePoint',
+        'TradePointContact',
+        'SalesPlanHistory',
+        'TobaccoProduct'
     ];
 
     private $force = 0;
@@ -117,7 +117,7 @@ class ImportFromSftp extends Command
         $fileName = 'Trade/' . ($type === 'SalesPlanHistory' ? 'SalesPlan_history' : $type) . '+' . $today . '.csv';
         $fileName2 = false;
         try {
-//            Storage::disk('local')->put($fileName, Storage::disk('jti-sftp')->get($fileName));
+            Storage::disk('local')->put($fileName, Storage::disk('jti-sftp')->get($fileName));
             exec('iconv -f utf16 -t utf8 -o tmp ' . Storage::disk('local')->path($fileName));
             exec('mv tmp ' . Storage::disk('local')->path($fileName));
             if ($type == 'SalesPlan')
