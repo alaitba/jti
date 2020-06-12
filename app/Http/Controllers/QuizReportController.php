@@ -83,6 +83,8 @@ class QuizReportController extends Controller
         $toDate = $request->input('to_date', now()->format('Y-m-d'));
 
         $items->whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
+
+        ini_set('memory_limit', '-1');
         if ($request->input('export', 0))
         {
             return Excel::download(new QuizResults($items->get()), 'QuizResults.xlsx');
