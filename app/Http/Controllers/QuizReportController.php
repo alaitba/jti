@@ -84,6 +84,7 @@ class QuizReportController extends Controller
 
         $items->whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
 
+        ini_set('max_execution_time', 0);
         ini_set('memory_limit', '-1');
         if ($request->input('export', 0))
         {
