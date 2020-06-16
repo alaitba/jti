@@ -2,6 +2,7 @@
     <td class="text-center align-middle">{{ $item->id }}</td>
 
     <td class="align-middle">{{ $item->title }}</td>
+    <td class="align-middle">{!! $item->target !!}</td>
     <td class="align-middle">{{ $item->period }}</td>
     <td class="text-center align-middle">
         <a href="#" data-url="{{ route('admin.news.edit', ['id' => $item->id ]) }}" class="handle-click" data-type="modal" data-modal="superLargeModal">

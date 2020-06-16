@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\morphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
 /**
@@ -46,5 +48,26 @@ class News extends Model
         }
 
         return $period;
+    }
+
+    /**
+     * @return HasManyThrough
+     */
+    public function partners()
+    {
+        return $this->hasManyThrough(Partner::class, NewsPartner::class, 'news_id', 'id', 'id', 'partner_id');
+    }
+
+    /**
+     * @return string
+     */
+    public function getTargetAttribute()
+    {
+        return $this->public ? 'Все'
+            : (
+                ($this->user_list_file && Storage::disk('local')->exists($this->user_list_file)
+                    ? '<a href="' . route('admin.news.custom-file', ['id' => $this->id]) . '">Список</a>'
+                    : '<span class="text-danger">Список</span>') . '[' . ($this->partners->count() ?? 0) . ']'
+            );
     }
 }

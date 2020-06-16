@@ -45,6 +45,20 @@
                 @endforeach
             </div>
 
+            <div class="form-group">
+                <label for="public">Целевая аудитория</label>
+                <select class="form-control selectpicker" name="public" id="public">
+                    <option value="1"{{ $item->public ? ' selected' : '' }}>Все пользователи</option>
+                    <option value="0"{{ $item->public ? '' : ' selected' }}>Пользователи из списка</option>
+                </select>
+            </div>
+
+            <div class="form-group  {{ $item->public ? 'd-none' : ' ' }}" id="userListDiv">
+                <label for="user_list">Список пользователей</label>
+                <input type="file" class="form-control" name="user_list" id="user_list"  {{ $item->public ? ' disabled' : ' ' }}>
+                <p class="help-block"></p>
+            </div>
+
             <fieldset>
                 <legend>Период проведения</legend>
                 <div class="form-group">
@@ -95,5 +109,5 @@
         });
     });
 </script>
-@include('quiz.dp')
+@include('news.dp')
 
