@@ -48,13 +48,14 @@
             <div class="form-group">
                 <label for="public">Целевая аудитория</label>
                 <select class="form-control selectpicker" name="public" id="public">
-                    <option value="1">Все пользователи</option>
-                    <option value="0">Пользователи из списка</option>
+                    <option value="1"{{ $item->public ? ' selected' : '' }}>Все пользователи</option>
+                    <option value="0"{{ $item->public ? '' : ' selected' }}>Пользователи из списка</option>
                 </select>
             </div>
-            <div class="form-group d-none" id="userListDiv">
+
+            <div class="form-group  {{ $item->public ? 'd-none' : ' ' }}" id="userListDiv">
                 <label for="user_list">Список пользователей</label>
-                <input type="file" class="form-control" name="user_list" id="user_list" disabled>
+                <input type="file" class="form-control" name="user_list" id="user_list"  {{ $item->public ? ' disabled' : ' ' }}>
                 <p class="help-block"></p>
             </div>
 
@@ -74,29 +75,29 @@
         </form>
     </div>
     @if(isset($item))
-    <div class="col-md-4" id="media_container">
-        <fieldset>
-            <legend>Изображения</legend>
-            <form action="{{ route('admin.news.media', ['newsId' => $item->id]) }}"
-                  method="post"
-                  id="formImage" data-ui-block-element="#media_container" class="ajax">
-                @csrf
-                <input type="file" name="image[]" class="form-input-image-media" style="display: none"
-                       accept="image/x-png,image/gif,image/jpeg,image/svg"
-                       multiple>
-                <button type="button" class="btn btn-success btn-sm add-photo">Добавить фото</button>
-            </form>
-            <div class="media-block">
-                @foreach($medias as $row)
-                    <div class="row">
-                        @foreach($row as $media)
-                            @include('news.media_item')
-                        @endforeach
-                    </div>
-                @endforeach
-            </div>
-        </fieldset>
-    </div>
+        <div class="col-md-4" id="media_container">
+            <fieldset>
+                <legend>Изображения</legend>
+                <form action="{{ route('admin.news.media', ['newsId' => $item->id]) }}"
+                      method="post"
+                      id="formImage" data-ui-block-element="#media_container" class="ajax">
+                    @csrf
+                    <input type="file" name="image[]" class="form-input-image-media" style="display: none"
+                           accept="image/x-png,image/gif,image/jpeg,image/svg"
+                           multiple>
+                    <button type="button" class="btn btn-success btn-sm add-photo">Добавить фото</button>
+                </form>
+                <div class="media-block">
+                    @foreach($medias as $row)
+                        <div class="row">
+                            @foreach($row as $media)
+                                @include('news.media_item')
+                            @endforeach
+                        </div>
+                    @endforeach
+                </div>
+            </fieldset>
+        </div>
     @endif
 </div>
 <script>

@@ -172,7 +172,7 @@ class NewsController extends Controller
                     'params' => [
                         'modal' => 'superLargeModal',
                         'title' => 'Редактирование новости',
-                        'content' => view('news.form', [
+                        'content' => view('news.edit_form', [
                             'formAction' => route('admin.news.update', $newsId),
                             'buttonText' => 'Сохранить',
                             'medias' => $medias,
