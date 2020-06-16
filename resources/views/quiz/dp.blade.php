@@ -12,7 +12,7 @@
             "monthNames": ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
             "firstDay": 1
         },
-        "opens": "left",
+        "opens": "right",
         "drops": "up",
         "autoApply": true,
     }).on('apply.daterangepicker', (e, picker) => {

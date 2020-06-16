@@ -18,6 +18,11 @@ class News extends Model
 
     protected $guarded = [];
 
+    public $casts = [
+        'from_date' => 'date',
+        'to_date' => 'date'
+    ];
+
     public $translatable = ['title', 'contents'];
 
     /**
@@ -28,5 +33,18 @@ class News extends Model
     public function media()
     {
         return $this->morphMany(Media::class, 'imageable');
+    }
+
+    /**
+     * @return string
+     */
+    public function getPeriodAttribute()
+    {
+        $period="Дата еще не указана";
+        if ($this->from_date!=null && $this->to_date!=null){
+            $period=$this->from_date->format('d.m.Y') . ' - ' . $this->to_date->format('d.m.Y');
+        }
+
+        return $period;
     }
 }

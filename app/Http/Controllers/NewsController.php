@@ -80,6 +80,7 @@ class NewsController extends Controller
                         'title' => 'Добавление новости',
                         'content' => view('news.form', [
                             'formAction' => route('admin.news.store'),
+                            'date' => new News(['from_date' => now()->startOfMonth(), 'to_date' => now()->endOfMonth()]),
                             'buttonText' => 'Сохранить',
                         ])->render(),
                     ]
@@ -95,7 +96,7 @@ class NewsController extends Controller
      */
     public function store(NewsRequest $request)
     {
-        $news = News::query()->create($request->only(['title', 'contents']));
+        $news = News::query()->create($request->only(['title', 'contents','from_date','to_date']));
 
         if ($request->has('image')) {
             $file = $request->file('image');
@@ -147,6 +148,7 @@ class NewsController extends Controller
                             'buttonText' => 'Сохранить',
                             'medias' => $medias,
                             'item' => $item,
+                            'date' => new News(['from_date' => now()->startOfMonth(), 'to_date' => now()->endOfMonth()]),
                         ])->render(),
                     ]
                 ]
