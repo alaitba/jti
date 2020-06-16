@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 
 
 use App\Exports\QuizResults;
+use App\Exports\TestQueryExport;
 use App\Http\Utils\ResponseBuilder;
+use App\Jobs\QuizResultsExportJob;
 use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizQuestion;
@@ -45,8 +47,13 @@ class QuizReportController extends Controller
      */
     public function getList(Request $request)
     {
-        $items = QuizResult::query()->orderBy('created_at', 'DESC');
-
+//        dd($request->all());
+        $items = QuizResult::query()
+//            ->orderBy('created_at', 'DESC')
+            ->join('partners', 'quiz_results.partner_id', '=', 'partners.id')
+            ->join('contacts', 'partners.current_uid', '=', 'contacts.contact_uid');
+//dd($items->toSql());
+dd($items->first());
         $items->whereHas('quiz', function(Builder $q) {
             $q->where('deleted_at', NULL);
         });
@@ -86,9 +93,13 @@ class QuizReportController extends Controller
 
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '-1');
+
         if ($request->input('export', 0))
         {
-            return Excel::download(new QuizResults($items->get()), 'QuizResults.xlsx');
+//            dispatch(new QuizResultsExportJob($items->get()));
+//            return back();
+            return (new TestQueryExport())->download('testpest.xlsx');
+//            return Excel::download(new QuizResults($items->get()), 'QuizResults.xlsx');
         }
 
         $items = $items->paginate(30);

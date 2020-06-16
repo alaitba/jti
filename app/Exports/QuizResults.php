@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
+
 class QuizResults implements FromCollection, ShouldAutoSize, WithHeadings
 {
     private $quizResults;
@@ -26,8 +27,8 @@ class QuizResults implements FromCollection, ShouldAutoSize, WithHeadings
         $items = [];
         /** @var QuizResult $quizResult */
         foreach ($this->quizResults as $quizResult) {
-            $name = $quizResult->partner->current_contact->name ?? '-';
-            $phone = $quizResult->partner->mobile_phone ?? '-';
+            $name = $quizResult->partner->current_contact->name ?? '-'; //ready
+            $phone = $quizResult->partner->mobile_phone ?? '-'; //ready
             $quiz = $quizResult->quiz_with_trash->title ?? '-';
             $quizDate = $quizResult->created_at->format('d.m.Y H:i');
 
@@ -38,7 +39,7 @@ class QuizResults implements FromCollection, ShouldAutoSize, WithHeadings
                 /** @var QuizAnswer $answer */
                 $answer = QuizAnswer::query()->find($resultQuestions[$question->id]['answer']);
                 $items [] = [
-                    'id' => $quizResult->id,
+                    'id' => $quizResult->id, //ready
                     'name' => $name,
                     'phone' => $phone,
                     'quiz' => $quiz,
