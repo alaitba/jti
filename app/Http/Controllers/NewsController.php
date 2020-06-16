@@ -101,7 +101,6 @@ class NewsController extends Controller
      */
     public function store(NewsRequest $request)
     {
-       // dd($request->all());
         DB::beginTransaction();
         try {
             $news = News::query()->create($request->only(['title', 'contents', 'public', 'from_date','to_date']));
@@ -200,7 +199,7 @@ class NewsController extends Controller
 
         if (!$news->public && $request->has('user_list')) {
             $file = $request->file('user_list');
-            $fileName = $file->storeAs('quizusers', $news->id . '.' . $file->guessClientExtension());
+            $fileName = $file->storeAs('newsusers', $news->id . '.' . $file->guessClientExtension());
             $news->user_list_file = $fileName;
             $news->save();
             (new NewsPartnersImport($news))->queue($fileName)->chain([
