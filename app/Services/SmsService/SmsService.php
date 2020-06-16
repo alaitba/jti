@@ -119,7 +119,9 @@ class SmsService
         $inProd = app()->environment() === 'production';
         if ($inProd && !$this->codeType == self::TEST) {
             try {
-                $result = JtiApiProvider::sendSms('+' . $this->smsableItem->mobile_phone, $this->code, $this->userType)->getBody();
+                $disclaimer = 'Ваш одноразовый пароль – ' . $this->code . '. Передавая данный пароль, Вы даёте ТОО «Джей Ти Ай Казахстан» своё согласие на получение информации, продукции и иного имущества, а также на сбор, обработку своих персональных данных.
+Полный текст согласия по ссылке: ххххххххххххххххххх';
+                $result = JtiApiProvider::sendSms('+' . $this->smsableItem->mobile_phone, $disclaimer, $this->userType)->getBody();
                 $result = json_decode($result, true);
                 if (!$result['result'])
                 {
