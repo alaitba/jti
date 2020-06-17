@@ -122,7 +122,12 @@ class ClientController extends Controller
             unset($result['resultObject']['mobilePhone']);
             $smsService->setUserData($result['resultObject']);
         }
-        return $smsService->sendSms();
+
+        if ($request->input('legal_age')) {
+            return $smsService->sendSms(true);
+        }
+
+        return $smsService->sendSms(false);
     }
 
     /**

@@ -108,9 +108,10 @@ class SmsService
     }
 
     /**
+     * @param $legal_age
      * @return JsonResponse
      */
-    public function sendSms()
+    public function sendSms($legal_age)
     {
         $this->generateCode();
         /**
@@ -121,7 +122,11 @@ class SmsService
             try {
                 $disclaimer = 'Ваш одноразовый пароль – ' . $this->code . '. Передавая данный пароль, Вы даёте ТОО «Джей Ти Ай Казахстан» своё согласие на получение информации, продукции и иного имущества, а также на сбор, обработку своих персональных данных.
 Полный текст согласия по ссылке: ххххххххххххххххххх';
-                $result = JtiApiProvider::sendSms('+' . $this->smsableItem->mobile_phone, $disclaimer, $this->userType)->getBody();
+                if ($legal_age) {
+                    $result = JtiApiProvider::sendSms('+' . $this->smsableItem->mobile_phone, $disclaimer, $this->userType)->getBody();
+                } else {
+                    $result = JtiApiProvider::sendSms('+' . $this->smsableItem->mobile_phone, $this->code, $this->userType)->getBody();
+                }
                 $result = json_decode($result, true);
                 if (!$result['result'])
                 {
