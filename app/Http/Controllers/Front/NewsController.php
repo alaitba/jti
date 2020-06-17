@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Models\Media;
 use App\Models\News;
+use App\Models\Partner;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,9 +24,20 @@ class NewsController extends Controller
      */
     public function getNews(Request $request)
     {
+        /** @var Partner $user */
+        $user = auth('partners')->user();
+
+        $today = now();
         $news = News::withoutTrashed()->with(['media' => function(MorphMany $q) {
             $q->select('id', 'imageable_id', 'imageable_type', 'original_file_name', 'conversions', 'mime');
-        }])->where('created_at', '>', $request->input('from_date') ?? '1970-01-01 00:00:00');
+        }])->where('created_at', '>', $request->input('from_date') ?? '1970-01-01 00:00:00')
+            ->whereDate('from_date', '<=', $today)
+            ->whereDate('to_date', '>=', $today)
+            ->where(function (Builder $q) use ($user) {
+                $q->where('public', 1)->orWhereHas('partners', function (Builder $qq) use ($user) {
+                    $qq->where('partner_id', $user->id);
+                });
+            });
 
         if ($perPage = $request->input('perpage', 0))
         {
