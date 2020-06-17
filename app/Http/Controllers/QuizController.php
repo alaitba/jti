@@ -201,6 +201,7 @@ class QuizController extends Controller
      */
     public function update(QuizRequest $request, $quizId)
     {
+        ini_set('memory_limit', '-1');
         /** @var Quiz $quiz */
         $quiz = Quiz::query()->find($quizId);
         $params = $request->only(['title', 'from_date', 'to_date', 'amount', 'public']);

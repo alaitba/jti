@@ -44,6 +44,32 @@
                     </div>
                 @endforeach
             </div>
+
+            <div class="form-group">
+                <label for="public">Целевая аудитория</label>
+                <select class="form-control selectpicker" name="public" id="public">
+                    <option value="1">Все пользователи</option>
+                    <option value="0">Пользователи из списка</option>
+                </select>
+            </div>
+            <div class="form-group d-none" id="userListDiv">
+                <label for="user_list">Список пользователей</label>
+                <input type="file" class="form-control" name="user_list" id="user_list" disabled>
+                <p class="help-block"></p>
+            </div>
+
+            <fieldset>
+                <legend>Период проведения</legend>
+                <div class="form-group">
+                    <div id="drp">
+                        <i class="la la-calendar"></i> <span id="period"> @if(isset($item->period)) {{ $item->period }}  @else {{$date->period}} @endif </span>
+                        <input type="hidden" name="from_date" id="from_date" @if(isset($item->from_date)) data-formatted="{{ $item->from_date->format('d.m.Y') }}" value="{{ $item->from_date }}" @else data-formatted="{{ $date->from_date->format('d.m.Y') }}" value="{{ $date->from_date }}" @endif>
+                        <input type="hidden" name="to_date" id="to_date" @if(isset($item->to_date)) data-formatted="{{ $item->to_date->format('d.m.Y') }}" value="{{ $item->to_date }}" @else data-formatted="{{ $date->to_date->format('d.m.Y') }}" value="{{ $date->to_date }}" @endif>
+                    </div>
+                    <p class="help-block"></p>
+                </div>
+            </fieldset>
+
             <button type="submit" class="btn btn-sm btn-success">{{ $buttonText }}</button>
         </form>
     </div>
@@ -82,4 +108,5 @@
         });
     });
 </script>
+@include('news.dp')
 
