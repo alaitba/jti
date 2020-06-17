@@ -37,7 +37,7 @@ class AuthController extends Controller
             return $canSend;
         }
 
-        return $smsService->sendSms();
+        return $smsService->sendSms(false);
     }
 
     /**
