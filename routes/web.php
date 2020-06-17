@@ -151,7 +151,6 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::get('{id}/delete', 'NewsController@delete')->name('.delete');
         Route::post('{newsId}/media', 'NewsController@media')->name('.media');
         Route::get('{newsId}/media-delete', 'NewsController@deleteMedia')->name('.media.delete');
-        Route::get('get-file/{id}', 'NewsController@getFile')->name('.custom-file');
     });
 
     /**

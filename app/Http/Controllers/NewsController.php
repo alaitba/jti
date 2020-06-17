@@ -4,18 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\NewsRequest;
 use App\Http\Utils\ResponseBuilder;
-use App\Imports\NewsPartnersImport;
-use App\Jobs\NewsUsersImported;
 use App\Models\News;
-use App\Services\LogService\LogService;
 use App\Services\MediaService\MediaService;
 use App\Ui\Attributes\Modal;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Throwable;
 
@@ -85,7 +80,6 @@ class NewsController extends Controller
                         'title' => 'Добавление новости',
                         'content' => view('news.form', [
                             'formAction' => route('admin.news.store'),
-                            'date' => new News(['from_date' => now()->startOfMonth(), 'to_date' => now()->endOfMonth()]),
                             'buttonText' => 'Сохранить',
                         ])->render(),
                     ]
@@ -101,31 +95,11 @@ class NewsController extends Controller
      */
     public function store(NewsRequest $request)
     {
-        DB::beginTransaction();
-        try {
-            $news = News::query()->create($request->only(['title', 'contents', 'public', 'from_date','to_date']));
+        $news = News::query()->create($request->only(['title', 'contents']));
 
-            if (!$news->public) {
-                $file = $request->file('user_list');
-                $fileName = $file->storeAs('newsusers', $news->id . '.' . $file->guessClientExtension());
-                $news->user_list_file = $fileName;
-                $news->save();
-                (new NewsPartnersImport($news))->queue($fileName)->chain([
-                    new NewsUsersImported($news->id)
-                ]);
-            }
-
-            if ($request->has('image')) {
-                $file = $request->file('image');
-                $this->mediaService->upload($file, News::class, $news->id);
-            }
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            LogService::logException($e);
-            $response = new ResponseBuilder();
-            $response->showAlert('Ошибка!', 'Не удалось создать новость.');
-            return $response->makeJson();
+        if ($request->has('image')) {
+            $file = $request->file('image');
+            $this->mediaService->upload($file, News::class, $news->id);
         }
 
         return response()->json([
@@ -162,22 +136,17 @@ class NewsController extends Controller
             return $response->makeJson();
         }
 
-        if (!$item->public && !$item->user_list_imported) {
-            $item->setAttribute('disabled', 'Импорт списка пользователей еще не завершен');
-        }
-
         return response()->json([
             'functions' => [
                 'updateModal' => [
                     'params' => [
                         'modal' => 'superLargeModal',
                         'title' => 'Редактирование новости',
-                        'content' => view('news.edit_form', [
+                        'content' => view('news.form', [
                             'formAction' => route('admin.news.update', $newsId),
                             'buttonText' => 'Сохранить',
                             'medias' => $medias,
                             'item' => $item,
-                            'date' => new News(['from_date' => now()->startOfMonth(), 'to_date' => now()->endOfMonth()]),
                         ])->render(),
                     ]
                 ]
@@ -194,18 +163,7 @@ class NewsController extends Controller
     public function update(NewsRequest $request, $newsId)
     {
         $news = News::query()->find($newsId);
-        $params = $request->only(['title', 'contents', 'public', 'from_date','to_date']);
-        $news->update($params);
-
-        if (!$news->public && $request->has('user_list')) {
-            $file = $request->file('user_list');
-            $fileName = $file->storeAs('newsusers', $news->id . '.' . $file->guessClientExtension());
-            $news->user_list_file = $fileName;
-            $news->save();
-            (new NewsPartnersImport($news))->queue($fileName)->chain([
-                new NewsUsersImported($news->id)
-            ]);
-        }
+        $news->update($request->all());
 
         return response()->json([
             'functions' => [
@@ -277,23 +235,5 @@ class NewsController extends Controller
     public function deleteMedia($mediaId)
     {
         $this->mediaService->deleteById($mediaId);
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public function getFile($id)
-    {
-        $news = News::query()->find($id);
-        if (!$news || $news->public)
-        {
-            abort(404);
-        }
-        return Storage::disk('local')
-            ->download(
-                $news->user_list_file,
-                'NewsPartners-' . $id . '.' . pathinfo($news->user_list_file, PATHINFO_EXTENSION)
-            );
     }
 }

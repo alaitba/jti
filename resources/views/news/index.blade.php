@@ -39,8 +39,7 @@
                     <tr>
                         <th class="text-center" width="50">#</th>
                         <th>Название</th>
-                        <th>ЦА</th>
-                        <th class="text-center" width="200">Период</th>
+                        <th class="text-center" width="120">Дата</th>
                         <th class="text-center" width="100"><i class="fa fa-bars" aria-hidden="true"></i></th>
                     </tr>
                     </thead>
