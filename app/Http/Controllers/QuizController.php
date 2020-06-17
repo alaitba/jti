@@ -109,6 +109,7 @@ class QuizController extends Controller
      */
     public function store(QuizRequest $request)
     {
+        ini_set('memory_limit', '-1');
         DB::beginTransaction();
         try {
             /** @var Quiz $quiz */
