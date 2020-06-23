@@ -15,6 +15,7 @@ use App\Models\QuizResult;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -48,12 +49,30 @@ class QuizReportController extends Controller
     public function getList(Request $request)
     {
 //        dd($request->all());
-        $items = QuizResult::query()
-//            ->orderBy('created_at', 'DESC')
-            ->join('partners', 'quiz_results.partner_id', '=', 'partners.id')
-            ->join('contacts', 'partners.current_uid', '=', 'contacts.contact_uid');
+        ini_set('memory_limit', '-1');
+        $items = QuizResult::query()->orderBy('created_at', 'DESC');
+            /*->join('partners', 'quiz_results.partner_id', '=', 'partners.id')
+            ->join('contacts', 'partners.current_uid', '=', 'contacts.contact_uid')
+            ->join('quizzes', 'quiz_results.quiz_id', '=', 'quizzes.id')
+            ->join('quiz_questions', 'quizzes.id', '=', 'quiz_questions.quiz_id')
+            ->join('quiz_answers', 'quiz_questions.id', '=', 'quiz_answers.quiz_question_id')
+            ->select('quiz_results.id',
+                             DB::raw('CONCAT(contacts.first_name, \' \', contacts.last_name, \' \', contacts.middle_name) as Name'),
+                             'partners.mobile_phone', 'quizzes.title->ru as quiz',
+                             'quiz_results.created_at', 'quiz_results.amount', 'quiz_questions.question->ru as question',
+                             'quiz_answers.answer->ru as answer',
+                             DB::raw('(CASE WHEN quiz_answers.correct = 1 THEN "Да" ELSE "Нет" END) AS corrects'))
+            ->orderBy('quiz_results.created_at', 'DESC');
+
+        $fromDate = $request->input('from_date', now()->subMonth()->format('Y-m-d'));
+        $toDate = $request->input('to_date', now()->format('Y-m-d'));
+
+        $items->whereBetween('quiz_results.created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
+*/
+
+        /*, 'name' , 'mobile_phone', 'title', 'created_at'*/
 //dd($items->toSql());
-dd($items->first());
+//dd($items->get());
         $items->whereHas('quiz', function(Builder $q) {
             $q->where('deleted_at', NULL);
         });
@@ -77,6 +96,7 @@ dd($items->first());
         $quizId = $request->input('quiz_id', 0);
         if ($quizId > 0 && $quizId[0] > 0)
         {
+//            dd('test');
             $items->whereIn('quiz_id', $quizId);
         }
 
@@ -91,15 +111,22 @@ dd($items->first());
 
         $items->whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
 
-        ini_set('max_execution_time', 0);
+//        ini_set('max_execution_time', 0);
         ini_set('memory_limit', '-1');
 
         if ($request->input('export', 0))
         {
 //            dispatch(new QuizResultsExportJob($items->get()));
 //            return back();
-            return (new TestQueryExport())->download('testpest.xlsx');
-//            return Excel::download(new QuizResults($items->get()), 'QuizResults.xlsx');
+//            return (new TestQueryExport())->download('testpest.xlsx');
+
+//            $resultQuestions = collect($items->first()->questions)->keyBy('id')->toArray();
+//            $quizResultsQuizQuestions = $items->first()->quiz_with_trash->questions;
+//            $resultQuestions[$question->id]['answer']
+//            dd($resultQuestions[73]['answer']);
+//            (new TestQueryExport())->queue('QuizResults.xlsx');
+            Excel::store(new QuizResults($items->get()), 'QuizResults-' . now()->format('Y-m-d_H:i') . '.xlsx');
+            return back()->withSuccess('Export started!');
         }
 
         $items = $items->paginate(30);
