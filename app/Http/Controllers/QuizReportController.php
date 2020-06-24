@@ -51,7 +51,8 @@ class QuizReportController extends Controller
 
     public function download($path)
     {
-        return response()->download(public_path($path));
+//        dd($path);
+        return response()->download(storage_path('app/' . $path));
 //        dd($path);
     }
     /**

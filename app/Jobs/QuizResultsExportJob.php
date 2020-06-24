@@ -15,6 +15,7 @@ class QuizResultsExportJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $data;
+    public $path;
 
     /**
      * QuizResultsExportJob constructor.
@@ -31,6 +32,6 @@ class QuizResultsExportJob implements ShouldQueue
      */
     public function handle()
     {
-        Excel::store(new QuizResults($this->data), public_path($this->path));
+        Excel::store(new QuizResults($this->data), $this->path);
     }
 }
