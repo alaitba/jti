@@ -8,13 +8,18 @@ use App\Exports\QuizResults;
 use App\Exports\TestQueryExport;
 use App\Http\Utils\ResponseBuilder;
 use App\Jobs\QuizResultsExportJob;
+use App\Jobs\QuizResultsExportNotificationJob;
 use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizQuestion;
 use App\Models\QuizResult;
+use App\Notifications\PaymentReceive;
+use App\Notifications\QuizResultsExportNotification;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -33,14 +38,21 @@ class QuizReportController extends Controller
      */
     public function index()
     {
+        $notifications = auth()->user()->notifications;
+
         return view('reports.quizzes.index', [
             'quizzes' => Quiz::where('type', 'quiz')->get(),
             'from_date' => now()->subMonth(),
             'to_date' => now(),
+            'notifications' => $notifications
         ])->render();
     }
 
 
+    public function download()
+    {
+        dd('test');
+    }
     /**
      * @param Request $request
      * @return JsonResponse|BinaryFileResponse
@@ -110,13 +122,20 @@ class QuizReportController extends Controller
         $toDate = $request->input('to_date', now()->format('Y-m-d'));
 
         $items->whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
-
 //        ini_set('max_execution_time', 0);
         ini_set('memory_limit', '-1');
 
+
+//dd($notifications);
         if ($request->input('export', 0))
         {
-//            dispatch(new QuizResultsExportJob($items->get()));
+//            $file = 'QuizResults-2020-06-24_11:14.xlsx';
+//            $path = public_path($file);
+//            dd($path);
+//            \Illuminate\Support\Facades\Notification::send(request()->user(), new QuizResultsExportNotification(900));
+//            request()->user()->notify(new QuizResultsExportNotification(900));
+            dispatch(new QuizResultsExportJob($items->get()));
+            dispatch(new QuizResultsExportNotificationJob($request->user()->id));
 //            return back();
 //            return (new TestQueryExport())->download('testpest.xlsx');
 
@@ -125,7 +144,7 @@ class QuizReportController extends Controller
 //            $resultQuestions[$question->id]['answer']
 //            dd($resultQuestions[73]['answer']);
 //            (new TestQueryExport())->queue('QuizResults.xlsx');
-            Excel::store(new QuizResults($items->get()), 'QuizResults-' . now()->format('Y-m-d_H:i') . '.xlsx');
+//            Excel::store(new QuizResults($items->get()), 'QuizResults-' . now()->format('Y-m-d_H:i') . '.xlsx');
             return back()->withSuccess('Export started!');
         }
 

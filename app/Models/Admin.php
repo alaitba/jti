@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -18,6 +19,7 @@ class Admin extends Model implements \Illuminate\Contracts\Auth\Authenticatable
     use Authenticatable;
     use SoftDeletes;
     use HasRoles;
+    use Notifiable;
 
     protected  $guard_name = 'admin';
 

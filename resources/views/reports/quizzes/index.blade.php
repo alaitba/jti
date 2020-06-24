@@ -73,6 +73,16 @@
             <input type="hidden" name="export" value="0" id="inp-exp">
             {{ csrf_field() }}
         </form>
+        @if($notifications !== null)
+            @forelse($notifications as $notification)
+                @if($notification->type === 'App\Notifications\QuizResultsExportNotification' )
+                    <h5>We have received paiment from you ${{ $notification->data['amount'] / 100}}</h5>
+                    <a href="reports/quizzes/download">Download</a>
+                @endif
+            @empty
+                <h5>you have no notes</h5>
+            @endforelse
+        @endif
         <table class="table table-bordered ajax-content" data-url="{{ route('admin.reports.quizzes.list') }}" id="quizzesTable">
             <thead>
             <tr class="nowrap">

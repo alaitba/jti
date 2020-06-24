@@ -30,6 +30,6 @@ class QuizResultsExportJob implements ShouldQueue
      */
     public function handle()
     {
-        return Excel::download(new QuizResults($this->data), 'QuizResults.xlsx');
+        Excel::store(new QuizResults($this->data), 'QuizResults-' . now()->format('Y-m-d_H:i') . '.xlsx');
     }
 }

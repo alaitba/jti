@@ -123,6 +123,7 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
             Route::get('/', 'QuizReportController@index')->name('.index');
             Route::match(['get', 'post'], 'get-list', 'QuizReportController@getList')->name('.list');
             Route::get('{id}/view', 'QuizReportController@view')->name('.view');
+            Route::get('download/{file}', 'QuizReportController@download')->name('.download');
         });
     });
 
