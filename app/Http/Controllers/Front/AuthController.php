@@ -54,13 +54,6 @@ class AuthController extends Controller
             return $validation;
         }
 
-        if (!$request->only(['captcha']))
-        {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'captcha_does_not_exist'
-            ], 403);
-        }
         /**
          * Check phone number in Partners
          */
@@ -238,7 +231,7 @@ class AuthController extends Controller
      */
     public function postLogin(Request $request)
     {
-        $credentials = $request->only(['mobile_phone', 'password', 'captcha']);
+        $credentials = $request->only(['mobile_phone', 'password']);
 
         $credentials['mobile_phone'] = trim($credentials['mobile_phone'], '+');
         /**
