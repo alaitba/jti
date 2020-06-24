@@ -20,16 +20,17 @@ class QuizResultsExportJob implements ShouldQueue
      * QuizResultsExportJob constructor.
      * @param $data
      */
-    public function __construct($data)
+    public function __construct($data, $path)
     {
         $this->data = $data;
+        $this->path = $path;
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     *
      */
     public function handle()
     {
-        Excel::store(new QuizResults($this->data), 'QuizResults-' . now()->format('Y-m-d_H:i') . '.xlsx');
+        Excel::store(new QuizResults($this->data), public_path($this->path));
     }
 }

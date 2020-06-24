@@ -15,14 +15,16 @@ class QuizResultsExportNotificationJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $request;
+    public $path;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($request)
+    public function __construct($request, $path)
     {
         $this->request = $request;
+        $this->path = $path;
     }
 
     /**
@@ -31,6 +33,6 @@ class QuizResultsExportNotificationJob implements ShouldQueue
     public function handle()
     {
         $user = Admin::find($this->request);
-        $user->notify(new QuizResultsExportNotification(900));
+        $user->notify(new QuizResultsExportNotification($this->path));
     }
 }

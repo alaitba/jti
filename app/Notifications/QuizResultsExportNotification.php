@@ -12,14 +12,15 @@ class QuizResultsExportNotification extends Notification
     use Queueable;
 
     public $amount;
+    public $path;
 
     /**
      * QuizResultsExportNotification constructor.
-     * @param $amount
+     * @param $path
      */
-    public function __construct($amount)
+    public function __construct($path)
     {
-        $this->amount = $amount;
+        $this->path = $path;
     }
 
     /**
@@ -48,15 +49,14 @@ class QuizResultsExportNotification extends Notification
     }
 
     /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
+     * @param $notifiable
      * @return array
      */
     public function toArray($notifiable)
     {
         return [
-            'amount' => $this->amount
+            'message' => 'export file ready for downloading',
+            'path' => $this->path
         ];
     }
 }

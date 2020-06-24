@@ -49,9 +49,10 @@ class QuizReportController extends Controller
     }
 
 
-    public function download()
+    public function download($path)
     {
-        dd('test');
+        return response()->download(public_path($path));
+//        dd($path);
     }
     /**
      * @param Request $request
@@ -129,13 +130,14 @@ class QuizReportController extends Controller
 //dd($notifications);
         if ($request->input('export', 0))
         {
+            $path = 'QuizResults-' . now()->format('Y-m-d_H:i') . '.xlsx';
 //            $file = 'QuizResults-2020-06-24_11:14.xlsx';
 //            $path = public_path($file);
 //            dd($path);
 //            \Illuminate\Support\Facades\Notification::send(request()->user(), new QuizResultsExportNotification(900));
 //            request()->user()->notify(new QuizResultsExportNotification(900));
-            dispatch(new QuizResultsExportJob($items->get()));
-            dispatch(new QuizResultsExportNotificationJob($request->user()->id));
+            dispatch(new QuizResultsExportJob($items->get(), $path));
+            dispatch(new QuizResultsExportNotificationJob($request->user()->id, $path));
 //            return back();
 //            return (new TestQueryExport())->download('testpest.xlsx');
 

@@ -76,8 +76,9 @@
         @if($notifications !== null)
             @forelse($notifications as $notification)
                 @if($notification->type === 'App\Notifications\QuizResultsExportNotification' )
-                    <h5>We have received paiment from you ${{ $notification->data['amount'] / 100}}</h5>
-                    <a href="reports/quizzes/download">Download</a>
+                    <h5>{{ $notification->data['message']}}</h5>
+                    <h5>{{ $notification->data['path']}}</h5>
+                    <a href="{{ route('admin.reports.quizzes.download', ['path' => $notification->data['path']]) }}">Download</a>
                 @endif
             @empty
                 <h5>you have no notes</h5>
