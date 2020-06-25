@@ -20,6 +20,7 @@ class QuizResultsExportJob implements ShouldQueue
     /**
      * QuizResultsExportJob constructor.
      * @param $data
+     * @param $path
      */
     public function __construct($data, $path)
     {

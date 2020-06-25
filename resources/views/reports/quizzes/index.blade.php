@@ -1,6 +1,58 @@
 @extends('layouts.master')
 @section('content')
 <div class="m-portlet">
+    @if($notifications !== null)
+        @if(session()->has('message'))
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title" >
+                        <span class="m-portlet__head-icon"><i class="la la-info-circle"></i></span>
+                        <h3 class="m-portlet__head-text" style="color: #34bfa3;">{{ session()->get('message') }}</h3>
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title" >
+                        <span class="m-portlet__head-icon"><i class="la la-question-circle"></i></span>
+                        <h3 class="m-portlet__head-text">Экспорт</h3>
+                    </div>
+                </div>
+            </div>
+        @endif
+        <div class="m-portlet__body">
+            <table class="table table-bordered ajax-content">
+                <thead>
+                <tr class="nowrap">
+                    <th>Сообщение</th>
+                    <th>Имя файла</th>
+                    <th width="50" class="text-center"><i class="la la-download"></i></th>
+                    <th width="50" class="text-center"><i class="la la-trash"></i></th>
+                </tr>
+                </thead>
+                <tbody>
+                 @forelse($notifications as $notification)
+                    @if($notification->type === 'App\Notifications\QuizResultsExportNotification' )
+                    <tr>
+                        <td>{{ $notification->data['message']}}</td>
+                        <td>{{ $notification->data['path']}}</td>
+                        <td class="text-center">
+                            <a href="{{ route('admin.reports.quizzes.download', ['path' => $notification->data['path']]) }}"><i class="la la-download"></i></a>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ route('admin.reports.quizzes.delete', ['id' => $notification]) }}"><i class="la la-trash"></i></a>
+                        </td>
+                    </tr>
+                    @endif
+                @empty
+                     <td>Экспорт Викторин еще не проведен.</td>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+    @endif
+
     <div class="m-portlet__head">
         <div class="m-portlet__head-caption">
             <div class="m-portlet__head-title">
@@ -9,6 +61,7 @@
             </div>
         </div>
     </div>
+
     <div class="m-portlet__body">
         <form method="post" action="{{ route('admin.reports.quizzes.list') }}" class="ajax" id="filter-form">
             <div class="form-group form-group-sm form-inline">
@@ -73,17 +126,6 @@
             <input type="hidden" name="export" value="0" id="inp-exp">
             {{ csrf_field() }}
         </form>
-        @if($notifications !== null)
-            @forelse($notifications as $notification)
-                @if($notification->type === 'App\Notifications\QuizResultsExportNotification' )
-                    <h5>{{ $notification->data['message']}}</h5>
-                    <h5>{{ $notification->data['path']}}</h5>
-                    <a href="{{ route('admin.reports.quizzes.download', ['path' => $notification->data['path']]) }}">Download</a>
-                @endif
-            @empty
-                <h5>you have no notes</h5>
-            @endforelse
-        @endif
         <table class="table table-bordered ajax-content" data-url="{{ route('admin.reports.quizzes.list') }}" id="quizzesTable">
             <thead>
             <tr class="nowrap">

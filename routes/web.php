@@ -124,6 +124,7 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
             Route::match(['get', 'post'], 'get-list', 'QuizReportController@getList')->name('.list');
             Route::get('{id}/view', 'QuizReportController@view')->name('.view');
             Route::get('download/{path}', 'QuizReportController@download')->name('.download');
+            Route::get('delete/{id}', 'QuizReportController@delete')->name('.delete');
         });
     });
 

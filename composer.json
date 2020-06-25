@@ -10,7 +10,6 @@
     "require": {
         "php": "^7.2",
         "ext-json": "*",
-        "albertcht/invisible-recaptcha": "^1.9",
         "buzz/laravel-google-captcha": "^2.2",
         "crazybooot/base64-validation": "^1.0",
         "cviebrock/eloquent-sluggable": "^6.0",

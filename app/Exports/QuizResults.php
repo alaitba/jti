@@ -27,35 +27,22 @@ class QuizResults implements FromCollection, ShouldAutoSize, WithHeadings
         $items = [];
         /** @var QuizResult $quizResult */
         foreach ($this->quizResults as $quizResult) {
-//            $name = $quizResult->partner->current_contact->name ?? '-'; //ready
-//            $phone = $quizResult->partner->mobile_phone ?? '-'; //ready
-//            $quiz = $quizResult->quiz_with_trash->title ?? '-'; //ready
-//            $quizDate = $quizResult->created_at->format('d.m.Y H:i');//ready
-
-//            $resultQuestions = collect($quizResult->questions)->keyBy('id')->toArray();
-            //$resultQuestions это quiz results questions array и ключи массива это значение id внутри массива
-            //questions row from quiz_results table
-            //теперь нам нужны все вопросы квизов
-            //чтобы из массива айдишников
+            $resultQuestions = collect($quizResult->questions)->keyBy('id')->toArray();
 
             foreach ($quizResult->quiz_with_trash->questions as $question)
             {
-                //у quiz_results есть quiz а у quiz есть quiz_questions
-                //и мы находим ответ по answer id из quiz results
-                //quiz_results table -> quiz table -> quiz_questions
-                //и по айдигнику ответов мы находим ответ в quiz answers
                 /** @var QuizAnswer $answer */
-//                $answer = QuizAnswer::query()->find($resultQuestions[$question->id]['answer']); //ready
+                $answer = QuizAnswer::query()->find($resultQuestions[$question->id]['answer']);
                 $items [] = [
-                    'id' => $quizResult->id, //ready
-//                    'name' => $name, //ready
-//                    'phone' => $phone, //ready
-//                    'quiz' => $quiz, //ready
-//                    'date' => $quizDate, //ready
-//                    'bonus' => $quizResult->amount, //ready
-//                    'question' => $question->question ?? '-', //ready
-//                    'answer' => optional($answer)->getTranslation('answer', 'ru'), //ready
-//                    'correct' => optional($answer)->correct ? 'Да' : 'Нет' //ready
+                    'id' => $quizResult->id,
+                    'name' => $quizResult->partner->current_contact->name ?? '-',
+                    'phone' => $quizResult->partner->mobile_phone ?? '-',
+                    'quiz' => $quizResult->quiz_with_trash->title ?? '-',
+                    'date' => $quizResult->created_at->format('d.m.Y H:i'),
+                    'bonus' => $quizResult->amount,
+                    'question' => $question->question ?? '-',
+                    'answer' => optional($answer)->getTranslation('answer', 'ru'),
+                    'correct' => optional($answer)->correct ? 'Да' : 'Нет'
                 ];
             }
         }

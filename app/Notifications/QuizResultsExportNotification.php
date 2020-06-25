@@ -55,7 +55,7 @@ class QuizResultsExportNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'message' => 'export file ready for downloading',
+            'message' => 'Файл Экспорта готов',
             'path' => $this->path
         ];
     }
