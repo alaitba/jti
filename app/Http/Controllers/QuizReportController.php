@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 
 
-use App\Exports\QuizResults;
 use App\Http\Utils\ResponseBuilder;
+use App\Jobs\QuizResultsExportJob;
+use App\Jobs\QuizResultsExportNotificationJob;
 use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizQuestion;
@@ -13,7 +14,6 @@ use App\Models\QuizResult;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
@@ -30,13 +30,37 @@ class QuizReportController extends Controller
      */
     public function index()
     {
+        $notifications = auth()->user()->notifications;
+
         return view('reports.quizzes.index', [
             'quizzes' => Quiz::where('type', 'quiz')->get(),
             'from_date' => now()->subMonth(),
             'to_date' => now(),
+            'notifications' => $notifications
         ])->render();
     }
 
+
+    public function download($path)
+    {
+        if (file_exists(storage_path('app/' . $path))) {
+            return response()->download(storage_path('app/' . $path));
+        } else {
+            return redirect()->back()->with('message', 'Ошибка файла нет');
+        }
+    }
+
+    public function delete($id)
+    {
+        $notifications = \App\Models\Notification::find($id);
+        $file_path = storage_path('app/' . json_decode($notifications->data)->path);
+        if (file_exists(storage_path('app/' . json_decode($notifications->data)->path))) {
+            unlink($file_path);
+        }
+        $notifications->delete();
+        return redirect()->back()->with('message', 'Файл ' . json_decode($notifications->data)->path . ' Удален');
+//        dd($path);
+    }
 
     /**
      * @param Request $request
@@ -45,6 +69,7 @@ class QuizReportController extends Controller
      */
     public function getList(Request $request)
     {
+        ini_set('memory_limit', '-1');
         $items = QuizResult::query()->orderBy('created_at', 'DESC');
 
         $items->whereHas('quiz', function(Builder $q) {
@@ -84,11 +109,12 @@ class QuizReportController extends Controller
 
         $items->whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
 
-        ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '-1');
         if ($request->input('export', 0))
         {
-            return Excel::download(new QuizResults($items->get()), 'QuizResults.xlsx');
+            $path = 'QuizResults' . now()->format('Y-m-d_H:i') . '.xlsx';
+            dispatch(new QuizResultsExportJob($items->get(), $path));
+            dispatch(new QuizResultsExportNotificationJob($request->user()->id, $path));
+            return redirect()->back()->with('message', 'Начался экспорт викторин');
         }
 
         $items = $items->paginate(30);

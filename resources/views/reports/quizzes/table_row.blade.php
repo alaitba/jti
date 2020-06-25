@@ -1,3 +1,4 @@
+
 <tr class="row-{{ $item->id }}">
     <td class="text-center">{{ $item->id }}</td>
     <td>{{ $item->partner->current_contact->name }}</td>

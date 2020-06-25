@@ -123,6 +123,8 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
             Route::get('/', 'QuizReportController@index')->name('.index');
             Route::match(['get', 'post'], 'get-list', 'QuizReportController@getList')->name('.list');
             Route::get('{id}/view', 'QuizReportController@view')->name('.view');
+            Route::get('download/{path}', 'QuizReportController@download')->name('.download');
+            Route::get('delete/{id}', 'QuizReportController@delete')->name('.delete');
         });
     });
 
@@ -174,16 +176,16 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
         Route::post('update', 'HolidaysController@update')->name('.update');
     });
 
-    /**
-     * Табачная продукция
-     */
-    Route::group(['prefix' => 'tobacco-products', 'as' => 'admin.tobacco_products'], function () {
-        Route::get('/', 'TobaccoProductsController@index')->name('.index');
-        Route::match(['get', 'post'], 'get-list', 'TobaccoProductsController@getList')->name('.list');
-        Route::get('{id}/edit', 'TobaccoProductsController@edit')->name('.edit');
-        Route::post('{rewardId}/media', 'TobaccoProductsController@media')->name('.media');
-        Route::get('{rewardId}/media-delete', 'TobaccoProductsController@deleteMedia')->name('.media.delete');
-    });
+//    /**
+//     * Табачная продукция
+//     */
+//    Route::group(['prefix' => 'tobacco-products', 'as' => 'admin.tobacco_products'], function () {
+//        Route::get('/', 'TobaccoProductsController@index')->name('.index');
+//        Route::match(['get', 'post'], 'get-list', 'TobaccoProductsController@getList')->name('.list');
+//        Route::get('{id}/edit', 'TobaccoProductsController@edit')->name('.edit');
+//        Route::post('{rewardId}/media', 'TobaccoProductsController@media')->name('.media');
+//        Route::get('{rewardId}/media-delete', 'TobaccoProductsController@deleteMedia')->name('.media.delete');
+//    });
 
     /**
      * Бренды (картинки)
