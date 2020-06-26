@@ -54,6 +54,13 @@ class AuthController extends Controller
             return $validation;
         }
 
+        if (!$request->input('captcha'))
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'captcha_does_not_exist'
+            ], 403);
+        }
         /**
          * Check phone number in Partners
          */
