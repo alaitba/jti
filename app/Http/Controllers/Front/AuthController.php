@@ -61,6 +61,7 @@ class AuthController extends Controller
                 'message' => 'captcha_does_not_exist'
             ], 403);
         }
+
         /**
          * Check phone number in Partners
          */
