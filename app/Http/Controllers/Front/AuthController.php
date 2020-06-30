@@ -12,6 +12,7 @@ use App\Models\TradePointContact;
 use App\Services\SmsService\SmsService;
 use App\Services\ValidatorService\ValidatorService;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Browser;
@@ -40,6 +41,19 @@ class AuthController extends Controller
         return $smsService->sendSms(false);
     }
 
+    protected function checkRecaptcha($token, $ip)
+    {
+        $response = (new Client())->post('https://www.google.com/recaptcha/api/siteverify', [
+            'form_params' => [
+                'secret'   => config('recaptcha.secret'),
+                'response' => $token,
+                'remoteip' => $ip,
+            ],
+        ]);
+        $response = json_decode((string)$response->getBody(), true);
+        return $response['success'];
+    }
+
     /**
      * @param Request $request
      * @return JsonResponse
@@ -49,17 +63,16 @@ class AuthController extends Controller
         /**
          * Mobile number validation
          */
-        $validation = ValidatorService::validateRequest($request->only('mobile_phone'), AuthRequests::PHONE_REQUEST);
-        if ($validation !== true) {
-            return $validation;
+        $validation = ValidatorService::validateRequest($request->only(['mobile_phone', 'captcha']), AuthRequests::PHONE_REQUEST);
+
+        if (config('recaptcha.enabled') && !$this->checkRecaptcha($request->input("captcha"), $request->ip())) {
+            return response()->json([
+                'error' => 'Captcha is invalid.',
+            ], 403);
         }
 
-        if (!$request->input('captcha'))
-        {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'captcha_does_not_exist'
-            ], 403);
+        if ($validation !== true) {
+            return $validation;
         }
 
         /**
