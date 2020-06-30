@@ -14,6 +14,7 @@ use App\Services\ValidatorService\ValidatorService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Browser;
 
 /**
  * Class AuthController
