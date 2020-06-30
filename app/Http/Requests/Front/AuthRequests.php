@@ -12,7 +12,6 @@ class AuthRequests
 {
     public const PHONE_REQUEST = [
         'mobile_phone' => 'required|regex:/77[0-9]{9}/',
-        'captcha' => 'required|string'
     ];
 
     public const SMSCODE_REQUEST = [
