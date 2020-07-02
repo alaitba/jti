@@ -112,8 +112,11 @@ class QuizReportController extends Controller
         if ($request->input('export', 0))
         {
             $path = 'QuizResults' . now()->format('Y-m-d_H:i') . '.xlsx';
-            dispatch(new QuizResultsExportJob($items->get(), $path));
-            dispatch(new QuizResultsExportNotificationJob($request->user()->id, $path));
+            $items->chunk(10000, function ($itemsChunks) use ($path, $request) {
+                dispatch(new QuizResultsExportJob($itemsChunks, $path));
+                dispatch(new QuizResultsExportNotificationJob($request->user()->id, $path));
+            });
+
             return redirect()->back()->with('message', 'Начался экспорт викторин');
         }
 
