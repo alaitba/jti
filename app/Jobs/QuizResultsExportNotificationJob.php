@@ -14,6 +14,7 @@ class QuizResultsExportNotificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 100;
     public $request;
     public $path;
     /**
