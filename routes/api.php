@@ -97,6 +97,13 @@ Route::group(['prefix' => 'v1', 'middleware' => 'api'], function () {
     });
 
     /**
+     * Купоны
+     */
+    Route::group(['prefix' => 'coupons', 'middleware' => 'partnerMiddleware'], function () {
+        Route::post('get-ld', 'Front\CouponsController@getLdCoupon');
+    });
+
+    /**
      * План-факт
      */
     Route::group(['prefix' => 'plan-fact', 'middleware' => 'partnerMiddleware'], function() {
