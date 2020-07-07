@@ -21,10 +21,10 @@ class CouponsController extends Controller
              * No data
              */
             return response()->json([
-                'status' => 'error',
+                'status' => 'ok',
                 'message' => 'coupons_does_not_exist',
                 'coupons' => 0
-            ], 403);
+            ], 200);
         }
 
         return response()->json([
