@@ -12,36 +12,9 @@ use Illuminate\Http\Request;
 
 class CouponsController extends Controller
 {
-    public function getLdCoupon(Request $request)
+    public function getLdCoupon()
     {
-        /**
-         * Mobile number validation
-         */
-        $validation = ValidatorService::validateRequest($request->only('mobile_phone'), AuthRequests::PHONE_REQUEST);
-
-        if ($validation !== true) {
-            return $validation;
-        }
-
-        /**
-         * Check phone number in Partners
-         */
-        $mobilePhone = trim($request->input('mobile_phone'), '+');
-
-        $partner = Partner::withoutTrashed()->where('mobile_phone', $mobilePhone)->first();
-
-        if (!$partner) {
-            /**
-             * No such phone in Partners
-             */
-            return response()->json([
-                'status' => 'error',
-                'message' => 'phone_does_not_exist',
-                'coupons' => 0
-            ], 403);
-        }
-
-        $coupon = LdCoupon::where('seller_id', $partner->current_uid )->first();
+        $coupon = LdCoupon::where('seller_id', auth('partners')->user()->current_uid )->first();
 
         if (!$coupon) {
             /**
