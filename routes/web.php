@@ -96,7 +96,9 @@ Route::group(['prefix' => config('project.admin_prefix'), 'middleware' => ['web'
          */
         Route::group(['prefix' => 'partners', 'as' => '.partners'], function () {
             Route::get('/', 'PartnersReportController@index')->name('.index');
-            Route::get('get-list', 'PartnersReportController@getList')->name('.list');
+            Route::match(['get', 'post'], 'get-list', 'PartnersReportController@getList')->name('.list');
+            Route::get('download/{path}', 'PartnersReportController@download')->name('.download');
+            Route::get('delete/{id}', 'PartnersReportController@delete')->name('.delete');
         });
 
         /**
