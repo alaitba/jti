@@ -2,23 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\PartnersReport;
-use App\Exports\QuizResults;
-use App\Http\Utils\ResponseBuilder;
-use App\Jobs\PartnersNotificationJob;
-use App\Jobs\PartnersReportJob;
-use App\Jobs\QuizResultsExportJob;
-use App\Jobs\QuizResultsExportNotificationJob;
 use App\Models\Partner;
 use App\Models\PartnerAuth;
-use App\Models\SalesPlan;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
-use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * Class PartnersReportController
@@ -32,44 +21,15 @@ class PartnersReportController extends Controller
      */
     public function index()
     {
-        $notifications = auth()->user()->notifications;
-
-        return view('reports.partners.index', [
-            'from_date' => now()->subMonth(),
-            'to_date' => now(),
-            'notifications' => $notifications
-        ]);
-    }
-
-    public function download($path)
-    {
-        if (file_exists(storage_path('app/' . $path))) {
-            return response()->download(storage_path('app/' . $path));
-        } else {
-            return redirect()->back()->with('message', 'Ошибка файла нет');
-        }
-    }
-
-    public function delete($id)
-    {
-        $notifications = \App\Models\Notification::find($id);
-        $file_path = storage_path('app/' . json_decode($notifications->data)->path);
-        if (file_exists(storage_path('app/' . json_decode($notifications->data)->path))) {
-            unlink($file_path);
-        }
-        $notifications->delete();
-        return redirect()->back()->with('message', 'Файл ' . json_decode($notifications->data)->path . ' Удален');
+        return view('reports.partners.index');
     }
 
     /**
-     * @param Request $request
      * @return JsonResponse
-     * @throws \Throwable
      */
-    public function getList(Request $request)
+    public function getList()
     {
         $sql = <<<SQL
-                id,
                 current_tradepoint,
                 mobile_phone,
                 platform,
@@ -82,83 +42,9 @@ class PartnersReportController extends Controller
                 END as status
 SQL;
 
-        $items = Partner::withTrashed()->select(DB::raw($sql));
+        $partners = Partner::withTrashed()->select(DB::raw($sql))->get();
 
-        $phone = $request->input('mobile_phone', '');
-        if ($phone != '')
-        {
-            $items->where('mobile_phone', 'like', '%' . $phone . '%');
-        }
-
-        $tradepoint = $request->input('tradepoint', '');
-        if ($tradepoint != '')
-        {
-            $items->where('current_tradepoint', 'like', '%' . $tradepoint . '%');
-        }
-
-        $os = $request->input('os', 0);
-        $android = 'Android';
-        $ios = 'iOS';
-
-        if ($os == 1) {
-            $items->where('platform', 'like', '%' . $ios . '%');
-        }
-
-        if ($os == 2) {
-            $items->where('platform', 'like', '%' . $android . '%');
-        }
-
-        $status = $request->input('status', 0);
-
-        if ($status == 1) {
-            $items->whereNotNull('deleted_at');
-        }
-
-        if ($status == 2) {
-            $items->whereNotNull('current_tradepoint');
-        }
-
-        if ($status == 3) {
-            $items->whereNull('deleted_at')
-                  ->whereNull('current_tradepoint');
-        }
-
-        $fromDate = $request->input('from_date', now()->subMonth()->format('Y-m-d'));
-        $toDate = $request->input('to_date', now()->format('Y-m-d'));
-
-        if ($fromDate != '') {
-            $items->whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
-        }
-
-        $lastFromDate = $request->input('last_from_date', now()->subMonth()->format('Y-m-d'));
-        $lastToDate = $request->input('last_to_date', now()->format('Y-m-d'));
-
-        if ($lastFromDate != '') {
-            $items->whereBetween('updated_at', [$lastFromDate . ' 00:00:00', $lastToDate . ' 23:59:59']);
-        }
-
-        if ($request->input('export', 0))
-        {
-            $path = 'QuizResults' . now()->format('Y-m-d_H:i') . '.xlsx';
-
-            $items->chunk(15000, function ($itemsChunks) use ($path, $request) {
-                dispatch(new PartnersReportJob($itemsChunks, $path));
-                dispatch(new PartnersNotificationJob($request->user()->id, $path));
-            });
-
-            return redirect()->back()->with('message', 'Начался экспорт продавцов');
-        }
-
-        $items = $items->paginate(30);
-
-        $itemsHtml = '';
-        foreach ($items as $item) {
-            $itemsHtml .= view('reports.partners.table_row', ['item' => $item])->render();
-        }
-        $pages = $items->appends($request->all())->links('pagination.bootstrap-4');
-        $response = new ResponseBuilder();
-        $response->updateTableContentHtml('#salesPlanTable', $itemsHtml, $pages);
-        return $response->makeJson();
+        return response()->json(['data' => $partners]);
     }
 
 
