@@ -438,7 +438,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'token' => $token,
-            'token_ttl' => auth('partners')->factory()->getTTL()
+            'token_ttl' => auth('partners')->factory()->getTTL() * 60
         ]);
     }
 
@@ -465,7 +465,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => 'ok',
                 'token' => $token,
-                'token_ttl' => auth('partners')->factory()->getTTL(),
+                'token_ttl' => auth('partners')->factory()->getTTL() * 60,
                 'message' => 'need_tradepoint',
                 'tradepoints' => array_values($tradepoints)
             ]);
@@ -483,7 +483,7 @@ class AuthController extends Controller
             'account' => $partner->current_contact->only(['first_name', 'last_name', 'middle_name', 'mobile_phone']) ?? [],
             'tradeagent' => $partner->current_contact->tradepoint->trade_agent->only(['employee_name', 'phone']) ?? [],
             'token' => $token,
-            'token_ttl' => auth('partners')->factory()->getTTL()
+            'token_ttl' => auth('partners')->factory()->getTTL() * 60
         ]);
     }
 
