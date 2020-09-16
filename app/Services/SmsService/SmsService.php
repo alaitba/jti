@@ -121,11 +121,12 @@ class SmsService
         if ($inProd && !$this->codeType == self::TEST) {
             try {
                 $disclaimer = '«Cіздің бір реттік құпиясөзіңіз – ' . $this->code . '. Осы құпиясөзді беру арқылы сіз «Джей Ти Ай Қазақстан» ЖШС-ға ақпарат, өнімдер және басқа мүлік алуға, сондай-ақ жеке деректеріңізді жинауға және өңдеуге келісіміңізді бересіз. Келісімнің толық мәтіні сілтеме бойынша берілген: http://terms.jti.kz:8020/?d=d001 . Ваш одноразовый пароль – ' . $this->code . '. Передавая данный пароль, Вы даёте ТОО «Джей Ти Ай Казахстан» своё согласие на получение информации, продукции и иного имущества, а также на сбор, обработку своих персональных данных. Полный текст согласия по ссылке: http://terms.jti.kz:8020/?d=d001 »';
+                $generatedCode = 'Код: ' . $this->code;
 
                 if ($legal_age) {
                     $result = JtiApiProvider::sendSms('+' . $this->smsableItem->mobile_phone, $disclaimer, $this->userType)->getBody();
                 } else {
-                    $result = JtiApiProvider::sendSms('+' . $this->smsableItem->mobile_phone, $this->code, $this->userType)->getBody();
+                    $result = JtiApiProvider::sendSms('+' . $this->smsableItem->mobile_phone, $generatedCode, $this->userType)->getBody();
                 }
                 $result = json_decode($result, true);
                 if (!$result['result'])
