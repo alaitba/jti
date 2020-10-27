@@ -170,11 +170,6 @@ class SmsService
         if (!$inProd) {
             $responseData['sms_code'] = $this->code;
         }
-
-        if ($this->smsableItem->mobile_phone == '+77777777771') {
-            $responseData['sms_code'] = $this->code;
-        }
-
         return response()->json($responseData);
     }
 
