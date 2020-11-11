@@ -35,6 +35,12 @@ return [
     */
 
     'channels' => [
+        'stack_production' => [
+            'driver' => 'stack',
+            'channels' => ['daily', 'logstash'],
+            'ignore_exceptions' => false,
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['daily'],
@@ -60,6 +66,13 @@ return [
             'username' => 'Laravel Log',
             'emoji' => ':boom:',
             'level' => 'critical',
+        ],
+
+        'logstash' => [
+            'driver' => 'custom',
+            'via'    => \App\Providers\LogstashLogger::class,
+            'host'   => env('LOGSTASH_HOST', '127.0.0.1'),
+            'port'   => env('LOGSTASH_PORT', 4718),
         ],
 
         'papertrail' => [

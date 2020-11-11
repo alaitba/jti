@@ -14,6 +14,7 @@ use App\Services\ValidatorService\ValidatorService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Browser;
 
 /**
@@ -273,7 +274,11 @@ class AuthController extends Controller
                 $partner->auth_blocked_till = Carbon::now()->addMinutes(config('project.failed_auth_block_time', 10));
             }
             $partner->save();
-            \Sentry\captureMessage('Неверный пароль. Количество попыток: ' . $partner->failed_auth . ' IP: ' . $_SERVER['REMOTE_ADDR']);
+
+            Log::channel('logstash')->info('Неверный пароль. Количество попыток: ' . $partner->failed_auth .
+                ' IP: ' . $_SERVER['REMOTE_ADDR'] .
+                ' Номер телефона: ' . $partner->mobile_phone);
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'wrong_password',
